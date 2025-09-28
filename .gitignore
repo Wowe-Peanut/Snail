@@ -2,3 +2,4 @@ venv/
 *.swp
 output/
 __pycache__/
+/home/rpomullan/proj/sims/cs450-lab6/build
