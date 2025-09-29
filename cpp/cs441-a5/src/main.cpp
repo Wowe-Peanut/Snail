@@ -35,18 +35,14 @@ bool OFFLINE = false;
 bool blurOn = false;
 
 // Parameters
-float constexpr DEFAULT_WIDTH		= 400;
-float constexpr DEFAULT_HEIGHT		= 300;
+float constexpr DEFAULT_WIDTH		= 800;
+float constexpr DEFAULT_HEIGHT		= 600;
 
-float constexpr FLOOR_SIZE 			= 20;
-float constexpr CAMERA_MOVE_SPEED 	= 0.05;
-float constexpr CAMERA_ZOOM_SPEED 	= 0.01;
-float constexpr OBJECT_SPACING		= 1.4;
-int   constexpr OBJECT_GRID_SIZE	= 5; 
+float constexpr FLOOR_SIZE 			= 3;
 
-int   constexpr NUM_LIGHTS 			= 10;
+int   constexpr NUM_LIGHTS 			= 1;
 float constexpr LIGHT_ROT_SPEED		= 0.001;
-float constexpr MAX_LIGHT_RADIUS	= 7;
+float constexpr MAX_LIGHT_RADIUS	= 1;
 float constexpr A0					= 1.0;
 float constexpr A1					= 0.0429;
 float constexpr A2					= 0.9857;
@@ -61,9 +57,6 @@ shared_ptr<Program>				p2BPhongProg;
 
 // Objects
 vector<shared_ptr<Object>> 		bunnies;
-vector<shared_ptr<Object>> 		teapots;
-vector<shared_ptr<Object>> 		balls;
-vector<shared_ptr<Object>> 		SORs;
 vector<shared_ptr<Object>>		lights;
 shared_ptr<Object>				floorPlane;
 
@@ -118,24 +111,6 @@ static void char_callback(GLFWwindow *window, unsigned int key) {
 	keyToggles[key] = !keyToggles[key];
 
 	switch (key) {
-		case 'w':
-			camera->position += CAMERA_MOVE_SPEED * camera->getDirV();
-			break;
-		case 's':
-			camera->position -= CAMERA_MOVE_SPEED * camera->getDirV();
-			break;
-		case 'd':
-			camera->position += CAMERA_MOVE_SPEED * camera->getRightV();
-			break;
-		case 'a':
-			camera->position -= CAMERA_MOVE_SPEED * camera->getRightV();
-			break;
-		case 'z':
-			camera->incFOVY(-CAMERA_ZOOM_SPEED);
-			break;
-		case 'Z':
-			camera->incFOVY(CAMERA_ZOOM_SPEED);
-			break;
 		case 'b':
 			blurOn = !blurOn;
 			break;
@@ -275,7 +250,7 @@ static void init() {
 
 	// Camera -------------------------------------------------------------------
 	camera = make_shared<Camera>();
-	camera->position.y = 1.5;
+	camera->setInitDistance(2.0f);
 	// --------------------------------------------------------------------------
 
 
@@ -298,27 +273,9 @@ static void init() {
 
 	// World objects: spaced according to OBJECT_SPACING and OBJECT_GRID_SIZE ---
 	srand(glfwGetTime());
-	float lim = OBJECT_SPACING * OBJECT_GRID_SIZE/2.0;
-	for (float x = -lim; x < lim-0.01; x+=1.5) {
-		for (float z = -lim; z < lim-0.01; z+=1.5) {
-			float yrot = randf() * 2*M_PI;
+	float yrot = randf() * 2*M_PI;
+	bunnies.push_back(make_shared<Object>(models["bunny"], vec3(0,0,0), vec3(0,yrot,0), vec3(rfrange(0.3, .5)), vec3(0)));
 
-			switch (rand()%4) {
-				case 0:
-					bunnies.push_back(make_shared<Object>(models["bunny"], vec3(x,0,z), vec3(0,yrot,0), vec3(rfrange(0.3, .5)), vec3(0)));
-					break;
-				case 1:
-					teapots.push_back(make_shared<Object>(models["teapot"], vec3(x,0,z), vec3(0,yrot,0), vec3(rfrange(0.3, 0.5)), vec3(0)));
-					break;
-				case 2:
-					balls.push_back(make_shared<Object>(models["sphere"], vec3(x,0,z), vec3(0), vec3(rfrange(0.2, 0.4)), vec3(0)));
-					break;
-				case 3:
-					SORs.push_back(make_shared<Object>(models["sor"], vec3(x,0,z), vec3(0, 0, M_PI/2), vec3(rfrange(0.05, 0.15)), vec3(0)));
-					break;
-			}
-		}
-	}
 	// --------------------------------------------------------------------------
 
 
@@ -399,54 +356,9 @@ void drawScene(shared_ptr<MatrixStack> MV, shared_ptr<MatrixStack> P) {
 		bunny->draw(MV,p1DefaultProg);
 	}
 	
-	// Draw shearing teapots
-	for (size_t i=0; i<teapots.size(); i++) {
-		auto teapot = teapots.at(i);
-
-	 	if (i%2) 	teapot->zy_shear = sin(t + 5*i*i);	// Alternating between xy and zy shear
-		else 		teapot->xy_shear = cos(t + 5*i*i);	// and offset shear phase
-	 	teapot->draw(MV, p1DefaultProg);
-	}
-	
-	// Draw bouncy balls
-	for (size_t i=0; i<balls.size(); i++) {
-		auto ball = balls.at(i);
-
-		float Ay = 0.7;
-		float As = 0.1;
-		float p  = 1.7;
-		float t0 = 5*i*i; // Offset phase 
-
-		float y = Ay * (sin(2*M_PI/p*(t+t0))/2 + 0.5);
-		float s = -As * (cos(4*M_PI/p*(t+t0))/2 + 0.5) + ball->originalScale.x;
-
-		ball->scale = vec3(s, ball->scale.y, s);
-		ball->translation.y = y;
-		ball->draw(MV, p1DefaultProg);
-	}
-
 	floorPlane->draw(MV, p1DefaultProg);
 	p1DefaultProg->unbind();
 	// -----------------------------------------------------------------------------
-
-
-
-	// SOR Pass 1 Shader -----------------------------------------------------------
-	p1SORProg->bind();
-	glUniformMatrix4fv(p1SORProg->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
-
-	for (size_t i=0; i<SORs.size(); i++) {
-		auto sor = SORs.at(i);
-
-		// Alternating direction, offset phase & amplitude
-		glUniform1f(p1SORProg->getUniform("t"), ((sin(i)/2+2)*t + (5*i*i)) * (i%2 ? -1 : 1)); 
-		sor->draw(MV, p1SORProg);
-	}
-
-	p1SORProg->unbind();
-	// -----------------------------------------------------------------------------
-
-
 
 
 	///////////////////////////////////////////////////////////

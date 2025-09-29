@@ -17,10 +17,6 @@ public:
 		TRANSLATE,
 		SCALE
 	};
-
-	glm::vec3 position = glm::vec3(0,0,0);
-	float yaw = 0;
-	float pitch = 0;
 	
 	Camera();
 	virtual ~Camera();
@@ -32,17 +28,9 @@ public:
 	void mouseClicked(float x, float y, bool shift, bool ctrl, bool alt);
 	void mouseMoved(float x, float y);
 	void applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const;
-	void applyViewMatrix(std::shared_ptr<MatrixStack> MV);
-	glm::vec3 getDirV();
-	glm::vec3 getRightV();
-	void incFOVY(float delta);
-	void applyStaticProjectionMatrix(std::shared_ptr<MatrixStack> P) const;
-	float getAspect();
-	glm::mat4 getViewMatrix();
-	float getFOVY();
+	void applyViewMatrix(std::shared_ptr<MatrixStack> MV) const;
 	
 private:
-	float bindAngle(float angle, float min, float max);
 	float aspect;
 	float fovy;
 	float znear;

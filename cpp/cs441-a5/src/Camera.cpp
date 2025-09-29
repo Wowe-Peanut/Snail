@@ -10,7 +10,7 @@ Camera::Camera() :
 	fovy((float)(45.0*M_PI/180.0)),
 	znear(0.1f),
 	zfar(1000.0f),
-	rotations(0.0, 0.0),
+	rotations(0.0, M_PI/8),
 	translations(0.0f, 0.0f, -5.0f),
 	rfactor(0.01f),
 	tfactor(0.001f),
@@ -20,27 +20,6 @@ Camera::Camera() :
 
 Camera::~Camera()
 {
-}
-
-float Camera::getFOVY() {
-	return this->fovy;
-}
-
-float Camera::getAspect() {
-	return this->aspect;
-}
-
-glm::vec3 Camera::getDirV() {
-	return glm::vec3(cos(yaw), 0, sin(yaw));
-}
-
-glm::vec3 Camera::getRightV() {
-	glm::vec3 forward = this->getDirV();
-	return glm::vec3(-forward.z, 0, forward.x);
-}
-
-void Camera::incFOVY(float delta) {
-	this->fovy = bindAngle(fovy+delta, 4, 114);
 }
 
 void Camera::mouseClicked(float x, float y, bool shift, bool ctrl, bool alt)
@@ -56,20 +35,17 @@ void Camera::mouseClicked(float x, float y, bool shift, bool ctrl, bool alt)
 	}
 }
 
-float Camera::bindAngle(float angle, float minDeg, float maxDeg) {
-	minDeg *= M_PI/180;
-	maxDeg *= M_PI/180;
-	return	glm::max(minDeg, glm::min(maxDeg, angle));
-}
-
 void Camera::mouseMoved(float x, float y)
 {
 	glm::vec2 mouseCurr(x, y);
 	glm::vec2 dv = mouseCurr - mousePrev;
 	switch(state) {
 		case Camera::ROTATE:
-			yaw += rfactor * dv.x;
-			pitch = bindAngle(pitch + rfactor * -dv.y, -60, 60);
+			rotations += rfactor * dv;
+			break;
+		case Camera::TRANSLATE:
+			translations.x -= translations.z * tfactor * dv.x;
+			translations.y += translations.z * tfactor * dv.y;
 			break;
 		case Camera::SCALE:
 			translations.z *= (1.0f - sfactor * dv.y);
@@ -78,25 +54,15 @@ void Camera::mouseMoved(float x, float y)
 	mousePrev = mouseCurr;
 }
 
-void Camera::applyStaticProjectionMatrix(std::shared_ptr<MatrixStack> P) const
-{
-	P->multMatrix(glm::perspective((float)(45.0*M_PI/180.0), aspect, znear, zfar));
-}
-
-glm::mat4 Camera::getViewMatrix() {
-	glm::vec3 forward = this->getDirV();
-	forward.y = sin(pitch);
-
-	return glm::lookAt(position, position+forward, glm::vec3(0,1,0));
-}
-
 void Camera::applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const
 {
 	// Modify provided MatrixStack
 	P->multMatrix(glm::perspective(fovy, aspect, znear, zfar));
 }
 
-void Camera::applyViewMatrix(std::shared_ptr<MatrixStack> MV)
+void Camera::applyViewMatrix(std::shared_ptr<MatrixStack> MV) const
 {
-	MV->multMatrix(this->getViewMatrix());
+	MV->translate(translations);
+	MV->rotate(rotations.y, glm::vec3(1.0f, 0.0f, 0.0f));
+	MV->rotate(rotations.x, glm::vec3(0.0f, 1.0f, 0.0f));
 }

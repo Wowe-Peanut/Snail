@@ -3,8 +3,8 @@
 
 #### Refactoring A5
 - [ ] Remove deferred rendering
-- [ ] Remove freecam and replace with camera that rotates around center (see a3)
-- [ ] Remove all but one object (make it a single object in the center screen)
+- [X] Remove freecam and replace with camera that rotates around center (see a3)
+- [X] Remove all but one object (make it a single object in the center screen)
 
 #### Mass Spring Symplectic
 - [ ] Construct 3d box with triangles WITH INNER SUPPORTS. Ideally it should only send the outermost triangles to the GPU and leave the inner ones for internal forces only.

@@ -1,7 +1,7 @@
 CMakeFiles/A5.dir/src/MatrixStack.cpp.o: \
- /home/rpomullan/tamu/cs441/assignments/a5/src/MatrixStack.cpp \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.cpp \
  /usr/include/stdc-predef.h \
- /home/rpomullan/tamu/cs441/assignments/a5/src/MatrixStack.h \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.h \
  /usr/include/c++/13/stack /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \

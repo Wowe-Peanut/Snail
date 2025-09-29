@@ -1,7 +1,7 @@
 CMakeFiles/A5.dir/src/GLSL.cpp.o: \
- /home/rpomullan/tamu/cs441/assignments/a5/src/GLSL.cpp \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.cpp \
  /usr/include/stdc-predef.h \
- /home/rpomullan/tamu/cs441/assignments/a5/src/GLSL.h \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.h \
  /usr/local/lib/glew-2.1.0/include/GL/glew.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \

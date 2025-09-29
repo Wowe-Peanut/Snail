@@ -1,10 +1,10 @@
-/home/rpomullan/tamu/cs441/assignments/a5/build/CMakeFiles/A5.dir
-/home/rpomullan/tamu/cs441/assignments/a5/build/CMakeFiles/edit_cache.dir
-/home/rpomullan/tamu/cs441/assignments/a5/build/CMakeFiles/rebuild_cache.dir
-/home/rpomullan/tamu/cs441/assignments/a5/build/CMakeFiles/list_install_components.dir
-/home/rpomullan/tamu/cs441/assignments/a5/build/CMakeFiles/install.dir
-/home/rpomullan/tamu/cs441/assignments/a5/build/CMakeFiles/install/local.dir
-/home/rpomullan/tamu/cs441/assignments/a5/build/CMakeFiles/install/strip.dir
+/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles/A5.dir
+/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles/edit_cache.dir
+/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles/rebuild_cache.dir
+/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles/list_install_components.dir
+/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles/install.dir
+/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles/install/local.dir
+/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles/install/strip.dir
 /usr/local/lib/glfw-3.4/debug/CMakeFiles/uninstall.dir
 /usr/local/lib/glfw-3.4/debug/CMakeFiles/edit_cache.dir
 /usr/local/lib/glfw-3.4/debug/CMakeFiles/rebuild_cache.dir

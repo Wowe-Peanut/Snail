@@ -1,5 +1,5 @@
 CMakeFiles/A5.dir/src/Camera.cpp.o: \
- /home/rpomullan/tamu/cs441/assignments/a5/src/Camera.cpp \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/13/cmath \
  /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -321,7 +321,7 @@ CMakeFiles/A5.dir/src/Camera.cpp.o: \
  /usr/local/lib/glm-1.0.1/glm/gtc/../ext/matrix_transform.hpp \
  /usr/local/lib/glm-1.0.1/glm/gtc/../ext/matrix_transform.inl \
  /usr/local/lib/glm-1.0.1/glm/gtc/matrix_transform.inl \
- /home/rpomullan/tamu/cs441/assignments/a5/src/Camera.h \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.h \
  /usr/include/c++/13/memory /usr/include/c++/13/bits/stl_tempbuf.h \
  /usr/include/c++/13/bits/stl_uninitialized.h \
  /usr/include/c++/13/bits/stl_raw_storage_iter.h \
@@ -358,7 +358,7 @@ CMakeFiles/A5.dir/src/Camera.cpp.o: \
  /usr/local/lib/glm-1.0.1/glm/detail/type_half.inl \
  /usr/local/lib/glm-1.0.1/glm/integer.hpp \
  /usr/local/lib/glm-1.0.1/glm/detail/func_integer.inl \
- /home/rpomullan/tamu/cs441/assignments/a5/src/MatrixStack.h \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.h \
  /usr/include/c++/13/stack /usr/include/c++/13/deque \
  /usr/include/c++/13/bits/stl_deque.h /usr/include/c++/13/bits/deque.tcc \
  /usr/include/c++/13/bits/stl_stack.h

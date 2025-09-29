@@ -1,38 +1,38 @@
 [
 {
-  "directory": "/home/rpomullan/tamu/cs441/assignments/a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/Camera.cpp.o -c /home/rpomullan/tamu/cs441/assignments/a5/src/Camera.cpp",
-  "file": "/home/rpomullan/tamu/cs441/assignments/a5/src/Camera.cpp",
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/Camera.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.cpp",
   "output": "CMakeFiles/A5.dir/src/Camera.cpp.o"
 },
 {
-  "directory": "/home/rpomullan/tamu/cs441/assignments/a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/GLSL.cpp.o -c /home/rpomullan/tamu/cs441/assignments/a5/src/GLSL.cpp",
-  "file": "/home/rpomullan/tamu/cs441/assignments/a5/src/GLSL.cpp",
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/GLSL.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.cpp",
   "output": "CMakeFiles/A5.dir/src/GLSL.cpp.o"
 },
 {
-  "directory": "/home/rpomullan/tamu/cs441/assignments/a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/MatrixStack.cpp.o -c /home/rpomullan/tamu/cs441/assignments/a5/src/MatrixStack.cpp",
-  "file": "/home/rpomullan/tamu/cs441/assignments/a5/src/MatrixStack.cpp",
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/MatrixStack.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.cpp",
   "output": "CMakeFiles/A5.dir/src/MatrixStack.cpp.o"
 },
 {
-  "directory": "/home/rpomullan/tamu/cs441/assignments/a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/Program.cpp.o -c /home/rpomullan/tamu/cs441/assignments/a5/src/Program.cpp",
-  "file": "/home/rpomullan/tamu/cs441/assignments/a5/src/Program.cpp",
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/Program.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp",
   "output": "CMakeFiles/A5.dir/src/Program.cpp.o"
 },
 {
-  "directory": "/home/rpomullan/tamu/cs441/assignments/a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/Shape.cpp.o -c /home/rpomullan/tamu/cs441/assignments/a5/src/Shape.cpp",
-  "file": "/home/rpomullan/tamu/cs441/assignments/a5/src/Shape.cpp",
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/Shape.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.cpp",
   "output": "CMakeFiles/A5.dir/src/Shape.cpp.o"
 },
 {
-  "directory": "/home/rpomullan/tamu/cs441/assignments/a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/main.cpp.o -c /home/rpomullan/tamu/cs441/assignments/a5/src/main.cpp",
-  "file": "/home/rpomullan/tamu/cs441/assignments/a5/src/main.cpp",
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include  -Wall -pedantic -std=gnu++17 -o CMakeFiles/A5.dir/src/main.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp",
   "output": "CMakeFiles/A5.dir/src/main.cpp.o"
 },
 {
