@@ -51,9 +51,7 @@ float constexpr A2					= 0.9857;
 map<string, shared_ptr<Shape>> models;
 
 // Shaders
-shared_ptr<Program> 			p1DefaultProg; 	
-shared_ptr<Program>				p1SORProg;
-shared_ptr<Program>				p2BPhongProg;
+shared_ptr<Program> 			bphongProg; 	
 
 // Objects
 vector<shared_ptr<Object>> 		bunnies;
@@ -165,50 +163,11 @@ shared_ptr<Program> makeProg(string name, vector<string> attributeNames, vector<
 	return prog;
 }
 
-void initTexture(GLuint& texture, GLenum attachment) {
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, textureWidth, textureHeight, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture, 0);
-}
-
-void initFrameBuffer() {
-	// Generate off-screen frame buffer	
-	glGenFramebuffers(1, &framebufferID);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
-	
-	// Initialize textures and depth buffer
-	initTexture(posTexture, GL_COLOR_ATTACHMENT0);
-	initTexture(norTexture, GL_COLOR_ATTACHMENT1);
-	initTexture(keTexture, GL_COLOR_ATTACHMENT2);
-	initTexture(kdTexture, GL_COLOR_ATTACHMENT3);
-
-	// Initialize depth buffer
-	GLuint depthrenderbuffer;
-	glGenRenderbuffers(1, &depthrenderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, textureWidth, textureHeight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-	
-	// Assign textures as the off-screen frame buffers output
-	GLenum attachments[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
-	glDrawBuffers(4, attachments);
-	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		cerr << "Framebuffer is not ok" << endl;
-		exit(1);
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
 
 // If the window is resized, capture the new size and reset the viewport
 static void resize_callback(GLFWwindow *window, int width, int height) {
 	textureWidth = width;
 	textureHeight = height;
-	initFrameBuffer();
 	glViewport(0, 0, width, height);
 }
 
@@ -235,16 +194,9 @@ static void init() {
 									"lightPositions", "lightColors", "A0", "A1", "A2", "t",
 									"posTexture", "norTexture", "keTexture", "kdTexture", 
 									"windowSize", "blurOn"};
-	p1DefaultProg 	= makeProg("default_p1", attributeNames, uniformNames);
-	p1SORProg 		= makeProg("SOR_p1", attributeNames, uniformNames);
-	p2BPhongProg 	= makeProg("bphong_p2", attributeNames, uniformNames);
+	bphongProg 	= makeProg("bphong", attributeNames, uniformNames);
 	// --------------------------------------------------------------------------
 
-
-
-	// Initialize the off-screen frame buffer -----------------------------------
-	initFrameBuffer();
-	// --------------------------------------------------------------------------
 
 
 
@@ -271,7 +223,7 @@ static void init() {
 
 
 
-	// World objects: spaced according to OBJECT_SPACING and OBJECT_GRID_SIZE ---
+	// World objects ------------------------------------------------------------
 	srand(glfwGetTime());
 	float yrot = randf() * 2*M_PI;
 	bunnies.push_back(make_shared<Object>(models["bunny"], vec3(0,0,0), vec3(0,yrot,0), vec3(rfrange(0.3, .5)), vec3(0)));
@@ -326,26 +278,24 @@ void drawScene(shared_ptr<MatrixStack> MV, shared_ptr<MatrixStack> P) {
 		lightColors[li] = lights.at(li)->ke;
 	}
 
-
-
-	
-	///////////////////////////////////////////////////////////
-	// FIRST PASS - RENDER TO TEXTURE
-	///////////////////////////////////////////////////////////	
-	glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
+	// Setup OpenGL viewport and buffers
 	glViewport(0, 0, textureWidth, textureHeight);
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-	// Default Pass 1 Shader -------------------------------------------------------
-	p1DefaultProg->bind();
+	// Bphong Shader ---------------------------------------------------------------
+	bphongProg->bind();
 
-	glUniformMatrix4fv(p1DefaultProg->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
+	glUniformMatrix4fv(bphongProg->getUniform("MV"), 1, GL_FALSE, value_ptr(MV->topMatrix()));
+	glUniformMatrix4fv(bphongProg->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
+	glUniform3fv(bphongProg->getUniform("lightPositions"), NUM_LIGHTS, value_ptr(lightPositions[0]));
+	glUniform3fv(bphongProg->getUniform("lightColors"), NUM_LIGHTS, value_ptr(lightColors[0]));
+	glUniform1i(bphongProg->getUniform("lightCount"), NUM_LIGHTS); 
 
 	// Draw floating lights
 	for (auto light: lights) {
-		light->draw(MV, p1DefaultProg);
+		light->draw(MV, bphongProg);
 	}
 
 	// Draw spinning bunnies	
@@ -353,60 +303,16 @@ void drawScene(shared_ptr<MatrixStack> MV, shared_ptr<MatrixStack> P) {
 		auto bunny = bunnies.at(i);
 		
 		bunny->rotation.y = (t + 5*i) * (i%2 ? -1 : 1);	// Offset rotation phase and alternating direction
-		bunny->draw(MV,p1DefaultProg);
+		bunny->draw(MV,bphongProg);
 	}
 	
-	floorPlane->draw(MV, p1DefaultProg);
-	p1DefaultProg->unbind();
+	floorPlane->draw(MV, bphongProg);
+
+	bphongProg->unbind();
 	// -----------------------------------------------------------------------------
-
-
-	///////////////////////////////////////////////////////////
-	// SECOND PASS - RENDER TO SCREEN
-	///////////////////////////////////////////////////////////	
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glm::mat4 projectionMatrix = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f, 0.01f, 10.0f);
-	glm::vec2 windowSize;
-
-	int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-	windowSize = glm::vec2(width, height); 
-    glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	// Clear the previous ModelView and projection matrices (use ortho for projection, and identity for ModelView)
-	MV->pushMatrix();
-	MV->loadIdentity();
-	MV->multMatrix(projectionMatrix);	
-	
-	// Rotate plane (the tv screen) to be directly in front of camera
-	MV->translate(0, 0, -1);
-	MV->rotate(M_PI/2, 1, 0, 0);
-	
-	// Bind pass-2 shader and assign uniforms
-	p2BPhongProg->bind();
-	glUniformMatrix4fv(p2BPhongProg->getUniform("MV"), 1, GL_FALSE, value_ptr(MV->topMatrix()));
-	glUniformMatrix4fv(p2BPhongProg->getUniform("P"), 1, GL_FALSE, value_ptr(projectionMatrix));
-	glUniform3fv(p2BPhongProg->getUniform("lightPositions"), NUM_LIGHTS, value_ptr(lightPositions[0]));
-	glUniform3fv(p2BPhongProg->getUniform("lightColors"), NUM_LIGHTS, value_ptr(lightColors[0]));
-	glUniform1i(p2BPhongProg->getUniform("lightCount"), NUM_LIGHTS); 
-	glUniform2fv(p2BPhongProg->getUniform("windowSize"), 1, value_ptr(windowSize));
-	glUniform1i(p2BPhongProg->getUniform("blurOn"), int(blurOn));
-	
-	// Bind the textures that will be used
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, posTexture);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, norTexture);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, keTexture);
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, kdTexture);
-	
-	models["plane"]->draw(p2BPhongProg);
-	p2BPhongProg->unbind();
-	MV->popMatrix();
 }
+
+
 
 // This function is called every frame to draw the scene.
 static void render() {
