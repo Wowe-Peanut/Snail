@@ -43,9 +43,6 @@ float constexpr FLOOR_SIZE 			= 3;
 int   constexpr NUM_LIGHTS 			= 1;
 float constexpr LIGHT_ROT_SPEED		= 0.001;
 float constexpr MAX_LIGHT_RADIUS	= 1;
-float constexpr A0					= 1.0;
-float constexpr A1					= 0.0429;
-float constexpr A2					= 0.9857;
 
 // 3D Models
 map<string, shared_ptr<Shape>> models;
@@ -58,16 +55,14 @@ vector<shared_ptr<Object>> 		bunnies;
 vector<shared_ptr<Object>>		lights;
 shared_ptr<Object>				floorPlane;
 
-// Deffered Rendering
+// Current window dimensions
 int textureWidth = DEFAULT_WIDTH;
 int textureHeight = DEFAULT_HEIGHT;
-GLuint framebufferID;
-GLuint posTexture;
-GLuint norTexture;
-GLuint keTexture;
-GLuint kdTexture;
 
-bool keyToggles[256] = {false}; // only for English keyboards!
+// only for English keyboards!
+bool keyToggles[256] = {false}; 
+bool culling = true;
+bool fillTriangles = true;
 
 // This function is called when a GLFW error occurs
 static void error_callback(int error, const char *description) {
@@ -109,8 +104,25 @@ static void char_callback(GLFWwindow *window, unsigned int key) {
 	keyToggles[key] = !keyToggles[key];
 
 	switch (key) {
-		case 'b':
-			blurOn = !blurOn;
+
+		// Toggle triangle culling
+		case 'c':
+			culling = !culling;
+			if (culling) {
+				glEnable(GL_CULL_FACE);
+			} else {
+				glDisable(GL_CULL_FACE);
+			}
+			break;
+		
+		// Toggle triangle full OR wireframe
+		case 'z':
+			fillTriangles = !fillTriangles;
+			if (fillTriangles) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			} else {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
 			break;
 	}
 }
@@ -148,17 +160,6 @@ shared_ptr<Program> makeProg(string name, vector<string> attributeNames, vector<
 	for (string attrib: attributeNames) prog->addAttribute(attrib);
 	for (string uniform: uniformNames) prog->addUniform(uniform);
 	
-	prog->bind();
-	glUniform1f(prog->getUniform("A0"), A0);
-	glUniform1f(prog->getUniform("A1"), A1);
-	glUniform1f(prog->getUniform("A2"), A2);
-
-	glUniform1i(prog->getUniform("posTexture"), 0);
-	glUniform1i(prog->getUniform("norTexture"), 1);
-	glUniform1i(prog->getUniform("keTexture"), 2);
-	glUniform1i(prog->getUniform("kdTexture"), 3);
-	prog->unbind();
-
 	prog->setVerbose(false);
 	return prog;
 }
@@ -190,10 +191,8 @@ static void init() {
 
 	// Shader programs ----------------------------------------------------------
 	vector<string> attributeNames = {"aPos", "aNor"};
-	vector<string> uniformNames  = {"MV", "P", "MVIT", "ke", "kd", "ks", "s", "lightCount", 
-									"lightPositions", "lightColors", "A0", "A1", "A2", "t",
-									"posTexture", "norTexture", "keTexture", "kdTexture", 
-									"windowSize", "blurOn"};
+	vector<string> uniformNames  = {"MV", "P", "MVIT", "ke", "kd", "ks", "s", "lightCount", "lightPositions", 
+									"lightColors", "posTexture", "norTexture", "keTexture", "kdTexture"};
 	bphongProg 	= makeProg("bphong", attributeNames, uniformNames);
 	// --------------------------------------------------------------------------
 
@@ -226,7 +225,7 @@ static void init() {
 	// World objects ------------------------------------------------------------
 	srand(glfwGetTime());
 	float yrot = randf() * 2*M_PI;
-	bunnies.push_back(make_shared<Object>(models["bunny"], vec3(0,0,0), vec3(0,yrot,0), vec3(rfrange(0.3, .5)), vec3(0)));
+	bunnies.push_back(make_shared<Object>(models["sphere"], vec3(0,0,0), vec3(0,yrot,0), vec3(rfrange(0.3, .5)), vec3(0)));
 
 	// --------------------------------------------------------------------------
 
@@ -260,20 +259,36 @@ static void init() {
 }
 
 
+// This function is called every frame to draw the scene.
+static void render() {
+	// Clear framebuffer.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Get current frame buffer size.
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
 
+	// Set camera aspect ratio
+	float aspect = width / (float) height;
+	camera->setAspect(aspect);
 
-void drawScene(shared_ptr<MatrixStack> MV, shared_ptr<MatrixStack> P) {
-	float t = glfwGetTime();
+	// Matrix stacks
+	auto P = make_shared<MatrixStack>();
+	auto MV = make_shared<MatrixStack>();
+
+	// ------------------------------------------------------
+	P->pushMatrix();
+	MV->pushMatrix();
+
+	camera->applyProjectionMatrix(P);
+	camera->applyViewMatrix(MV);	
+
 	vec3 lightPositions[NUM_LIGHTS];
 	vec3 lightColors[NUM_LIGHTS];
 
 
-	// Rotate lights and load attributes into arrays
+	// Load light attributes into buffers to send to GPU
 	for (size_t li=0; li<NUM_LIGHTS; li++) {
-		lights.at(li)->worldRotation(LIGHT_ROT_SPEED * (li%2 ? -1 : 1)); 	// Alternating rotation direction
-		lights.at(li)->translation.y = 1 + 0.2*sin(t + li*li);				// Offset vertical oscillation
-
 		lightPositions[li] = vec3(MV->topMatrix() * vec4(lights.at(li)->translation, 1));
 		lightColors[li] = lights.at(li)->ke;
 	}
@@ -293,50 +308,14 @@ void drawScene(shared_ptr<MatrixStack> MV, shared_ptr<MatrixStack> P) {
 	glUniform3fv(bphongProg->getUniform("lightColors"), NUM_LIGHTS, value_ptr(lightColors[0]));
 	glUniform1i(bphongProg->getUniform("lightCount"), NUM_LIGHTS); 
 
-	// Draw floating lights
-	for (auto light: lights) {
-		light->draw(MV, bphongProg);
-	}
-
-	// Draw spinning bunnies	
-	for (size_t i=0; i<bunnies.size(); i++) {
-		auto bunny = bunnies.at(i);
-		
-		bunny->rotation.y = (t + 5*i) * (i%2 ? -1 : 1);	// Offset rotation phase and alternating direction
-		bunny->draw(MV,bphongProg);
+	for (auto bunny: bunnies) {
+		bunny->draw(MV, bphongProg);
 	}
 	
 	floorPlane->draw(MV, bphongProg);
 
 	bphongProg->unbind();
 	// -----------------------------------------------------------------------------
-}
-
-
-
-// This function is called every frame to draw the scene.
-static void render() {
-	// Clear framebuffer.
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	// Get current frame buffer size.
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-
-	float aspect = width / (float) height;
-	camera->setAspect(aspect);
-
-	// Matrix stacks
-	auto P = make_shared<MatrixStack>();
-	auto MV = make_shared<MatrixStack>();
-
-	// ------------------------------------------------------
-	P->pushMatrix();
-	MV->pushMatrix();
-
-	camera->applyProjectionMatrix(P);
-	camera->applyViewMatrix(MV);	
-	drawScene(MV, P);
 
 	P->popMatrix();
 	MV->popMatrix();

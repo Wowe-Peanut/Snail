@@ -6,11 +6,6 @@ uniform int  lightCount;
 uniform vec3 lightPositions[100];	
 uniform vec3 lightColors[100];
 
-// Attenuation
-uniform float A0;
-uniform float A1;
-uniform float A2;
-
 // Non-texture material uniforms (constant because we don't generate specular texture to pull from)
 const vec3 ksDefault = vec3(1, 1, 1);
 const float sDefault = 10;
@@ -41,7 +36,7 @@ void main()
 
 		vec3 diffuse = kd*max(0, dot(l, n)); 	
 		vec3 specular = ks*pow(max(0, dot(h, n)), s);
-		fragColor += lightColors[li] * (kd*diffuse + ks*specular) / (A0 + A1*r + A2*r*r);
+		fragColor += kd/10 + lightColors[li] * (kd*diffuse + ks*specular);
 	}
 
 	gl_FragColor = vec4(fragColor, 1);	
