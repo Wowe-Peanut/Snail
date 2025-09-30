@@ -1,7 +1,7 @@
 # Mass-Spring Solids Simulation
 
 import numpy as np  # numpy for linear algebra
-import pygame       # pygame for visualization
+import pygame       # type: ignore # pygame for visualization
 pygame.init()
 
 import square_mesh   # square mesh

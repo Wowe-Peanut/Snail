@@ -27,42 +27,36 @@
 using namespace std;
 using glm::vec3, glm::vec4;
 
-// Other
-GLFWwindow *window; 
-shared_ptr<Camera> camera;
-string RESOURCE_DIR = "./";
-bool OFFLINE = false;
-bool blurOn = false;
 
 // Parameters
 float constexpr DEFAULT_WIDTH		= 800;
 float constexpr DEFAULT_HEIGHT		= 600;
-
 float constexpr FLOOR_SIZE 			= 3;
-
 int   constexpr NUM_LIGHTS 			= 1;
 float constexpr LIGHT_ROT_SPEED		= 0.001;
 float constexpr MAX_LIGHT_RADIUS	= 1;
 
-// 3D Models
+
+// Global Scene Variables
+GLFWwindow *window; 
+shared_ptr<Camera> camera;
 map<string, shared_ptr<Shape>> models;
 
-// Shaders
-shared_ptr<Program> 			bphongProg; 	
 
-// Objects
-vector<shared_ptr<Object>> 		bunnies;
-vector<shared_ptr<Object>>		lights;
-shared_ptr<Object>				floorPlane;
 
-// Current window dimensions
-int textureWidth = DEFAULT_WIDTH;
-int textureHeight = DEFAULT_HEIGHT;
+shared_ptr<Program> bphongProg; 	
+vector<shared_ptr<Object>> bunnies;
+vector<shared_ptr<Object>> lights;
+shared_ptr<Object> floorPlane;
 
-// only for English keyboards!
-bool keyToggles[256] = {false}; 
+
+string RESOURCE_DIR = "./";
+int viewportWidth = DEFAULT_WIDTH;
+int viewportHeight = DEFAULT_HEIGHT;
 bool culling = true;
 bool fillTriangles = true;
+bool keyToggles[256] = {false}; 
+
 
 // This function is called when a GLFW error occurs
 static void error_callback(int error, const char *description) {
@@ -100,6 +94,7 @@ static void cursor_position_callback(GLFWwindow* window, double xmouse, double y
 	}
 }
 
+// This function is called when a char is typed
 static void char_callback(GLFWwindow *window, unsigned int key) {
 	keyToggles[key] = !keyToggles[key];
 
@@ -128,27 +123,6 @@ static void char_callback(GLFWwindow *window, unsigned int key) {
 }
 
 
-// https://lencerf.github.io/post/2019-09-21-save-the-opengl-rendering-to-image-file/
-static void saveImage(const char *filepath, GLFWwindow *w) {
-	int width, height;
-	glfwGetFramebufferSize(w, &width, &height);
-	GLsizei nrChannels = 3;
-	GLsizei stride = nrChannels * width;
-	stride += (stride % 4) ? (4 - stride % 4) : 0;
-	GLsizei bufferSize = stride * height;
-	std::vector<char> buffer(bufferSize);
-	glPixelStorei(GL_PACK_ALIGNMENT, 4);
-	glReadBuffer(GL_BACK);
-	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
-	stbi_flip_vertically_on_write(true);
-	int rc = stbi_write_png(filepath, width, height, nrChannels, buffer.data(), stride);
-	if(rc) {
-		cout << "Wrote to " << filepath << endl;
-	} else {
-		cout << "Couldn't write to " << filepath << endl;
-	}
-}
-
 
 // Creates and initializes a shader program with the passed values and assigns attenuation constants
 shared_ptr<Program> makeProg(string name, vector<string> attributeNames, vector<string> uniformNames) {
@@ -167,8 +141,8 @@ shared_ptr<Program> makeProg(string name, vector<string> attributeNames, vector<
 
 // If the window is resized, capture the new size and reset the viewport
 static void resize_callback(GLFWwindow *window, int width, int height) {
-	textureWidth = width;
-	textureHeight = height;
+	viewportWidth = width;
+	viewportHeight = height;
 	glViewport(0, 0, width, height);
 }
 
@@ -294,7 +268,7 @@ static void render() {
 	}
 
 	// Setup OpenGL viewport and buffers
-	glViewport(0, 0, textureWidth, textureHeight);
+	glViewport(0, 0, viewportWidth, viewportHeight);
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -321,14 +295,8 @@ static void render() {
 	MV->popMatrix();
 	// ------------------------------------------------------
 	
-	// Save output to image if in offline mode	
+
 	GLSL::checkError(GET_FILE_LINE);
-	if(OFFLINE) {
-		string filename = "output.png";
-		saveImage(filename.c_str(), window);
-		GLSL::checkError(GET_FILE_LINE);
-		glfwSetWindowShouldClose(window, true);
-	}
 }
 
 int main(int argc, char **argv) {
@@ -338,11 +306,6 @@ int main(int argc, char **argv) {
 	}
 	RESOURCE_DIR = argv[1] + string("/");
 	
-	// Optional argument
-	if(argc >= 3) {
-		OFFLINE = atoi(argv[2]) != 0;
-	}
-
 	// Set error callback.
 	glfwSetErrorCallback(error_callback);
 	// Initialize the library.
