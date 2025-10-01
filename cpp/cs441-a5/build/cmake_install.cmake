@@ -44,7 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/usr/local/lib/opengl-libs/glfw-3.4/debug/cmake_install.cmake")
+  include("/usr/local/lib/glfw-3.4/debug/cmake_install.cmake")
 
 endif()
 
