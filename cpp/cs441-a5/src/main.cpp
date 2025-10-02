@@ -32,8 +32,7 @@ using glm::vec3, glm::vec4;
 float constexpr DEFAULT_WIDTH		= 800;
 float constexpr DEFAULT_HEIGHT		= 600;
 float constexpr FLOOR_SIZE 			= 3;
-int   constexpr NUM_LIGHTS 			= 1;
-float constexpr LIGHT_ROT_SPEED		= 0.001;
+int   constexpr MAX_LIGHTS 			= 10;
 float constexpr MAX_LIGHT_RADIUS	= 1;
 
 
@@ -41,12 +40,15 @@ float constexpr MAX_LIGHT_RADIUS	= 1;
 GLFWwindow *window; 
 shared_ptr<Camera> camera;
 map<string, shared_ptr<Shape>> models;
-
+auto P = make_shared<MatrixStack>();
+auto MV = make_shared<MatrixStack>();
 
 
 shared_ptr<Program> bphongProg; 	
-vector<shared_ptr<Object>> bunnies;
-vector<shared_ptr<Object>> lights;
+vector<shared_ptr<Object>> worldObjects;
+int lightCount = 0;
+vec3 lightPositions[MAX_LIGHTS];
+vec3 lightColors[MAX_LIGHTS];
 shared_ptr<Object> floorPlane;
 
 
@@ -122,8 +124,6 @@ static void char_callback(GLFWwindow *window, unsigned int key) {
 	}
 }
 
-
-
 // Creates and initializes a shader program with the passed values and assigns attenuation constants
 shared_ptr<Program> makeProg(string name, vector<string> attributeNames, vector<string> uniformNames) {
 	auto prog = make_shared<Program>();
@@ -137,7 +137,6 @@ shared_ptr<Program> makeProg(string name, vector<string> attributeNames, vector<
 	prog->setVerbose(false);
 	return prog;
 }
-
 
 // If the window is resized, capture the new size and reset the viewport
 static void resize_callback(GLFWwindow *window, int width, int height) {
@@ -158,29 +157,27 @@ float rfrange(float lo, float hi) {
 // This function is called once to initialize the scene and OpenGL
 static void init() {
 	glfwSetTime(0.0); 						// Initialize time.
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 	// Set background color.
+	glClearColor(0.5f, 0.5f, 0.5f, 0.5f); 	// Set background color.
 	glEnable(GL_DEPTH_TEST); 				// Enable z-buffer test
 	
 
 
-	// Shader programs ----------------------------------------------------------
+	// Shader programs 
 	vector<string> attributeNames = {"aPos", "aNor"};
-	vector<string> uniformNames  = {"MV", "P", "MVIT", "ke", "kd", "ks", "s", "lightCount", "lightPositions", 
-									"lightColors", "posTexture", "norTexture", "keTexture", "kdTexture"};
+	vector<string> uniformNames  = {"MV", "P", "MVIT", "ka", "kd", "ks", "s", "lightCount", "lightPositions", "lightColors"};
 	bphongProg 	= makeProg("bphong", attributeNames, uniformNames);
 	// --------------------------------------------------------------------------
 
 
 
-
-	// Camera -------------------------------------------------------------------
+	// Camera 
 	camera = make_shared<Camera>();
-	camera->setInitDistance(2.0f);
+	camera->setInitDistance(2.5f);
 	// --------------------------------------------------------------------------
 
 
 
-	// 3D Models (from file) ----------------------------------------------------
+	// 3D Models 
 	vector<string> modelNames = {"bunny", "plane", "teapot"};
 	for (string modelName: modelNames) {
 		shared_ptr<Shape> model = make_shared<Shape>();
@@ -196,40 +193,38 @@ static void init() {
 
 
 
-	// World objects ------------------------------------------------------------
+	// World objects
 	srand(glfwGetTime());
-	float yrot = randf() * 2*M_PI;
-	bunnies.push_back(make_shared<Object>(models["sphere"], vec3(0,0,0), vec3(0,yrot,0), vec3(rfrange(0.3, .5)), vec3(0)));
+	worldObjects.push_back(make_shared<Object>(models["sphere"], vec3(0), vec3(0), vec3(0.5)));
 
 	// --------------------------------------------------------------------------
 
 
 
-	// Lights -------------------------------------------------------------------
-	for (int li=0; li<NUM_LIGHTS; li++) {
-		float theta = randf() * 2*M_PI;
-		float r = randf() * MAX_LIGHT_RADIUS * MAX_LIGHT_RADIUS;
-		vec3 position = vec3(sqrt(r)*cos(theta), 1, sqrt(r)*sin(theta)); // sqrt(r) used to ensure uniform distribution in cartesian
-		vec3 emissive = vec3(randf(), randf(), randf());
-		
-		shared_ptr<Object> light = make_shared<Object>(models["sphere"], position,  vec3(0), vec3(0.04), emissive);
-		light->kd = vec3(0);
-		light->ks = vec3(0);	
-		lights.push_back(light);
-	}
+	// Lights 
+	lightCount = 2;
+
+	lightColors[0] 		= vec3(0.5, 0.5, 0.5);
+	lightPositions[0] 	= vec3(-1, 1, -1);
+
+	lightColors[1] 		= vec3(0.5, 0.5, 0.5);
+	lightPositions[1] 	= vec3(1, 1, 1);
+
+
+	assert(lightCount <= MAX_LIGHTS);
 	// --------------------------------------------------------------------------
 
 
 
-	// Floor plane object -------------------------------------------------------
-	floorPlane = make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE), vec3(0));
+	// Floor plane
+	floorPlane = make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE));
 	floorPlane->kd = vec3(1);	
 	// --------------------------------------------------------------------------
 
-
-
-	// Debugging assertion (put this after an GL call to check for problems)
-	GLSL::checkError(GET_FILE_LINE);
+	
+	
+	bphongProg->bind(); // Only using one shader to just bind in init() and unbind on shutdown
+	GLSL::checkError(GET_FILE_LINE);	// WTF WENT WRONG?!?!?
 }
 
 
@@ -246,10 +241,6 @@ static void render() {
 	float aspect = width / (float) height;
 	camera->setAspect(aspect);
 
-	// Matrix stacks
-	auto P = make_shared<MatrixStack>();
-	auto MV = make_shared<MatrixStack>();
-
 	// ------------------------------------------------------
 	P->pushMatrix();
 	MV->pushMatrix();
@@ -257,38 +248,35 @@ static void render() {
 	camera->applyProjectionMatrix(P);
 	camera->applyViewMatrix(MV);	
 
-	vec3 lightPositions[NUM_LIGHTS];
-	vec3 lightColors[NUM_LIGHTS];
-
-
-	// Load light attributes into buffers to send to GPU
-	for (size_t li=0; li<NUM_LIGHTS; li++) {
-		lightPositions[li] = vec3(MV->topMatrix() * vec4(lights.at(li)->translation, 1));
-		lightColors[li] = lights.at(li)->ke;
-	}
-
 	// Setup OpenGL viewport and buffers
 	glViewport(0, 0, viewportWidth, viewportHeight);
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+	// Transform lights positions to camera space before sending to GPU
+	vec3 transformedLightPositions[MAX_LIGHTS];
+	for (int li=0; li<lightCount; li++) {
+		transformedLightPositions[li] = MV->topMatrix() * vec4(lightPositions[li], 1);
+	}
+
 	// Bphong Shader ---------------------------------------------------------------
-	bphongProg->bind();
+	
 
 	glUniformMatrix4fv(bphongProg->getUniform("MV"), 1, GL_FALSE, value_ptr(MV->topMatrix()));
 	glUniformMatrix4fv(bphongProg->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-	glUniform3fv(bphongProg->getUniform("lightPositions"), NUM_LIGHTS, value_ptr(lightPositions[0]));
-	glUniform3fv(bphongProg->getUniform("lightColors"), NUM_LIGHTS, value_ptr(lightColors[0]));
-	glUniform1i(bphongProg->getUniform("lightCount"), NUM_LIGHTS); 
+	glUniform1i(bphongProg->getUniform("lightCount"), lightCount); 
+	glUniform3fv(bphongProg->getUniform("lightPositions"), lightCount, value_ptr(transformedLightPositions[0]));
+	glUniform3fv(bphongProg->getUniform("lightColors"), lightCount, value_ptr(lightColors[0]));
+	
 
-	for (auto bunny: bunnies) {
-		bunny->draw(MV, bphongProg);
+	for (auto worldObject: worldObjects) {
+		worldObject->draw(MV, bphongProg);
 	}
 	
 	floorPlane->draw(MV, bphongProg);
 
-	bphongProg->unbind();
+	
 	// -----------------------------------------------------------------------------
 
 	P->popMatrix();
@@ -354,7 +342,9 @@ int main(int argc, char **argv) {
 		// Poll for and process events.
 		glfwPollEvents();
 	}
+
 	// Quit program.
+	bphongProg->unbind();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;

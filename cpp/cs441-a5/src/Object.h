@@ -18,17 +18,18 @@ class Object {
 		float xy_shear;
 		float zy_shear;
 
-		glm::vec3 ke;
+		glm::vec3 ka;
 		glm::vec3 kd;
 		glm::vec3 ks;
 		float s;
 		
-		Object(shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, glm::vec3 emissive): 
-			   shape(shape), translation(trans), rotation(rot), scale(scale), originalScale(scale),  xy_shear(0), zy_shear(0), ke(emissive) {
+		Object(shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale): 
+			   shape(shape), translation(trans), rotation(rot), scale(scale), originalScale(scale),  xy_shear(0), zy_shear(0) {
 			
-			kd = minBound(randColor(), 0.3);
-			ks = glm::vec3(1.0f, 1.0f, 1.0f);
-			s = 10;
+			kd = glm::vec3(0.8, 0.7, 0.7);
+			ka = kd/2.0f;
+			ks = glm::vec3(1.0f, 0.9f, 0.8f);
+			s = 200;
 		}
 
 		void applyTransform(shared_ptr<MatrixStack> MV) {
@@ -46,21 +47,20 @@ class Object {
 	
 		void draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog) {
 			MV->pushMatrix();
-			
+
+			// Apply base transformations and fit to ground
 			applyTransform(MV);
 			MV->translate(0, -shape->getBaseY(), 0);
-																 
+			
+			// Send properties to GPU
 			glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 			glUniformMatrix4fv(prog->getUniform("MVIT"), 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MV->topMatrix()))));
-			glUniform3fv(prog->getUniform("ke"), 1, glm::value_ptr(ke));
+			glUniform3fv(prog->getUniform("ka"), 1, glm::value_ptr(ka));
 			glUniform3fv(prog->getUniform("kd"), 1, glm::value_ptr(kd));
-
-			// While doing deffered rendering, we don't generate a specular texture, we can't know which specular
-			// values to send to the second pass shaders. Therefore they are now defined as constants in the p2 frag shader
-
-			// glUniform3fv(prog->getUniform("ks"), 1, glm::value_ptr(ks)); 
-			// glUniform1f(prog->getUniform("s"), s);
-
+			glUniform3fv(prog->getUniform("ks"), 1, glm::value_ptr(ks)); 
+			glUniform1f(prog->getUniform("s"), s);
+			
+			// Draw the model
 			shape->draw(prog);
 			MV->popMatrix();
 		}

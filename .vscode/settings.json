@@ -1,3 +1,10 @@
 {
-	"cmake.ignoreCMakeListsMissing": true
+	"cmake.ignoreCMakeListsMissing": true,
+	"files.associations": {
+		"cmath": "cpp",
+		"deque": "cpp",
+		"vector": "cpp",
+		"__split_buffer": "cpp",
+		"list": "cpp"
+	}
 }
