@@ -19,9 +19,12 @@
 
 
 ### Other things to look into:
+- So the simulation code seems to run better with x being a list of vectors rather than flattened, so maybe a vector of eigen maps were each index maps to the three indices in the buffer?
+
 - Just remake the shape class so you understand it better lmao (you're getting stunlocked), it should use the eigen map directly to the buffer and SHOULD NOT contain any physics items.
 - To keep the rendering & physics separate, keep it out of Shape.h and put it in Object.h, then probably create a World/Scene class which should handle broad and narrow phase shit
 - Also stripping the Object.h class of unnecessary things would also be a nice for readability
+
 
 - From the CS450 Lab 6 guide: continuously editing and copying the positions of the vertecies to the shape buffers can be expensive. So look into Eigen::Map so that we we write directly into the opengl buffer when making changes to the mesh
 - **Important**: the rendering side should be separable from the simulation side. I want to be able to run this on GRACE/FASTER later on and be able to save the positions each time step. But if it's too grappled with the OpenGL shit that could be difficult. However, I still want to have real-time rendering so it should be configurable to do that. Maybe abrstract the OpenGL stuff away into a 'Renderer' class in which we just pass the triangle states each iteration. Then it could also a 'replay' and 'save video' mode by passing a list of states.

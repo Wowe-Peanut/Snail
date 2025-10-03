@@ -15,17 +15,9 @@
 
 using namespace std;
 
-Shape::Shape() :
-	posBufID(0),
-	norBufID(0),
-	texBufID(0),
-	procedural(false)
-{
-}
+Shape::Shape(): posBufID(0), norBufID(0), texBufID(0), procedural(false) {}
 
-Shape::~Shape()
-{
-}
+Shape::~Shape() {}
 
 void Shape::pushvec(std::vector<float>& buf, float f1, float f2, float f3) {
 	buf.push_back(f1);
@@ -76,35 +68,6 @@ std::shared_ptr<Shape> Shape::buildSphere(int v) {
 	sphere->loadMeshBuffers(posBuf, norBuf, texBuf, indBuf);
 	sphere->init();
 	return sphere;
-}
-
-std::shared_ptr<Shape> Shape::buildSOR(int v) {
-	std::vector<float> posBuf;
-	std::vector<float> norBuf;
-	std::vector<float> texBuf;
-	std::vector<unsigned int> indBuf;
-
-	for (int y=v-1; y>=0; y--) {
-		for (int x=0; x<v; x++) {
-			float alpha = x / (float) (v-1);
-			float beta = y / (float) (v-1);
-
-			Shape::pushvec(posBuf, 3*M_PI * alpha, 2*M_PI * beta, 0);
-			Shape::pushvec(norBuf, 0.0f, 0.0f, 0.0f);	
-			Shape::pushvec(texBuf, 10 * alpha, 10 * beta);	
-			
-			if (x != v-1 && y != v-1) {
-				int k = x + v*y;
-				Shape::pushvec(indBuf, k, k+1, k+v+1);
-				Shape::pushvec(indBuf, k+v+1, k+v, k);
-			}
-		}
-	}
-
-	shared_ptr<Shape> sor = make_shared<Shape>();
-	sor->loadMeshBuffers(posBuf, norBuf, texBuf, indBuf);
-	sor->init();
-	return sor;
 }
 
 float Shape::getBaseY() {
