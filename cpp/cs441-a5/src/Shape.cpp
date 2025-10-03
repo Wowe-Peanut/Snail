@@ -16,31 +16,11 @@
 using namespace std;
 
 Shape::Shape(): posBufID(0), norBufID(0), texBufID(0), procedural(false) {}
-
 Shape::~Shape() {}
+float Shape::getBaseY() { return this->baseY; }
 
-void Shape::pushvec(std::vector<float>& buf, float f1, float f2, float f3) {
-	buf.push_back(f1);
-	buf.push_back(f2);
-	buf.push_back(f3);
-}
-
-void Shape::pushvec(std::vector<float>& buf, float f1, float f2) {
-	buf.push_back(f1);
-	buf.push_back(f2);
-}
-
-void Shape::pushvec(std::vector<unsigned int>& buf, unsigned int ui1, unsigned int ui2, unsigned int ui3) {
-	buf.push_back(ui1);
-	buf.push_back(ui2);
-	buf.push_back(ui3);
-}
-
-std::shared_ptr<Shape> Shape::buildSphere(int v) {
-	std::vector<float> posBuf;
-	std::vector<float> norBuf;
-	std::vector<float> texBuf;
-	std::vector<unsigned int> indBuf;
+shared_ptr<Shape> Shape::buildSphere(int v) {
+	shared_ptr<Shape> sphere = make_shared<Shape>();
 	
 	float r = 1;	
 	for (int y=v-1; y>=0; y--) {
@@ -51,41 +31,72 @@ std::shared_ptr<Shape> Shape::buildSphere(int v) {
 			float theta = M_PI * (1 - beta);
 			float phi = 2*M_PI * (1 - alpha);	
 			glm::vec3 p = r*glm::vec3(sin(theta)*sin(phi), cos(theta), sin(theta)*cos(phi));
-
-			Shape::pushvec(posBuf, p.x, p.y, p.z);
-			Shape::pushvec(norBuf, p.x/r, p.y/r, p.z/r);
-			Shape::pushvec(texBuf, alpha * 10,	beta * 10);
+			
+			sphere->posBuf.insert(sphere->posBuf.end(), {p.x, p.y, p.z});
+			sphere->norBuf.insert(sphere->norBuf.end(), {p.x/r, p.y/r, p.z/r});
+			sphere->texBuf.insert(sphere->texBuf.end(), {alpha * 10, beta * 10});
 			
 			if (x != v-1 && y != v-1) {
-				int k = x + v*y;
-				Shape::pushvec(indBuf, k, k+1, k+v+1);
-				Shape::pushvec(indBuf, k+v+1, k+v, k);
-			}
+				unsigned int k = x + v*y;
+				sphere->indBuf.insert(sphere->indBuf.end(), {k, k+1, k+v+1, k+v+1, k+v, k});
+			} 
 		}
 	}
 
-	shared_ptr<Shape> sphere = make_shared<Shape>();
-	sphere->loadMeshBuffers(posBuf, norBuf, texBuf, indBuf);
+	
+	sphere->procedural = true;
 	sphere->init();
 	return sphere;
 }
 
-float Shape::getBaseY() {
-	return this->baseY;
+std::shared_ptr<Shape> buildCube(float sideLength, int segments) {
+	shared_ptr<Shape> cube = make_shared<Shape>();
+	
+	// References to cube buffers to make the construction below more readable
+	vector<float>& posBuf = cube->posBuf;
+	vector<float>& norBuf = cube->norBuf;
+	vector<float>& texBuf = cube->texBuf;
+	vector<unsigned int>& indBuf = cube->indBuf;
+
+	// Sample uniformly in cube from (0,0,0) -> (sideLength, sideLength, sideLength)
+	for (int x=0; x<segments; x++) {
+		for (int y=0; y<segments; y++) {
+			for (int z=0; z<segments; z++) {
+
+				posBuf.insert(posBuf.end(), {x*sideLength, y*sideLength, z*sideLength});	
+				
+				// If not on the far faces, construct the unit cube 
+				if (x < segments-1 && y < segments-1 && z < segments-1) {
+					
+					// Calculate positions indices of the unit cube
+					vector<int> idxs;
+					for (int dx=0; dx<=1; dx++) {
+						for (int dy=0; dy<=1; dy++) {
+							for (int dz=0; dz<=1; dz++) {
+								idxs.push_back((x+dx)*segments*segments + (y+dy)*segments + (z+dz));
+							}
+						}	
+					}
+
+					// Construct edges
+
+					// Construct triangle IFF outward facing
+
+				}
+
+			}	
+		}
+	}
+
+
+
+
+
+	cube->procedural = true;
+	cube->init();
+	return cube;
 }
 
-void Shape::loadMeshBuffers(std::vector<float> posBuf, std::vector<float> norBuf, std::vector<float> texBuf, std::vector<unsigned int> indBuf) {
-	this->procedural = true;
-	this->posBuf = posBuf;
-	this->norBuf = norBuf;
-	this->texBuf = texBuf;
-	this->indBuf = indBuf;
-	
-	this->baseY = FLT_MAX;
-	for (size_t yi = 1; yi<posBuf.size(); yi+=3) {
-		this->baseY = min(this->baseY, posBuf[yi]);
-	}
-}
 
 void Shape::loadMeshFile(const string &meshName)
 {
@@ -169,7 +180,13 @@ void Shape::fitToUnitBox()
 }
 
 void Shape::init()
-{
+{	
+	// Find base height of object
+	this->baseY = FLT_MAX;
+	for (size_t yi = 1; yi<posBuf.size(); yi+=3) {
+		this->baseY = min(this->baseY, posBuf[yi]);
+	}
+
 	// Send the position array to the GPU
 	glGenBuffers(1, &posBufID);
 	glBindBuffer(GL_ARRAY_BUFFER, posBufID);

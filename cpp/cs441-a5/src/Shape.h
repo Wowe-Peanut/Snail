@@ -18,22 +18,6 @@ class Program;
 class Shape
 {
 public:
-	Shape();
-	virtual ~Shape();
-	void loadMeshFile(const std::string &meshName);
-	void loadMeshBuffers(std::vector<float> posBuf, std::vector<float> norBuf, std::vector<float> texBuf, std::vector<unsigned int> indBuf);
-	void fitToUnitBox();
-	void init();
-	void draw(const std::shared_ptr<Program> prog) const;
-	float getBaseY();
-
-	static std::shared_ptr<Shape> buildSphere(int v);
-	static std::shared_ptr<Shape> buildSOR(int v);
-	static void pushvec(std::vector<float>& buf, float f1, float f2, float f3);
-	static void pushvec(std::vector<float>& buf, float f1, float f2);
-	static void pushvec(std::vector<unsigned int>& buf, unsigned int ui1, unsigned int ui2, unsigned int ui3);
-	
-private:
 	std::vector<float> posBuf;
 	std::vector<float> norBuf;
 	std::vector<float> texBuf;
@@ -42,11 +26,27 @@ private:
 	unsigned norBufID;
 	unsigned texBufID;
 	unsigned indBufID;
+
+	std::vector<std::vector<int>> edgeList;
+
 	float baseY;
 	bool procedural;
 
+
+	Shape();
+	virtual ~Shape();
+	void loadMeshFile(const std::string &meshName);
+	void loadMeshBuffers(std::vector<float> posBuf, std::vector<float> norBuf, std::vector<float> texBuf, std::vector<unsigned int> indBuf);
+	void fitToUnitBox();
+	void init();
+
+	float getBaseY();
+	void draw(const std::shared_ptr<Program> prog) const;
 	void drawArrays(const std::shared_ptr<Program> prog) const;
 	void drawElements(const std::shared_ptr<Program> prog) const;
+
+	static std::shared_ptr<Shape> buildSphere(int v);
+	static std::shared_ptr<Shape> buildCube(int sideLength, int segments);
 };
 
 #endif

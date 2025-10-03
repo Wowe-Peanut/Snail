@@ -49,8 +49,6 @@ vector<shared_ptr<Object>> worldObjects;
 int lightCount = 0;
 vec3 lightPositions[MAX_LIGHTS];
 vec3 lightColors[MAX_LIGHTS];
-shared_ptr<Object> floorPlane;
-
 
 string RESOURCE_DIR = "./";
 int viewportWidth = DEFAULT_WIDTH;
@@ -145,15 +143,6 @@ static void resize_callback(GLFWwindow *window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 
-float randf() {
-	return ((float) rand()) / RAND_MAX;  
-}
-
-float rfrange(float lo, float hi) {
-	return lo + randf()*(hi-lo);	
-}
-
-
 // This function is called once to initialize the scene and OpenGL
 static void init() {
 	glfwSetTime(0.0); 						// Initialize time.
@@ -167,8 +156,6 @@ static void init() {
 	vector<string> uniformNames  = {"MV", "P", "MVIT", "ka", "kd", "ks", "s", "lightCount", "lightPositions", "lightColors"};
 	bphongProg 	= makeProg("bphong", attributeNames, uniformNames);
 	// --------------------------------------------------------------------------
-
-
 
 	// Camera 
 	camera = make_shared<Camera>();
@@ -186,20 +173,18 @@ static void init() {
 
 		models.insert({modelName, model});
 	}
-
 	models.insert({"sphere", Shape::buildSphere(20)});
-	models.insert({"sor", Shape::buildSOR(20)});
 	// --------------------------------------------------------------------------
+
 
 
 
 	// World objects
-	srand(glfwGetTime());
-	worldObjects.push_back(make_shared<Object>(models["sphere"], vec3(0), vec3(0), vec3(0.5)));
-
+	worldObjects = vector<shared_ptr<Object>>();
+	worldObjects.push_back(make_shared<Object>(models["sphere"], vec3(0), vec3(0), vec3(0.5), true));
+	worldObjects.push_back(make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE)));
 	// --------------------------------------------------------------------------
-
-
+	
 
 	// Lights 
 	lightCount = 2;
@@ -210,59 +195,44 @@ static void init() {
 	lightColors[1] 		= vec3(0.5, 0.5, 0.5);
 	lightPositions[1] 	= vec3(1, 1, 1);
 
-
 	assert(lightCount <= MAX_LIGHTS);
 	// --------------------------------------------------------------------------
 
 
 
-	// Floor plane
-	floorPlane = make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE));
-	floorPlane->kd = vec3(1);	
-	// --------------------------------------------------------------------------
+	
 
-	
-	
-	bphongProg->bind(); // Only using one shader to just bind in init() and unbind on shutdown
-	GLSL::checkError(GET_FILE_LINE);	// WTF WENT WRONG?!?!?
+	// Bind Blinn-Phong Shader (currently the only shader so only need to bind once) 
+	bphongProg->bind(); 
+	GLSL::checkError(GET_FILE_LINE);
 }
-
 
 // This function is called every frame to draw the scene.
 static void render() {
-	// Clear framebuffer.
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Get current frame buffer size.
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
+	// Clear color & depth buffers, enable depth test, and set viewport size
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glViewport(0, 0, viewportWidth, viewportHeight);
 
 	// Set camera aspect ratio
-	float aspect = width / (float) height;
-	camera->setAspect(aspect);
+	camera->setAspect(viewportWidth / (float) viewportHeight);
 
-	// ------------------------------------------------------
+	// Apply camera transforms to P and MV
 	P->pushMatrix();
 	MV->pushMatrix();
-
 	camera->applyProjectionMatrix(P);
 	camera->applyViewMatrix(MV);	
 
-	// Setup OpenGL viewport and buffers
-	glViewport(0, 0, viewportWidth, viewportHeight);
-	glEnable(GL_DEPTH_TEST);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	// Transform lights positions to camera space before sending to GPU
+	// Transform and load light positions into buffer to send to GPU
 	vec3 transformedLightPositions[MAX_LIGHTS];
 	for (int li=0; li<lightCount; li++) {
 		transformedLightPositions[li] = MV->topMatrix() * vec4(lightPositions[li], 1);
 	}
 
-	// Bphong Shader ---------------------------------------------------------------
-	
 
+	// Send uniforms to GPU
 	glUniformMatrix4fv(bphongProg->getUniform("MV"), 1, GL_FALSE, value_ptr(MV->topMatrix()));
 	glUniformMatrix4fv(bphongProg->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 	glUniform1i(bphongProg->getUniform("lightCount"), lightCount); 
@@ -271,10 +241,10 @@ static void render() {
 	
 
 	for (auto worldObject: worldObjects) {
+		if (worldObject->physicsObject) worldObject->stepForward();
 		worldObject->draw(MV, bphongProg);
 	}
-	
-	floorPlane->draw(MV, bphongProg);
+
 
 	
 	// -----------------------------------------------------------------------------
