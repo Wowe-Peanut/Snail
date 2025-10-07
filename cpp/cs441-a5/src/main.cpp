@@ -159,7 +159,7 @@ static void init() {
 
 	// Camera 
 	camera = make_shared<Camera>();
-	camera->setInitDistance(4.0f);
+	camera->setInitDistance(4.5f);
 	// --------------------------------------------------------------------------
 
 
@@ -175,7 +175,7 @@ static void init() {
 	}
 	
 	models.insert({"sphere", Shape::buildSphere(20)});
-	models.insert({"cube", Shape::buildCube(1, 1)});
+	models.insert({"cube", Shape::buildCube(0.5, 2)});
 	// --------------------------------------------------------------------------
 
 
@@ -243,9 +243,9 @@ static void render() {
 	
 
 	for (auto worldObject: worldObjects) {
-		// if (worldObject->physicsObject) {
-		// 	worldObject->stepForward(0.004);
-		// }
+		if (worldObject->physicsObject) {
+			worldObject->stepForward(0.004);
+		}
 		worldObject->draw(MV, bphongProg);
 	}
 

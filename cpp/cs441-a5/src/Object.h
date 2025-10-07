@@ -30,8 +30,8 @@ class Object {
 		float s = 200;
 		
 		bool physicsObject;	
-		float springStiffness = 10.0f;
-		float pointMass = 1000;
+		float springStiffness = 1000.0f;
+		float pointMass = 500;
 		vector<Eigen::Map<Eigen::Vector3f>> vertexPositions;
 		vector<Eigen::Vector3f> vertexVelocities;
 		Eigen::MatrixXf hessian;

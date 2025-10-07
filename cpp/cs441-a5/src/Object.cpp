@@ -26,10 +26,11 @@ void Object::stepForward(float h) {
 		auto edge = shape->edgeList[edgeIdx];
 		Eigen::Vector3f diff = vertexPositions[edge[0]] - vertexPositions[edge[1]];
 		float currentLength = diff.norm();
-		float restingLength = sqrt(shape->l2[edgeIdx]);
+		float restingLength = shape->lengths[edgeIdx];
 
 		// Calculate spring force: noramlized direction * stiffness * displacement from rest
-		Eigen::Vector3f springForce = -(diff / currentLength) * springStiffness * (currentLength - restingLength);
+
+		Eigen::Vector3f springForce = -diff.normalized() * springStiffness * (currentLength - restingLength);
 
 		// Apply spring force to current velocities of both ends of spring
 		vertexVelocities[edge[0]] += h * springForce / pointMass;
@@ -66,8 +67,7 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		vertexVelocities = vector<Eigen::Vector3f>(vertexPositions.size(), Eigen::Vector3f::Zero(3));
 
 		// Initial stretch
-		vertexPositions[0] += Eigen::Vector3f(1, 1, 1);
-
+		vertexPositions[0] += Eigen::Vector3f(-0.2, -0.2, -0.2);
 	}
 
 	

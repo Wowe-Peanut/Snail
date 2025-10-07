@@ -58,7 +58,7 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	vector<float>& texBuf = cube->texBuf;
 	vector<unsigned int>& indBuf = cube->indBuf;
 	vector<vector<unsigned int>>& edgeList = cube->edgeList;
-	vector<float>& l2 = cube->l2;
+	vector<float>& lengths = cube->lengths;
 
 	vector<bool> isSurfaceVertex;
 
@@ -91,12 +91,11 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 							}
 						}	
 					}
-
+					
 					// Construct edges (all pairs of unit cube indices, no duplicates, order doesn't matter) and calculate resting spring length squared
 					for (int i=1; i<idxs.size(); i++) {
 						for (int j=0; j<i; j++) {
 							edgeList.push_back({idxs[j], idxs[i]});
-							
 						}
 					}
 					
@@ -121,7 +120,7 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	for (int edgeIdx=0; edgeIdx<edgeList.size(); edgeIdx++) {
 		int vIdx1 = edgeList[edgeIdx][0];
 		int vIdx2 = edgeList[edgeIdx][1];
-		l2.push_back(pow(posBuf[vIdx1] - posBuf[vIdx2], 2) + pow(posBuf[vIdx1+1] - posBuf[vIdx2+1], 2) + pow(posBuf[vIdx1+2] - posBuf[vIdx2+2], 2));
+		lengths.push_back(sqrt(pow(posBuf[3*vIdx1] - posBuf[3*vIdx2], 2) + pow(posBuf[3*vIdx1+1] - posBuf[3*vIdx2+1], 2) + pow(posBuf[3*vIdx1+2] - posBuf[3*vIdx2+2], 2)));
 	}
 	
 
@@ -223,13 +222,13 @@ void Shape::init()
 	// Send the position array to the GPU
 	glGenBuffers(1, &posBufID);
 	glBindBuffer(GL_ARRAY_BUFFER, posBufID);
-	glBufferData(GL_ARRAY_BUFFER, posBuf.size()*sizeof(float), &posBuf[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, posBuf.size()*sizeof(float), &posBuf[0], GL_DYNAMIC_DRAW);
 	
 	// Send the normal array to the GPU
 	if(!norBuf.empty()) {
 		glGenBuffers(1, &norBufID);
 		glBindBuffer(GL_ARRAY_BUFFER, norBufID);
-		glBufferData(GL_ARRAY_BUFFER, norBuf.size()*sizeof(float), &norBuf[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, norBuf.size()*sizeof(float), &norBuf[0], GL_DYNAMIC_DRAW);
 	}
 	
 	// Send the texture array to the GPU
@@ -263,6 +262,7 @@ void Shape::drawElements(const shared_ptr<Program> prog) const {
 	if (aPos != -1 && posBufID != 0) {
     	glEnableVertexAttribArray(prog->getAttribute("aPos"));
 		glBindBuffer(GL_ARRAY_BUFFER, posBufID);
+		glBufferData(GL_ARRAY_BUFFER, posBuf.size()*sizeof(float), &posBuf[0], GL_DYNAMIC_DRAW);
 		glVertexAttribPointer(prog->getAttribute("aPos"), 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 	}
 
@@ -270,6 +270,7 @@ void Shape::drawElements(const shared_ptr<Program> prog) const {
 	if (aNor != -1 && posBufID != 0) {
 		glEnableVertexAttribArray(prog->getAttribute("aNor"));
 		glBindBuffer(GL_ARRAY_BUFFER, norBufID);
+		glBufferData(GL_ARRAY_BUFFER, norBuf.size()*sizeof(float), &norBuf[0], GL_DYNAMIC_DRAW);
 		glVertexAttribPointer(prog->getAttribute("aNor"), 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 	}	
 		
