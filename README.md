@@ -1,3 +1,8 @@
+#### Notes from last time:
+- Note: cmakelist currently set to debug mode (see line #2)
+- Currently working on constructing the cube & getting it to only draw the surface triangles
+- Currently ALL positions are still being sent to the GPU, but I'm trying to get indBuf to only contain surface triangles atm
+- Bphong replaced with distance shader until I figure out normals
 
 ### TODO
 
@@ -19,6 +24,7 @@
 
 
 ### Other things to look into:
+
 - For shape maybe try having a separate buffer (one that we don't send to the GPU) for internal positions. Then the Object.h vector
 of eigen maps can remain a single list but they can be mapped to either internal_position_buf or external_position_buf depending on
 whether or not they are on the edge. In Shape::construct_cube, I already plan on not constructing internal triangle, just adding to the edge

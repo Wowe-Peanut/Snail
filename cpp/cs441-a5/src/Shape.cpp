@@ -49,7 +49,7 @@ shared_ptr<Shape> Shape::buildSphere(int v) {
 	return sphere;
 }
 
-std::shared_ptr<Shape> buildCube(float sideLength, int segments) {
+shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	shared_ptr<Shape> cube = make_shared<Shape>();
 	
 	// References to cube buffers to make the construction below more readable
@@ -57,40 +57,73 @@ std::shared_ptr<Shape> buildCube(float sideLength, int segments) {
 	vector<float>& norBuf = cube->norBuf;
 	vector<float>& texBuf = cube->texBuf;
 	vector<unsigned int>& indBuf = cube->indBuf;
+	vector<vector<unsigned int>>& edgeList = cube->edgeList;
+	vector<float>& l2 = cube->l2;
+
+	vector<bool> isSurfaceVertex;
 
 	// Sample uniformly in cube from (0,0,0) -> (sideLength, sideLength, sideLength)
-	for (int x=0; x<segments; x++) {
-		for (int y=0; y<segments; y++) {
-			for (int z=0; z<segments; z++) {
+	for (int x = 0; x <= segments; x++) {
+		for (int y = 0; y <= segments; y++) {
+			for (int z = 0; z <= segments; z++) {
 
-				posBuf.insert(posBuf.end(), {x*sideLength, y*sideLength, z*sideLength});	
+				posBuf.insert(posBuf.end(), {x*segmentLength, y*segmentLength, z*segmentLength});
+				
+				// Surface vertices
+				if (x == 0 || x == segments || y == 0 || y == segments || z == 0 || z == segments) {
+					isSurfaceVertex.push_back(true);
+				} else {
+					isSurfaceVertex.push_back(false);
+				}
+
+				norBuf.insert(norBuf.end(), {0,0,0}); // Placeholder normals
+				texBuf.insert(texBuf.end(), {0,0}); // Placeholder tex coords
 				
 				// If not on the far faces, construct the unit cube 
-				if (x < segments-1 && y < segments-1 && z < segments-1) {
+				if (x < segments && y < segments && z < segments) {
 					
 					// Calculate positions indices of the unit cube
-					vector<int> idxs;
+					vector<unsigned int> idxs;
 					for (int dx=0; dx<=1; dx++) {
 						for (int dy=0; dy<=1; dy++) {
 							for (int dz=0; dz<=1; dz++) {
-								idxs.push_back((x+dx)*segments*segments + (y+dy)*segments + (z+dz));
+								idxs.push_back((x+dx)*(segments+1)*(segments+1) + (y+dy)*(segments+1) + (z+dz));
 							}
 						}	
 					}
 
-					// Construct edges
-
-					// Construct triangle IFF outward facing
-
+					// Construct edges (all pairs of unit cube indices, no duplicates, order doesn't matter) and calculate resting spring length squared
+					for (int i=1; i<idxs.size(); i++) {
+						for (int j=0; j<i; j++) {
+							edgeList.push_back({idxs[j], idxs[i]});
+							
+						}
+					}
+					
+					// Construct triangles (currently all of them)
+					for (int i=2; i<idxs.size(); i++) {
+						for (int j=1; j<i; j++) {
+							for (int k=0; k<j; k++) {
+								vector<unsigned int> face = {idxs[i], idxs[j], idxs[k]};
+								
+								// TODO: get it to only draw surface triangles
+								indBuf.insert(indBuf.end(), face.begin(), face.end());
+							}
+						}
+					}
 				}
 
 			}	
 		}
 	}
 
-
-
-
+	// Calculate resting spring lengths squared
+	for (int edgeIdx=0; edgeIdx<edgeList.size(); edgeIdx++) {
+		int vIdx1 = edgeList[edgeIdx][0];
+		int vIdx2 = edgeList[edgeIdx][1];
+		l2.push_back(pow(posBuf[vIdx1] - posBuf[vIdx2], 2) + pow(posBuf[vIdx1+1] - posBuf[vIdx2+1], 2) + pow(posBuf[vIdx1+2] - posBuf[vIdx2+2], 2));
+	}
+	
 
 	cube->procedural = true;
 	cube->init();

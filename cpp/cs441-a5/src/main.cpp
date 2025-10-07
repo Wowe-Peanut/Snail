@@ -159,7 +159,7 @@ static void init() {
 
 	// Camera 
 	camera = make_shared<Camera>();
-	camera->setInitDistance(2.5f);
+	camera->setInitDistance(4.0f);
 	// --------------------------------------------------------------------------
 
 
@@ -173,7 +173,9 @@ static void init() {
 
 		models.insert({modelName, model});
 	}
+	
 	models.insert({"sphere", Shape::buildSphere(20)});
+	models.insert({"cube", Shape::buildCube(1, 1)});
 	// --------------------------------------------------------------------------
 
 
@@ -181,7 +183,7 @@ static void init() {
 
 	// World objects
 	worldObjects = vector<shared_ptr<Object>>();
-	worldObjects.push_back(make_shared<Object>(models["sphere"], vec3(0), vec3(0), vec3(0.5), true));
+	worldObjects.push_back(make_shared<Object>(models["cube"], vec3(-0.5, 0.5, -0.5), vec3(0), vec3(1), true));
 	worldObjects.push_back(make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE)));
 	// --------------------------------------------------------------------------
 	
