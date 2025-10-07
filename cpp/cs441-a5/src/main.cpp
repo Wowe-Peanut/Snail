@@ -243,9 +243,9 @@ static void render() {
 	
 
 	for (auto worldObject: worldObjects) {
-		if (worldObject->physicsObject) {
-			worldObject->stepForward(0.004);
-		}
+		// if (worldObject->physicsObject) {
+		// 	worldObject->stepForward(0.004);
+		// }
 		worldObject->draw(MV, bphongProg);
 	}
 

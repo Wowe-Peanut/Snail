@@ -19,8 +19,6 @@
 using namespace std;
 
 void Object::stepForward(float h) {
-	cerr << "WE LOVE STEPPING!!!!" << endl;
-
 	// Currently just Symplectic Euler
 	for (int edgeIdx=0; edgeIdx<shape->edgeList.size(); edgeIdx++) {
 
@@ -57,7 +55,7 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 
 		// Map each Eigen::vec3f to its respective location in the buffer
 		vertexPositions = vector<Eigen::Map<Eigen::Vector3f>>();
-		for (size_t vidx=0; vidx<vertexPositions.size(); vidx++) {
+		for (size_t vidx=0; vidx<shape->posBuf.size()/3; vidx++) {
 			vertexPositions.emplace_back(&(shape->posBuf[3*vidx]));
 		}
 
@@ -68,6 +66,7 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		vertexVelocities = vector<Eigen::Vector3f>(vertexPositions.size(), Eigen::Vector3f::Zero(3));
 
 		// Initial stretch
+		vertexPositions[0] += Eigen::Vector3f(1, 1, 1);
 
 	}
 
