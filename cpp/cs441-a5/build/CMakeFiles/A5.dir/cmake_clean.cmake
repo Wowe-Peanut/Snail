@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/A5.dir/src/GLSL.cpp.o.d"
   "CMakeFiles/A5.dir/src/MatrixStack.cpp.o"
   "CMakeFiles/A5.dir/src/MatrixStack.cpp.o.d"
+  "CMakeFiles/A5.dir/src/Object.cpp.o"
+  "CMakeFiles/A5.dir/src/Object.cpp.o.d"
   "CMakeFiles/A5.dir/src/Program.cpp.o"
   "CMakeFiles/A5.dir/src/Program.cpp.o.d"
   "CMakeFiles/A5.dir/src/Shape.cpp.o"

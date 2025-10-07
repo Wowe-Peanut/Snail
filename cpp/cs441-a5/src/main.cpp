@@ -184,7 +184,7 @@ static void init() {
 	// World objects
 	worldObjects = vector<shared_ptr<Object>>();
 	worldObjects.push_back(make_shared<Object>(models["cube"], vec3(-0.5, 0.5, -0.5), vec3(0), vec3(1), true));
-	worldObjects.push_back(make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE)));
+	worldObjects.push_back(make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE), false));
 	// --------------------------------------------------------------------------
 	
 
@@ -243,7 +243,9 @@ static void render() {
 	
 
 	for (auto worldObject: worldObjects) {
-		if (worldObject->physicsObject) worldObject->stepForward();
+		if (worldObject->physicsObject) {
+			worldObject->stepForward(0.004);
+		}
 		worldObject->draw(MV, bphongProg);
 	}
 

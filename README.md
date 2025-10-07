@@ -3,6 +3,7 @@
 - Currently working on constructing the cube & getting it to only draw the surface triangles
 - Currently ALL positions are still being sent to the GPU, but I'm trying to get indBuf to only contain surface triangles atm
 - Bphong replaced with distance shader until I figure out normals
+- Everything is currently using floats (at some point make physics double but opengl float)
 
 ### TODO
 
@@ -12,7 +13,7 @@
 - [X] Remove all but one object (make it a single object in the center screen)
 
 #### Mass Spring Symplectic
-- [ ] Construct 3d box with triangles WITH INNER SUPPORTS. Ideally it should only send the outermost triangles to the GPU and leave the inner ones for internal forces only.
+- [X] Construct 3d box with triangles WITH INNER SUPPORTS. Ideally it should only send the outermost triangles to the GPU and leave the inner ones for internal forces only.
 - [ ] Setup the main simulation loop WITH SYMPLECTIC EULER FIRST
 
 #### Mass Spring Implicit
