@@ -4,6 +4,7 @@
 - Currently ALL positions are still being sent to the GPU, but I'm trying to get indBuf to only contain surface triangles atm
 - Bphong replaced with distance shader until I figure out normals
 - Everything is currently using floats (at some point make physics double but opengl float)
+- For sims, maybe cube normals could be fixed by just duplicating the triangles in a base cube (copy past and only keep external ones). Then maybe maybe start separating the physics objects and the OpenGL ones so that we can more easily separate internal from external points
 
 ### TODO
 
@@ -14,7 +15,7 @@
 
 #### Mass Spring Symplectic
 - [X] Construct 3d box with triangles WITH INNER SUPPORTS. Ideally it should only send the outermost triangles to the GPU and leave the inner ones for internal forces only.
-- [ ] Setup the main simulation loop WITH SYMPLECTIC EULER FIRST
+- [X] Setup the main simulation loop WITH SYMPLECTIC EULER FIRST
 
 #### Mass Spring Implicit
 - [ ] Inertia Energy calculations
