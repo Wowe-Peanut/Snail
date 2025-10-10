@@ -12,34 +12,86 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+	
 #define EIGEN_DONT_ALIGN_STATICALLY
-#include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 using namespace std;
+using Eigen::Vector3f, Eigen::MatrixXf, Eigen::VectorXf;
 
-void Object::stepForward(float h) {
+float Object::IPValue(vector<Vector3f>& predictedPositions) {
+	return 0;
+}
+
+void Object::IPUpdateGradient(vector<Vector3f>& predictedPositions) {
+	
+}
+
+void Object::IPUpdateHessian(vector<Vector3f>& predictedPositions) {
+
+}
+
+
+// Refactoring will come later, this is just an experiemental phase so just put shit to page
+void Object::implicitStepForward(float h) {
+
+	// define tolerance
+	float tol = 0.01;
+
+	// Calculate x_tilde, the implicit predictive positions
+	// Make copy of current position, x_n
+	vector<Vector3f> predictedPositions;
+	vector<Vector3f> originalPositions;
+	for (int vidx=0; vidx<positions.size(); vidx++) {
+		predictedPositions.emplace_back(positions[vidx]);
+		predictedPositions.push_back(positions[vidx] + h*velocities[vidx]);
+	}
+
+	// Calculate inital incremental potential E(x)
+
+
+	// Calculate search direction
+
+	// while inf norm of search direction (max abs component) / timeDelta < tol:
+	//		line search for stepsize alpha
+	// 		update positions with search_direction * alpha
+	// 		update current E(x) value
+	//		calculate new search direction
+
+
+	// Using new positions and old positions, calculate new velocities (x_new - x_old) / h
+
+}
+
+void Object::symplecticStepForward(float h) {
+	Vector3f gravity = Vector3f(0, -9.81, 0);
+
 	// Currently just Symplectic Euler
 	for (int edgeIdx=0; edgeIdx<shape->edgeList.size(); edgeIdx++) {
 
 		// Calculate spring stretch and direction
 		auto edge = shape->edgeList[edgeIdx];
-		Eigen::Vector3f diff = vertexPositions[edge[0]] - vertexPositions[edge[1]];
+		Vector3f diff = positions[edge[0]] - positions[edge[1]];
 		float currentLength = diff.norm();
 		float restingLength = shape->lengths[edgeIdx];
 
 		// Calculate spring force: noramlized direction * stiffness * displacement from rest
 
-		Eigen::Vector3f springForce = -diff.normalized() * springStiffness * (currentLength - restingLength);
+		Vector3f springForce = -diff.normalized() * springStiffness * (currentLength - restingLength);
 
 		// Apply spring force to current velocities of both ends of spring
-		vertexVelocities[edge[0]] += h * springForce / pointMass;
-		vertexVelocities[edge[1]] += h * -springForce / pointMass;				
+		velocities[edge[0]] += h * (gravity + springForce) / pointMass;
+		velocities[edge[1]] += h * (gravity + -springForce) / pointMass;		
 	}
 
+	// Fix points by zeroing out velocity
+	velocities[velocities.size()-1] = Vector3f(0, 0, 0);
+	velocities[velocities.size()-3] = Vector3f(0, 0, 0);
+
+
 	// Increment positions using new velocity values
-	for (int vidx=0; vidx<vertexPositions.size(); vidx++) {
-		vertexPositions[vidx] += h * vertexVelocities[vidx];
+	for (int vidx=0; vidx<positions.size(); vidx++) {
+		positions[vidx] += h * velocities[vidx];
 	}
 
 }
@@ -54,20 +106,17 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		// to change the position data in a single location (unlike drawArrays)
 		assert(shape->procedural);
 
-		// Map each Eigen::vec3f to its respective location in the buffer
-		vertexPositions = vector<Eigen::Map<Eigen::Vector3f>>();
+		// Map each Vector3f to its respective location in the buffer
+		positions = vector<Eigen::Map<Vector3f>>();
 		for (size_t vidx=0; vidx<shape->posBuf.size()/3; vidx++) {
-			vertexPositions.emplace_back(&(shape->posBuf[3*vidx]));
+			positions.emplace_back(&(shape->posBuf[3*vidx]));
 		}
 
 
 		// Initialize gradient, hessian, and velocity list
-		hessian = Eigen::MatrixXf::Zero(vertexPositions.size(), vertexPositions.size());
-		gradient = Eigen::VectorXf::Zero(vertexPositions.size());
-		vertexVelocities = vector<Eigen::Vector3f>(vertexPositions.size(), Eigen::Vector3f::Zero(3));
-
-		// Initial stretch
-		vertexPositions[0] += Eigen::Vector3f(-0.2, -0.2, -0.2);
+		hessian = MatrixXf::Zero(positions.size(), positions.size());
+		gradient = VectorXf::Zero(positions.size());
+		velocities = vector<Vector3f>(positions.size(), Vector3f::Zero(3));
 	}
 
 	

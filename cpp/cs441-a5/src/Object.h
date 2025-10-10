@@ -1,6 +1,5 @@
 #pragma once
-#ifndef OBJECT_H
-#define OBJECT_H
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -8,7 +7,7 @@
 #include <random>
 
 #define EIGEN_DONT_ALIGN_STATICALLY
-#include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 #include <glm/glm.hpp> 
 class Shape;
@@ -30,18 +29,20 @@ class Object {
 		float s = 200;
 		
 		bool physicsObject;	
-		float springStiffness = 1000.0f;
+		float springStiffness = 10000.0f;
 		float pointMass = 500;
-		vector<Eigen::Map<Eigen::Vector3f>> vertexPositions;
-		vector<Eigen::Vector3f> vertexVelocities;
+		vector<Eigen::Map<Eigen::Vector3f>> positions;
+		vector<Eigen::Vector3f> velocities;
 		Eigen::MatrixXf hessian;
 		Eigen::VectorXf gradient;
 
+		float IPValue(std::vector<Eigen::Vector3f>& predictedPositions);
+		void IPUpdateGradient(std::vector<Eigen::Vector3f>& predictedPositions);
+		void IPUpdateHessian(std::vector<Eigen::Vector3f>& predictedPositions);
 
-		void stepForward(float h);
+		void symplecticStepForward(float h);
+		void implicitStepForward(float h);
 		Object(shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject);
 		void draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog);
 };
 
-
-#endif

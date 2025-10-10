@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SHAPE_H
-#define SHAPE_H
 
 #include <string>
 #include <vector>
@@ -53,5 +51,3 @@ public:
 	static std::shared_ptr<Shape> buildSphere(int v);
 	static std::shared_ptr<Shape> buildCube(float segmentLength, int segments);
 };
-
-#endif
