@@ -81,6 +81,8 @@
 		"__nullptr": "cpp",
 		"charconv": "cpp",
 		"format": "cpp",
-		"span": "cpp"
+		"span": "cpp",
+		"sparse": "cpp",
+		"*.inc": "cpp"
 	}
 }

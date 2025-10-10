@@ -967,6 +967,7 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/Object.cpp
  /usr/include/stdc-predef.h
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/Object.h
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.h
  /usr/include/c++/11/string
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h
@@ -1150,6 +1151,29 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/c++/11/backward/auto_ptr.h
  /usr/include/c++/11/pstl/glue_memory_defs.h
  /usr/include/c++/11/pstl/execution_defs.h
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.h
+ /usr/include/c++/11/stack
+ /usr/include/c++/11/deque
+ /usr/include/c++/11/bits/stl_deque.h
+ /usr/include/c++/11/bits/deque.tcc
+ /usr/include/c++/11/bits/stl_stack.h
+ /usr/local/lib/opengl-libs/glm-1.0.1/glm/fwd.hpp
+ /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/qualifier.hpp
+ /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/setup.hpp
+ /usr/include/c++/11/cassert
+ /usr/include/assert.h
+ /usr/include/c++/11/cstddef
+ /usr/local/lib/opengl-libs/glm-1.0.1/glm/simd/platform.h
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.h
+ /usr/include/c++/11/map
+ /usr/include/c++/11/bits/stl_tree.h
+ /usr/include/c++/11/bits/node_handle.h
+ /usr/include/c++/11/bits/stl_map.h
+ /usr/include/c++/11/bits/stl_multimap.h
+ /usr/include/c++/11/bits/erase_if.h
+ /usr/local/lib/opengl-libs/glew-2.1.0/include/GL/glew.h
+ /usr/include/GL/glu.h
+ /usr/include/GL/gl.h
  /usr/include/c++/11/cfloat
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h
  /usr/include/c++/11/random
@@ -1224,16 +1248,13 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/c++/11/bits/istream.tcc
  /usr/include/c++/11/bits/sstream.tcc
  /usr/local/lib/eigen3/Eigen/src/Core/util/MKL_support.h
- /usr/include/c++/11/cstddef
  /usr/include/c++/11/functional
  /usr/include/c++/11/bits/std_function.h
  /usr/include/c++/11/unordered_map
  /usr/include/c++/11/bits/hashtable.h
  /usr/include/c++/11/bits/hashtable_policy.h
  /usr/include/c++/11/bits/enable_special_members.h
- /usr/include/c++/11/bits/node_handle.h
  /usr/include/c++/11/bits/unordered_map.h
- /usr/include/c++/11/bits/erase_if.h
  /usr/include/c++/11/bits/stl_algo.h
  /usr/include/c++/11/bits/algorithmfwd.h
  /usr/include/c++/11/bits/stl_heap.h
@@ -1255,8 +1276,6 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/local/lib/eigen3/Eigen/src/Core/util/Constants.h
  /usr/local/lib/eigen3/Eigen/src/Core/util/Meta.h
  /usr/local/lib/eigen3/Eigen/src/Core/util/Assert.h
- /usr/include/c++/11/cassert
- /usr/include/assert.h
  /usr/local/lib/eigen3/Eigen/src/Core/util/ForwardDeclarations.h
  /usr/local/lib/eigen3/Eigen/src/Core/util/StaticAssert.h
  /usr/local/lib/eigen3/Eigen/src/Core/util/XprHelper.h
@@ -1390,10 +1409,6 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/local/lib/eigen3/Eigen/src/Core/StlIterators.h
  /usr/local/lib/eigen3/Eigen/src/Core/GlobalFunctions.h
  /usr/local/lib/eigen3/Eigen/src/Core/util/ReenableStupidWarnings.h
- /usr/include/c++/11/map
- /usr/include/c++/11/bits/stl_tree.h
- /usr/include/c++/11/bits/stl_map.h
- /usr/include/c++/11/bits/stl_multimap.h
  /usr/local/lib/eigen3/Eigen/src/SparseCore/SparseUtil.h
  /usr/local/lib/eigen3/Eigen/src/SparseCore/InternalHeaderCheck.h
  /usr/local/lib/eigen3/Eigen/src/SparseCore/SparseMatrixBase.h
@@ -1472,12 +1487,82 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/c++/11/list
  /usr/include/c++/11/bits/stl_list.h
  /usr/include/c++/11/bits/list.tcc
+ /usr/local/lib/eigen3/Eigen/Dense
+ /usr/local/lib/eigen3/Eigen/LU
+ /usr/local/lib/eigen3/Eigen/src/misc/Kernel.h
+ /usr/local/lib/eigen3/Eigen/src/misc/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/misc/Image.h
+ /usr/local/lib/eigen3/Eigen/src/LU/FullPivLU.h
+ /usr/local/lib/eigen3/Eigen/src/LU/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/LU/PartialPivLU.h
+ /usr/local/lib/eigen3/Eigen/src/LU/Determinant.h
+ /usr/local/lib/eigen3/Eigen/src/LU/InverseImpl.h
+ /usr/local/lib/eigen3/Eigen/src/LU/arch/InverseSize4.h
+ /usr/local/lib/eigen3/Eigen/src/LU/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/Cholesky
+ /usr/local/lib/eigen3/Eigen/Jacobi
+ /usr/local/lib/eigen3/Eigen/src/Jacobi/Jacobi.h
+ /usr/local/lib/eigen3/Eigen/src/Jacobi/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Cholesky/LLT.h
+ /usr/local/lib/eigen3/Eigen/src/Cholesky/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Cholesky/LDLT.h
+ /usr/local/lib/eigen3/Eigen/QR
+ /usr/local/lib/eigen3/Eigen/Householder
+ /usr/local/lib/eigen3/Eigen/src/Householder/Householder.h
+ /usr/local/lib/eigen3/Eigen/src/Householder/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Householder/HouseholderSequence.h
+ /usr/local/lib/eigen3/Eigen/src/Householder/BlockHouseholder.h
+ /usr/local/lib/eigen3/Eigen/src/QR/HouseholderQR.h
+ /usr/local/lib/eigen3/Eigen/src/QR/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/QR/FullPivHouseholderQR.h
+ /usr/local/lib/eigen3/Eigen/src/QR/ColPivHouseholderQR.h
+ /usr/local/lib/eigen3/Eigen/src/QR/CompleteOrthogonalDecomposition.h
+ /usr/local/lib/eigen3/Eigen/SVD
+ /usr/local/lib/eigen3/Eigen/src/misc/RealSvd2x2.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/UpperBidiagonalization.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/SVDBase.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/JacobiSVD.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/BDCSVD.h
+ /usr/local/lib/eigen3/Eigen/Geometry
+ /usr/local/lib/eigen3/Eigen/src/Geometry/OrthoMethods.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/EulerAngles.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Homogeneous.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/RotationBase.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Rotation2D.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Quaternion.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/AngleAxis.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Transform.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Translation.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Scaling.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Hyperplane.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/ParametrizedLine.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/AlignedBox.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Umeyama.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/arch/Geometry_SIMD.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/Eigenvalues
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/Tridiagonalization.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealSchur.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/HessenbergDecomposition.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/EigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealSchur.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/Tridiagonalization.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/HessenbergDecomposition.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/ComplexSchur.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/ComplexEigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/ComplexSchur.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealQZ.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealQZ.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/glm.hpp
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/_fixes.hpp
- /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/setup.hpp
- /usr/local/lib/opengl-libs/glm-1.0.1/glm/simd/platform.h
- /usr/local/lib/opengl-libs/glm-1.0.1/glm/fwd.hpp
- /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/qualifier.hpp
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/setup.hpp
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/vec2.hpp
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/ext/vector_bool2.hpp
@@ -1613,19 +1698,8 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/type_half.inl
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/integer.hpp
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/func_integer.inl
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.h
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.h
- /usr/include/c++/11/stack
- /usr/include/c++/11/deque
- /usr/include/c++/11/bits/stl_deque.h
- /usr/include/c++/11/bits/deque.tcc
- /usr/include/c++/11/bits/stl_stack.h
  /usr/include/c++/11/iostream
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.h
- /usr/local/lib/opengl-libs/glew-2.1.0/include/GL/glew.h
- /usr/include/GL/glu.h
- /usr/include/GL/gl.h
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.h
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/gtc/type_ptr.hpp
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/gtc/quaternion.hpp
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/gtc/constants.hpp
@@ -3031,4 +3105,78 @@ CMakeFiles/A5.dir/src/main.cpp.o
  /usr/include/c++/11/list
  /usr/include/c++/11/bits/stl_list.h
  /usr/include/c++/11/bits/list.tcc
+ /usr/local/lib/eigen3/Eigen/Dense
+ /usr/local/lib/eigen3/Eigen/LU
+ /usr/local/lib/eigen3/Eigen/src/misc/Kernel.h
+ /usr/local/lib/eigen3/Eigen/src/misc/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/misc/Image.h
+ /usr/local/lib/eigen3/Eigen/src/LU/FullPivLU.h
+ /usr/local/lib/eigen3/Eigen/src/LU/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/LU/PartialPivLU.h
+ /usr/local/lib/eigen3/Eigen/src/LU/Determinant.h
+ /usr/local/lib/eigen3/Eigen/src/LU/InverseImpl.h
+ /usr/local/lib/eigen3/Eigen/src/LU/arch/InverseSize4.h
+ /usr/local/lib/eigen3/Eigen/src/LU/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/Cholesky
+ /usr/local/lib/eigen3/Eigen/Jacobi
+ /usr/local/lib/eigen3/Eigen/src/Jacobi/Jacobi.h
+ /usr/local/lib/eigen3/Eigen/src/Jacobi/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Cholesky/LLT.h
+ /usr/local/lib/eigen3/Eigen/src/Cholesky/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Cholesky/LDLT.h
+ /usr/local/lib/eigen3/Eigen/QR
+ /usr/local/lib/eigen3/Eigen/Householder
+ /usr/local/lib/eigen3/Eigen/src/Householder/Householder.h
+ /usr/local/lib/eigen3/Eigen/src/Householder/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Householder/HouseholderSequence.h
+ /usr/local/lib/eigen3/Eigen/src/Householder/BlockHouseholder.h
+ /usr/local/lib/eigen3/Eigen/src/QR/HouseholderQR.h
+ /usr/local/lib/eigen3/Eigen/src/QR/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/QR/FullPivHouseholderQR.h
+ /usr/local/lib/eigen3/Eigen/src/QR/ColPivHouseholderQR.h
+ /usr/local/lib/eigen3/Eigen/src/QR/CompleteOrthogonalDecomposition.h
+ /usr/local/lib/eigen3/Eigen/SVD
+ /usr/local/lib/eigen3/Eigen/src/misc/RealSvd2x2.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/UpperBidiagonalization.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/SVDBase.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/JacobiSVD.h
+ /usr/local/lib/eigen3/Eigen/src/SVD/BDCSVD.h
+ /usr/local/lib/eigen3/Eigen/Geometry
+ /usr/local/lib/eigen3/Eigen/src/Geometry/OrthoMethods.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/EulerAngles.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Homogeneous.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/RotationBase.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Rotation2D.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Quaternion.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/AngleAxis.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Transform.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Translation.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Scaling.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Hyperplane.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/ParametrizedLine.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/AlignedBox.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/Umeyama.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/arch/Geometry_SIMD.h
+ /usr/local/lib/eigen3/Eigen/src/Geometry/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/Eigenvalues
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/Tridiagonalization.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealSchur.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/HessenbergDecomposition.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/InternalHeaderCheck.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/EigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealSchur.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/Tridiagonalization.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/HessenbergDecomposition.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/ComplexSchur.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/ComplexEigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/ComplexSchur.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealQZ.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealQZ.h
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
 

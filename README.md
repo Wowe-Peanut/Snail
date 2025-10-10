@@ -1,10 +1,12 @@
-#### Notes from last time:
+#### Notes:
 - Note: cmakelist currently set to debug mode (see line #2)
 - Currently working on constructing the cube & getting it to only draw the surface triangles
 - Currently ALL positions are still being sent to the GPU, but I'm trying to get indBuf to only contain surface triangles atm
 - Bphong replaced with distance shader until I figure out normals
-- Everything is currently using floats (at some point make physics double but opengl float)
 - For sims, maybe cube normals could be fixed by just duplicating the triangles in a base cube (copy past and only keep external ones). Then maybe maybe start separating the physics objects and the OpenGL ones so that we can more easily separate internal from external points
+- Having the eigen map directly to the opengl float buffer means that I can't use vector3d AND have the direct mapping... (this is something
+I'll have to look into later if I want the physics simulations to have double precision) https://gemini.google.com/app/5623b295d50fb673
+It seems you can have eigen do efficient casting and then do a block transfer (not copying one at a time). Might be slower but a good idea.
 
 ### TODO
 
@@ -16,6 +18,7 @@
 #### Mass Spring Symplectic
 - [X] Construct 3d box with triangles WITH INNER SUPPORTS. Ideally it should only send the outermost triangles to the GPU and leave the inner ones for internal forces only.
 - [X] Setup the main simulation loop WITH SYMPLECTIC EULER FIRST
+- [ ] Convert to using Eigen<float, 3, n_points> instead of a std::vector
 
 #### Mass Spring Implicit
 - [ ] Inertia Energy calculations

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Shape.h"
+#include "MatrixStack.h"
+#include "Program.h"
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -8,17 +12,16 @@
 
 #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Sparse>
+#include <Eigen/Dense>
 
 #include <glm/glm.hpp> 
-class Shape;
-class MatrixStack;
-class Program;
-
-using namespace std;
 
 class Object {
 	public:	
-		shared_ptr<Shape> shape;
+		// This is only necessary if we have fixed-size Eigen objects as members (for when you call 'new')
+		// EIGEN_MAKE_ALIGNED_OPERATOR_NEW  
+		
+		std::shared_ptr<Shape> shape;
 		glm::vec3 translation;			
 		glm::vec3 rotation;			
 		glm::vec3 scale;		
@@ -31,10 +34,12 @@ class Object {
 		bool physicsObject;	
 		float springStiffness = 10000.0f;
 		float pointMass = 500;
-		vector<Eigen::Map<Eigen::Vector3f>> positions;
-		vector<Eigen::Vector3f> velocities;
-		Eigen::MatrixXf hessian;
-		Eigen::VectorXf gradient;
+
+		// Eigen::Matrix3Xf is typedef for Eigen::Matrix<float, 3, Eigen::Dynamic>
+		Eigen::Map<Eigen::Matrix3Xf> positions;
+		Eigen::Matrix3Xf velocities;
+		int numPoints;
+		int numEdges;
 
 		float IPValue(std::vector<Eigen::Vector3f>& predictedPositions);
 		void IPUpdateGradient(std::vector<Eigen::Vector3f>& predictedPositions);
@@ -42,7 +47,7 @@ class Object {
 
 		void symplecticStepForward(float h);
 		void implicitStepForward(float h);
-		Object(shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject);
-		void draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog);
+		Object(std::shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject);
+		void draw(std::shared_ptr<MatrixStack> MV, std::shared_ptr<Program> prog);
 };
 

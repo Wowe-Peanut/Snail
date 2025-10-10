@@ -15,42 +15,47 @@
 	
 #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Sparse>
+#include <Eigen/Dense>
 
 using namespace std;
-using Eigen::Vector3f, Eigen::MatrixXf, Eigen::VectorXf;
+using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf;
 
 float Object::IPValue(vector<Vector3f>& predictedPositions) {
 	return 0;
 }
 
-void Object::IPUpdateGradient(vector<Vector3f>& predictedPositions) {
+// void Object::IPGradient(vector<Vector3f>& predictedPositions) {
 	
-}
+// }
 
-void Object::IPUpdateHessian(vector<Vector3f>& predictedPositions) {
+// void Object::IPHessian(vector<Vector3f>& predictedPositions) {
 
-}
+// }
+
+
 
 
 // Refactoring will come later, this is just an experiemental phase so just put shit to page
 void Object::implicitStepForward(float h) {
 
-	// define tolerance
-	float tol = 0.01;
+	
 
 	// Calculate x_tilde, the implicit predictive positions
 	// Make copy of current position, x_n
-	vector<Vector3f> predictedPositions;
-	vector<Vector3f> originalPositions;
-	for (int vidx=0; vidx<positions.size(); vidx++) {
-		predictedPositions.emplace_back(positions[vidx]);
-		predictedPositions.push_back(positions[vidx] + h*velocities[vidx]);
-	}
+	// vector<Vector3f> predictedPositions;
+	// vector<Vector3f> originalPositions;
+	// for (int vidx=0; vidx<positions.size(); vidx++) {
+	// 	predictedPositions.emplace_back(positions[vidx]);
+	// 	predictedPositions.push_back(positions[vidx] + h*velocities[vidx]);
+	// }
 
 	// Calculate inital incremental potential E(x)
-
+	// float currentIP = IPValue(predictedPositions);
 
 	// Calculate search direction
+
+	// define tolerance
+	// double tol = 0.01;
 
 	// while inf norm of search direction (max abs component) / timeDelta < tol:
 	//		line search for stepsize alpha
@@ -67,31 +72,30 @@ void Object::symplecticStepForward(float h) {
 	Vector3f gravity = Vector3f(0, -9.81, 0);
 
 	// Currently just Symplectic Euler
-	for (int edgeIdx=0; edgeIdx<shape->edgeList.size(); edgeIdx++) {
+	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
 
 		// Calculate spring stretch and direction
 		auto edge = shape->edgeList[edgeIdx];
-		Vector3f diff = positions[edge[0]] - positions[edge[1]];
+		Vector3f diff = positions.col(edge[0]) - positions.col(edge[1]);
 		float currentLength = diff.norm();
 		float restingLength = shape->lengths[edgeIdx];
 
 		// Calculate spring force: noramlized direction * stiffness * displacement from rest
-
 		Vector3f springForce = -diff.normalized() * springStiffness * (currentLength - restingLength);
 
 		// Apply spring force to current velocities of both ends of spring
-		velocities[edge[0]] += h * (gravity + springForce) / pointMass;
-		velocities[edge[1]] += h * (gravity + -springForce) / pointMass;		
+		velocities.col(edge[0]) += h * (gravity + springForce) / pointMass;
+		velocities.col(edge[1]) += h * (gravity + -springForce) / pointMass;		
 	}
 
 	// Fix points by zeroing out velocity
-	velocities[velocities.size()-1] = Vector3f(0, 0, 0);
-	velocities[velocities.size()-3] = Vector3f(0, 0, 0);
+	velocities.col(numPoints-1) = Vector3f(0, 0, 0);
+	velocities.col(numPoints-3) = Vector3f(0, 0, 0);
 
 
 	// Increment positions using new velocity values
-	for (int vidx=0; vidx<positions.size(); vidx++) {
-		positions[vidx] += h * velocities[vidx];
+	for (int vidx=0; vidx<numPoints; vidx++) {
+		positions.col(vidx) += h * velocities.col(vidx);
 	}
 
 }
@@ -107,16 +111,13 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		assert(shape->procedural);
 
 		// Map each Vector3f to its respective location in the buffer
-		positions = vector<Eigen::Map<Vector3f>>();
-		for (size_t vidx=0; vidx<shape->posBuf.size()/3; vidx++) {
-			positions.emplace_back(&(shape->posBuf[3*vidx]));
-		}
+		numPoints = shape->posBuf.size()/3;
+		numEdges = shape->edgeList.size();
 
-
-		// Initialize gradient, hessian, and velocity list
-		hessian = MatrixXf::Zero(positions.size(), positions.size());
-		gradient = VectorXf::Zero(positions.size());
-		velocities = vector<Vector3f>(positions.size(), Vector3f::Zero(3));
+		positions = Eigen::Map<Matrix3Xf>(shape->posBuf.data(), 3, numPoints);
+		
+		// INITIAL CONDITIONS
+		velocities = Matrix3Xf::Zero(3, numPoints);
 	}
 
 	
