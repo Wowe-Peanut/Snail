@@ -98,10 +98,13 @@ void Object::symplecticStepForward(float h) {
 		positions.col(vidx) += h * velocities.col(vidx);
 	}
 
+	// Copy Matrix3Xf positions back to shape posBuf for rendering
+	// copy(positions.data(), positions.data()+3*numPoints, shape->posBuf.data());
+
 }
 
 Object::Object(shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject): 
-shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(physicsObject) {
+shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(physicsObject), positions(shape->posBuf.data(), 3, shape->posBuf.size()/3) {
 	
 	// Preprocess physics objects to avoid excessive data copying to and from buffer
 	if (physicsObject) {
@@ -110,11 +113,8 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		// to change the position data in a single location (unlike drawArrays)
 		assert(shape->procedural);
 
-		// Map each Vector3f to its respective location in the buffer
 		numPoints = shape->posBuf.size()/3;
 		numEdges = shape->edgeList.size();
-
-		positions = Eigen::Map<Matrix3Xf>(shape->posBuf.data(), 3, numPoints);
 		
 		// INITIAL CONDITIONS
 		velocities = Matrix3Xf::Zero(3, numPoints);
