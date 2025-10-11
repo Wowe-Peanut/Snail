@@ -244,7 +244,7 @@ static void render() {
 
 	for (auto worldObject: worldObjects) {
 		if (worldObject->physicsObject) {
-			worldObject->symplecticStepForward(1/60.0f);
+			worldObject->implicitStepForward(1/60.0f, 0.01f, 10);
 		}
 		worldObject->draw(MV, bphongProg);
 	}

@@ -58,7 +58,7 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	vector<float>& texBuf = cube->texBuf;
 	vector<unsigned int>& indBuf = cube->indBuf;
 	vector<vector<unsigned int>>& edgeList = cube->edgeList;
-	vector<float>& lengths = cube->lengths;
+	vector<float>& lengthsSquared = cube->lengthsSquared;
 
 	vector<bool> isSurfaceVertex;
 
@@ -120,7 +120,7 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	for (int edgeIdx=0; edgeIdx<edgeList.size(); edgeIdx++) {
 		int vIdx1 = edgeList[edgeIdx][0];
 		int vIdx2 = edgeList[edgeIdx][1];
-		lengths.push_back(sqrt(pow(posBuf[3*vIdx1] - posBuf[3*vIdx2], 2) + pow(posBuf[3*vIdx1+1] - posBuf[3*vIdx2+1], 2) + pow(posBuf[3*vIdx1+2] - posBuf[3*vIdx2+2], 2)));
+		lengthsSquared.push_back(pow(posBuf[3*vIdx1] - posBuf[3*vIdx2], 2) + pow(posBuf[3*vIdx1+1] - posBuf[3*vIdx2+1], 2) + pow(posBuf[3*vIdx1+2] - posBuf[3*vIdx2+2], 2));
 	}
 	
 

@@ -18,12 +18,14 @@ It seems you can have eigen do efficient casting and then do a block transfer (n
 #### Mass Spring Symplectic
 - [X] Construct 3d box with triangles WITH INNER SUPPORTS. Ideally it should only send the outermost triangles to the GPU and leave the inner ones for internal forces only.
 - [X] Setup the main simulation loop WITH SYMPLECTIC EULER FIRST
-- [ ] Convert to using Eigen<float, 3, n_points> instead of a std::vector
+- [X] Convert to using Eigen<float, 3, n_points> instead of a std::vector
 
 #### Mass Spring Implicit
+- [ ] Convert to using sparse matrices for the Hessians
 - [ ] Inertia Energy calculations
 - [ ] Mass Spring Energy calculations
-- [ ] Setup time integrator
+- [ ] Setup time integrator class
+- [ ] Add variable point masses & variable spring stiffness
 
 ---
 

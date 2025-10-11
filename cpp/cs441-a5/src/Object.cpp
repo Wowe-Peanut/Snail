@@ -18,54 +18,149 @@
 #include <Eigen/Dense>
 
 using namespace std;
-using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf;
+using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf;
 
-float Object::IPValue(vector<Vector3f>& predictedPositions) {
-	return 0;
+Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
+	// Going going to start with an order 1 apprixmiation (no hessians, just gradients)
+	
+	Matrix3Xf p = -IPGradient(xtilde, h);
+	for (int vidx=0; vidx<numPoints; vidx++) {
+		if (isFixedPoint[vidx]) {
+			p.col(vidx) = Vector3f(0, 0, 0);
+		}
+	}
+
+	return p; 
 }
 
-// void Object::IPGradient(vector<Vector3f>& predictedPositions) {
-	
-// }
+// Incremental Potential Energy --------------------------------------------------------------------------------------
+float Object::IPValue(Matrix3Xf& xtilde, float h) {
+	return InertiaValue(xtilde, h) + h*h*(MassSpringValue(h));
+}
 
-// void Object::IPHessian(vector<Vector3f>& predictedPositions) {
+Matrix3Xf Object::IPGradient(Matrix3Xf& xtilde, float h) {
+	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h));
+}
+// MatrixXf Object::IPHessian(Matrix3Xf& xtilde, float h) {}
 
-// }
+
+
+
+
+
+// Inertia Energy -----------------------------------------------------------------------------------------------------
+float Object::InertiaValue(Matrix3Xf& xtilde, float h) {
+	float sum = 0;
+	for (int vidx=0; vidx<numPoints; vidx++) {
+		Vector3f diff = positions.col(vidx) - xtilde.col(vidx);
+		sum += diff.dot(diff);
+	}
+
+	return pointMass * sum / 2;
+}
+Matrix3Xf Object::InertiaGradient(Matrix3Xf& xtilde, float h) {
+	return pointMass * (positions - xtilde);
+}
+// MatrixXf Object::InertiaHessian(Matrix3Xf& xtilde, float h) {}
+
+
+
+
+
+
+// Mass Spring Energy -------------------------------------------------------------------------------------------------
+float Object::MassSpringValue(float h) {
+	float sum = 0;
+	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
+		auto edge = shape->edgeList[edgeIdx];
+		Vector3f diff = positions.col(edge[0]) - positions.col(edge[1]);
+		float l2 = shape->lengthsSquared[edgeIdx];
+
+		sum += l2 * pow(diff.dot(diff) / l2 - 1, 2);
+	}
+	return sum * springStiffness / 2;
+}
+Matrix3Xf Object::MassSpringGradient(float h) {
+	Matrix3Xf grad = MatrixXf::Zero(3, numPoints);
+
+	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
+		auto edge = shape->edgeList[edgeIdx];
+		Vector3f diff = positions.col(edge[0]) - positions.col(edge[1]);
+		float l2 = shape->lengthsSquared[edgeIdx];
+
+		Vector3f edgeGrad = 2 * springStiffness * (diff.dot(diff) / l2 - 1) * diff;
+		grad.col(edge[0]) -= edgeGrad;
+		grad.col(edge[1]) += edgeGrad;
+	}
+
+	return grad;
+}
+// MatrixXf Object::MassSpringHessian(float h) {}
+
+
+
+
+// Gravity Energy -----------------------------------------------------------------------------------------------------
+float Object::GravityValue(float h) {
+	float sum = 0;
+	for (int vidx=0; vidx<numPoints; vidx++) {
+		sum += gravity.dot(positions.col(vidx));
+	}
+
+	return -sum * pointMass;
+}
+Matrix3Xf Object::GravityGradient(float h) {
+	Matrix3Xf grad = Matrix3Xf::Zero(3, numPoints);
+	for (int vidx=0; vidx<numPoints; vidx++) {
+		grad.col(vidx) = -pointMass * gravity;
+	}
+
+	return grad;
+}
+
 
 
 
 
 // Refactoring will come later, this is just an experiemental phase so just put shit to page
-void Object::implicitStepForward(float h) {
+void Object::implicitStepForward(float h, float tol, int maxIter) {
 
-	
+	// Make copy of original positions & calculate explicit predicted positions
+	Matrix3Xf originalPositions = positions;
+	Matrix3Xf predictedPositions = positions + h*velocities;
 
-	// Calculate x_tilde, the implicit predictive positions
-	// Make copy of current position, x_n
-	// vector<Vector3f> predictedPositions;
-	// vector<Vector3f> originalPositions;
-	// for (int vidx=0; vidx<positions.size(); vidx++) {
-	// 	predictedPositions.emplace_back(positions[vidx]);
-	// 	predictedPositions.push_back(positions[vidx] + h*velocities[vidx]);
-	// }
+	// Calculate initial Incremental Potential value and search direction 
+	float IP = IPValue(predictedPositions, h);
+	Matrix3Xf searchDirection = getSearchDirection(predictedPositions, h);
 
-	// Calculate inital incremental potential E(x)
-	// float currentIP = IPValue(predictedPositions);
+	// Projected Newton Loop
+	for (int newtoniter=0; newtoniter<maxIter; newtoniter++) {
+		if (searchDirection.cwiseAbs().maxCoeff() < tol) break; // infinity norm early convergence condition
 
-	// Calculate search direction
+		// Line search to guarantees a step size that reduces the systems energy
+		float alpha = 1;
+		positions = originalPositions + alpha*searchDirection;
 
-	// define tolerance
-	// double tol = 0.01;
+		float newIP = IPValue(predictedPositions, h);
 
-	// while inf norm of search direction (max abs component) / timeDelta < tol:
-	//		line search for stepsize alpha
-	// 		update positions with search_direction * alpha
-	// 		update current E(x) value
-	//		calculate new search direction
+		for (int lineiter=0; lineiter<maxIter; lineiter++) {
+			if (newIP < IP) break;
 
+			alpha /= 2;
+			positions = originalPositions + alpha*searchDirection;
+		}
+		
+		// Update IP & calculate next search direction
+		IP = newIP;
+		searchDirection = getSearchDirection(predictedPositions, h);
+	}
 
-	// Using new positions and old positions, calculate new velocities (x_new - x_old) / h
+	// Update velocities with final positions
+	velocities = (positions - originalPositions) / h;
 
+	cerr << "Point 0:" << endl;
+	cerr << positions.col(0).transpose() << endl;
+	cerr << velocities.col(0).transpose() << endl << endl;
 }
 
 void Object::symplecticStepForward(float h) {
@@ -78,7 +173,7 @@ void Object::symplecticStepForward(float h) {
 		auto edge = shape->edgeList[edgeIdx];
 		Vector3f diff = positions.col(edge[0]) - positions.col(edge[1]);
 		float currentLength = diff.norm();
-		float restingLength = shape->lengths[edgeIdx];
+		float restingLength = sqrt(shape->lengthsSquared[edgeIdx]);
 
 		// Calculate spring force: noramlized direction * stiffness * displacement from rest
 		Vector3f springForce = -diff.normalized() * springStiffness * (currentLength - restingLength);
@@ -89,18 +184,14 @@ void Object::symplecticStepForward(float h) {
 	}
 
 	// Fix points by zeroing out velocity
-	velocities.col(numPoints-1) = Vector3f(0, 0, 0);
-	velocities.col(numPoints-3) = Vector3f(0, 0, 0);
-
-
-	// Increment positions using new velocity values
-	for (int vidx=0; vidx<numPoints; vidx++) {
-		positions.col(vidx) += h * velocities.col(vidx);
+	for (int i=0; i<numPoints; i++) {
+		if (isFixedPoint[i]) {
+			velocities.col(i) = Vector3f(0, 0, 0);
+		}
 	}
 
-	// Copy Matrix3Xf positions back to shape posBuf for rendering
-	// copy(positions.data(), positions.data()+3*numPoints, shape->posBuf.data());
-
+	// Increment positions using new velocity values
+	positions += h * velocities;
 }
 
 Object::Object(shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject): 
@@ -112,12 +203,13 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		// Ensures the shape is using drawElement with an index buffer so we only have
 		// to change the position data in a single location (unlike drawArrays)
 		assert(shape->procedural);
-
 		numPoints = shape->posBuf.size()/3;
 		numEdges = shape->edgeList.size();
 		
 		// INITIAL CONDITIONS
 		velocities = Matrix3Xf::Zero(3, numPoints);
+		isFixedPoint = vector<bool>(numPoints, false);
+		positions.col(0) -= Vector3f(0, 0.5, 0);
 	}
 
 	

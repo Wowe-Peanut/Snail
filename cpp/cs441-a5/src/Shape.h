@@ -26,7 +26,7 @@ public:
 	unsigned indBufID;
 
 	std::vector<std::vector<unsigned int>> edgeList;
-	std::vector<float> lengths; // resting distance of edges in mesh squared (for spring calculations)
+	std::vector<float> lengthsSquared; // resting distance of edges in mesh squared (for spring calculations)
 	// TODO:
 	//		For simulation purposes, posBuf is for exterior positions that form triangles that will be drawn, internalPosBuf is for inside positions to calculate internal forces
 	// 		this way, only positions being drawn are sent to GPU
