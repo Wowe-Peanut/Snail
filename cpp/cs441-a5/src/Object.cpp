@@ -18,11 +18,16 @@
 #include <Eigen/Dense>
 
 using namespace std;
-using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf;
+using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf, Eigen::Matrix3f;
+
+
 
 Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
-	// Going going to start with an order 1 apprixmiation (no hessians, just gradients)
-	
+	MatrixXf hess = IPHessian(xtilde, h);
+	Matrix3Xf grad = IPGradient(xtilde, h);
+
+
+	// Apply sticky DBCs
 	Matrix3Xf p = -IPGradient(xtilde, h);
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		if (isFixedPoint[vidx]) {
@@ -33,15 +38,33 @@ Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
 	return p; 
 }
 
-// Incremental Potential Energy --------------------------------------------------------------------------------------
-float Object::IPValue(Matrix3Xf& xtilde, float h) {
-	return InertiaValue(xtilde, h) + h*h*(MassSpringValue(h));
+void Object::makePSD(MatrixXf& hess) {
+
+	// Self-adjoint (A = A^T) matrix has real eigenvalues and orthogonal eigenvectors and our local hess
+	// is a block of (H, -H; -H, H) which is self-adjoint so we can use the SelfAdjointEigenSolver)
+	Eigen::SelfAdjointEigenSolver<MatrixXf> es(hess);
+	VectorXf evals = es.eigenvalues();
+	MatrixXf evecs = es.eigenvectors();
+
+	// Zero out negative eigenvalues to make PSD
+	for (int i=0; i<evals.size(); i++) {
+		if (evals(i) < 0) evals(i) = 0;
+	}
+
+	// Reconstruct matrix with new eigenvalues
+	hess = evecs * evals.asDiagonal() * evecs.transpose();
 }
 
-Matrix3Xf Object::IPGradient(Matrix3Xf& xtilde, float h) {
-	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h));
+// Incremental Potential Energy --------------------------------------------------------------------------------------
+float Object::IPValue(Matrix3Xf& xtilde, float h) {
+	return InertiaValue(xtilde, h) + h*h*(MassSpringValue(h) + GravityValue(h));
 }
-// MatrixXf Object::IPHessian(Matrix3Xf& xtilde, float h) {}
+Matrix3Xf Object::IPGradient(Matrix3Xf& xtilde, float h) {
+	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h) + GravityGradient(h));
+}
+MatrixXf Object::IPHessian(Matrix3Xf& xtilde, float h) {
+	return InertiaHessian(xtilde, h) + h*h*MassSpringHessian(h);
+}
 
 
 
@@ -61,7 +84,9 @@ float Object::InertiaValue(Matrix3Xf& xtilde, float h) {
 Matrix3Xf Object::InertiaGradient(Matrix3Xf& xtilde, float h) {
 	return pointMass * (positions - xtilde);
 }
-// MatrixXf Object::InertiaHessian(Matrix3Xf& xtilde, float h) {}
+MatrixXf Object::InertiaHessian(Matrix3Xf& xtilde, float h) {
+	return pointMass * MatrixXf::Identity(3*numPoints, 3*numPoints);
+}
 
 
 
@@ -95,7 +120,31 @@ Matrix3Xf Object::MassSpringGradient(float h) {
 
 	return grad;
 }
-// MatrixXf Object::MassSpringHessian(float h) {}
+MatrixXf Object::MassSpringHessian(float h) {
+	MatrixXf hess = MatrixXf::Zero(3*numPoints, 3*numPoints);
+
+	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
+		auto edge = shape->edgeList[edgeIdx];
+		Vector3f diff = positions.col(edge[0]) - positions.col(edge[1]);
+		float l2 = shape->lengthsSquared[edgeIdx];
+
+		// Hessian for the energy of single edge, 3x3 for each DIFFERENCE in the two vertices
+		Matrix3f diffHess = 2 * springStiffness * ((2 * diff * diff.transpose() + (diff.dot(diff) - l2) * Matrix3f::Identity()) / l2);
+
+		// Essemble 6x6 hessian for the 6 DOFs on the two vertices of the edge. diffHess is symmetric, so 
+		// this block matrix will also be symmetric so we can use a SelfAdjointEigenSolver to make PSD
+		MatrixXf localHess(6, 6);
+		localHess << diffHess, -diffHess, -diffHess, diffHess; // de1e1 = de2e2 = -de1e2 = -de2e1
+		makePSD(localHess);
+
+		hess.block<3, 3>(3*edge[0], 3*edge[0]) += localHess.block<3, 3>(0, 0);
+		hess.block<3, 3>(3*edge[1], 3*edge[1]) += localHess.block<3, 3>(0, 0);
+		hess.block<3, 3>(3*edge[0], 3*edge[1]) += localHess.block<3, 3>(0, 0); 
+		hess.block<3, 3>(3*edge[1], 3*edge[0]) += localHess.block<3, 3>(0, 0); 
+	}
+
+	return hess;
+}
 
 
 

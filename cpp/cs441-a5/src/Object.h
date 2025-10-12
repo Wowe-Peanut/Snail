@@ -44,6 +44,7 @@ class Object {
 		int numEdges;
 
 		Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde, float h);
+		void makePSD(Eigen::MatrixXf& hess);
 
 		float IPValue(Eigen::Matrix3Xf& xtilde, float h);
 		Eigen::Matrix3Xf IPGradient(Eigen::Matrix3Xf& xtilde, float h);
