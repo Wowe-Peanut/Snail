@@ -35,7 +35,6 @@ float constexpr FLOOR_SIZE 			= 3;
 int   constexpr MAX_LIGHTS 			= 10;
 float constexpr MAX_LIGHT_RADIUS	= 1;
 
-
 // Global Scene Variables
 GLFWwindow *window; 
 shared_ptr<Camera> camera;
@@ -55,6 +54,7 @@ int viewportWidth = DEFAULT_WIDTH;
 int viewportHeight = DEFAULT_HEIGHT;
 bool culling = true;
 bool fillTriangles = true;
+bool doPhysics = true;
 bool keyToggles[256] = {false}; 
 
 
@@ -99,6 +99,9 @@ static void char_callback(GLFWwindow *window, unsigned int key) {
 	keyToggles[key] = !keyToggles[key];
 
 	switch (key) {
+		case 'n':
+			doPhysics = true;
+			break;
 
 		// Toggle triangle culling
 		case 'c':
@@ -175,7 +178,7 @@ static void init() {
 	}
 	
 	models.insert({"sphere", Shape::buildSphere(20)});
-	models.insert({"cube", Shape::buildCube(0.5, 2)});
+	models.insert({"cube", Shape::buildCube(0.25, 4)});
 	// --------------------------------------------------------------------------
 
 
@@ -183,7 +186,7 @@ static void init() {
 
 	// World objects
 	worldObjects = vector<shared_ptr<Object>>();
-	worldObjects.push_back(make_shared<Object>(models["cube"], vec3(-0.5, 1, -0.5), vec3(0), vec3(1), true));
+	worldObjects.push_back(make_shared<Object>(models["cube"], vec3(-1, 1, -1), vec3(0), vec3(1), true));
 	worldObjects.push_back(make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE), false));
 	// --------------------------------------------------------------------------
 	
@@ -241,13 +244,17 @@ static void render() {
 	glUniform3fv(bphongProg->getUniform("lightPositions"), lightCount, value_ptr(transformedLightPositions[0]));
 	glUniform3fv(bphongProg->getUniform("lightColors"), lightCount, value_ptr(lightColors[0]));
 	
-
+	
 	for (auto worldObject: worldObjects) {
-		if (worldObject->physicsObject) {
-			worldObject->implicitStepForward(1/60.0f, 0.01f, 10);
+		if (doPhysics && worldObject->physicsObject) {
+			// worldObject->implicitStepForward(1/60.0f, 0.01f, 10);
+			worldObject->symplecticStepForward(1/60.0f);
+			
+			// doPhysics = false;
 		}
 		worldObject->draw(MV, bphongProg);
 	}
+	
 
 
 	

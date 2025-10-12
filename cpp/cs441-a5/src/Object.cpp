@@ -89,8 +89,8 @@ Matrix3Xf Object::MassSpringGradient(float h) {
 		float l2 = shape->lengthsSquared[edgeIdx];
 
 		Vector3f edgeGrad = 2 * springStiffness * (diff.dot(diff) / l2 - 1) * diff;
-		grad.col(edge[0]) -= edgeGrad;
-		grad.col(edge[1]) += edgeGrad;
+		grad.col(edge[0]) += edgeGrad;
+		grad.col(edge[1]) -= edgeGrad;
 	}
 
 	return grad;
@@ -148,6 +148,7 @@ void Object::implicitStepForward(float h, float tol, int maxIter) {
 
 			alpha /= 2;
 			positions = originalPositions + alpha*searchDirection;
+			newIP = IPValue(predictedPositions, h);
 		}
 		
 		// Update IP & calculate next search direction
@@ -157,10 +158,6 @@ void Object::implicitStepForward(float h, float tol, int maxIter) {
 
 	// Update velocities with final positions
 	velocities = (positions - originalPositions) / h;
-
-	cerr << "Point 0:" << endl;
-	cerr << positions.col(0).transpose() << endl;
-	cerr << velocities.col(0).transpose() << endl << endl;
 }
 
 void Object::symplecticStepForward(float h) {
@@ -209,7 +206,9 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		// INITIAL CONDITIONS
 		velocities = Matrix3Xf::Zero(3, numPoints);
 		isFixedPoint = vector<bool>(numPoints, false);
-		positions.col(0) -= Vector3f(0, 0.5, 0);
+		
+		isFixedPoint[numPoints-1] = true; 
+		isFixedPoint[numPoints-3] = true;
 	}
 
 	
