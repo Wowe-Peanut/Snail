@@ -26,16 +26,30 @@ Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
 	MatrixXf hess = IPHessian(xtilde, h);
 	Matrix3Xf grad = IPGradient(xtilde, h);
 
-
 	// Apply sticky DBCs
-	Matrix3Xf p = -IPGradient(xtilde, h);
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		if (isFixedPoint[vidx]) {
-			p.col(vidx) = Vector3f(0, 0, 0);
+			grad.col(vidx) = Vector3f(0, 0, 0);
+
+			for (int row=0; row<numPoints; row++) {
+				hess(vidx, row) = (int) (row == vidx);
+			}
 		}
 	}
 
-	return p; 
+
+	// LDLT is Chomsky Decomposition which is fast at solving Ax = b systems when A is SPD (symmetric positive definite)
+	Eigen::LDLT<MatrixXf> solver;
+	solver.compute(hess);
+	if (solver.info() != Eigen::Success) {
+		cerr << "Failed to decompose hessian" << endl;
+		return Matrix3Xf::Zero(3, numPoints);
+	}
+
+	// Solve for search direction, p = -H^-1 g
+	// Map is used to resize the grad matrix to a VectorXf without making a copy
+	VectorXf p = solver.solve(-Eigen::Map<VectorXf>(grad.data(), 3*numPoints));
+	return Eigen::Map<Matrix3Xf>(p.data(), 3, numPoints);
 }
 
 void Object::makePSD(MatrixXf& hess) {
@@ -257,7 +271,6 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		isFixedPoint = vector<bool>(numPoints, false);
 		
 		isFixedPoint[numPoints-1] = true; 
-		isFixedPoint[numPoints-3] = true;
 	}
 
 	

@@ -178,7 +178,7 @@ static void init() {
 	}
 	
 	models.insert({"sphere", Shape::buildSphere(20)});
-	models.insert({"cube", Shape::buildCube(0.25, 4)});
+	models.insert({"cube", Shape::buildCube(0.5, 2)});
 	// --------------------------------------------------------------------------
 
 
@@ -247,8 +247,8 @@ static void render() {
 	
 	for (auto worldObject: worldObjects) {
 		if (doPhysics && worldObject->physicsObject) {
-			// worldObject->implicitStepForward(1/60.0f, 0.01f, 10);
-			worldObject->symplecticStepForward(1/60.0f);
+			worldObject->implicitStepForward(1/60.0f, 0.01f, 10);
+			// worldObject->symplecticStepForward(1/60.0f);
 			
 			// doPhysics = false;
 		}
