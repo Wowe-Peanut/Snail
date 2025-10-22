@@ -54,7 +54,7 @@ int viewportWidth = DEFAULT_WIDTH;
 int viewportHeight = DEFAULT_HEIGHT;
 bool culling = true;
 bool fillTriangles = true;
-bool doPhysics = true;
+bool doPhysics = false;
 bool keyToggles[256] = {false}; 
 
 
@@ -100,7 +100,8 @@ static void char_callback(GLFWwindow *window, unsigned int key) {
 
 	switch (key) {
 		case 'n':
-			doPhysics = true;
+			doPhysics = !doPhysics;
+			cerr << "Physics simulation: " << (doPhysics ? "ON" : "OFF") << endl;
 			break;
 
 		// Toggle triangle culling
@@ -247,7 +248,7 @@ static void render() {
 	
 	for (auto worldObject: worldObjects) {
 		if (doPhysics && worldObject->physicsObject) {
-			worldObject->implicitStepForward(1/60.0f, 0.01f, 10);
+			worldObject->implicitStepForward(1/60.0f, 0.001f, 50);
 			// worldObject->symplecticStepForward(1/60.0f);
 			
 			// doPhysics = false;

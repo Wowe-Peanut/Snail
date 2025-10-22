@@ -49,6 +49,7 @@ Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
 	// Solve for search direction, p = -H^-1 g
 	// Map is used to resize the grad matrix to a VectorXf without making a copy
 	VectorXf p = solver.solve(-Eigen::Map<VectorXf>(grad.data(), 3*numPoints));
+
 	return Eigen::Map<Matrix3Xf>(p.data(), 3, numPoints);
 }
 
@@ -71,13 +72,13 @@ void Object::makePSD(MatrixXf& hess) {
 
 // Incremental Potential Energy --------------------------------------------------------------------------------------
 float Object::IPValue(Matrix3Xf& xtilde, float h) {
-	return InertiaValue(xtilde, h) + h*h*(MassSpringValue(h) + GravityValue(h));
+	return InertiaValue(xtilde, h) + h*h*(GravityValue(h));
 }
 Matrix3Xf Object::IPGradient(Matrix3Xf& xtilde, float h) {
-	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h) + GravityGradient(h));
+	return InertiaGradient(xtilde, h) + h*h*(GravityGradient(h));
 }
 MatrixXf Object::IPHessian(Matrix3Xf& xtilde, float h) {
-	return InertiaHessian(xtilde, h) + h*h*MassSpringHessian(h);
+	return InertiaHessian(xtilde, h);
 }
 
 
@@ -198,8 +199,6 @@ void Object::implicitStepForward(float h, float tol, int maxIter) {
 
 	// Projected Newton Loop
 	for (int newtoniter=0; newtoniter<maxIter; newtoniter++) {
-		if (searchDirection.cwiseAbs().maxCoeff() < tol) break; // infinity norm early convergence condition
-
 		// Line search to guarantees a step size that reduces the systems energy
 		float alpha = 1;
 		positions = originalPositions + alpha*searchDirection;
@@ -217,6 +216,7 @@ void Object::implicitStepForward(float h, float tol, int maxIter) {
 		// Update IP & calculate next search direction
 		IP = newIP;
 		searchDirection = getSearchDirection(predictedPositions, h);
+		if (searchDirection.cwiseAbs().maxCoeff() < tol) break; // infinity norm early convergence condition
 	}
 
 	// Update velocities with final positions
@@ -270,7 +270,9 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		velocities = Matrix3Xf::Zero(3, numPoints);
 		isFixedPoint = vector<bool>(numPoints, false);
 		
-		isFixedPoint[numPoints-1] = true; 
+		for (int vidx=0; vidx<numPoints; vidx++) {
+			velocities.col(vidx) = Vector3f(0.0002f, 1, 0.0001f);
+		}
 	}
 
 	

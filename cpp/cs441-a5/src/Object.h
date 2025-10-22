@@ -34,7 +34,7 @@ class Object {
 		bool physicsObject;	
 		float springStiffness = 100000.0f;
 		float pointMass = 250;
-		Eigen::Vector3f gravity = Eigen::Vector3f(0, -9.81, 0);
+		Eigen::Vector3f gravity = Eigen::Vector3f(0, -1, 0);
 
 		// Eigen::Matrix3Xf is typedef for Eigen::Matrix<float, 3, Eigen::Dynamic>
 		Eigen::Map<Eigen::Matrix3Xf> positions;
