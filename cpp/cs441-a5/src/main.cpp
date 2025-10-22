@@ -179,7 +179,7 @@ static void init() {
 	}
 	
 	models.insert({"sphere", Shape::buildSphere(20)});
-	models.insert({"cube", Shape::buildCube(0.5, 2)});
+	models.insert({"cube", Shape::buildCube(1, 1)});
 	// --------------------------------------------------------------------------
 
 
@@ -187,7 +187,7 @@ static void init() {
 
 	// World objects
 	worldObjects = vector<shared_ptr<Object>>();
-	worldObjects.push_back(make_shared<Object>(models["cube"], vec3(-1, 1, -1), vec3(0), vec3(1), true));
+	worldObjects.push_back(make_shared<Object>(models["cube"], vec3(0, 1, 0), vec3(0), vec3(1), true));
 	worldObjects.push_back(make_shared<Object>(models["plane"], vec3(0), vec3(0), vec3(FLOOR_SIZE, 1, FLOOR_SIZE), false));
 	// --------------------------------------------------------------------------
 	
@@ -248,10 +248,11 @@ static void render() {
 	
 	for (auto worldObject: worldObjects) {
 		if (doPhysics && worldObject->physicsObject) {
-			worldObject->implicitStepForward(1/60.0f, 0.001f, 50);
+			worldObject->implicitStepForward(1/30.0f, 0.01f, 100);
+			cout << "Object Positions: " << endl << worldObject->positions << endl;
 			// worldObject->symplecticStepForward(1/60.0f);
 			
-			// doPhysics = false;
+			doPhysics = false;
 		}
 		worldObject->draw(MV, bphongProg);
 	}

@@ -32,7 +32,7 @@ Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
 			grad.col(vidx) = Vector3f(0, 0, 0);
 
 			for (int row=0; row<numPoints; row++) {
-				hess(vidx, row) = (int) (row == vidx);
+				hess(row, vidx) = (int) (row == vidx);
 			}
 		}
 	}
@@ -72,13 +72,13 @@ void Object::makePSD(MatrixXf& hess) {
 
 // Incremental Potential Energy --------------------------------------------------------------------------------------
 float Object::IPValue(Matrix3Xf& xtilde, float h) {
-	return InertiaValue(xtilde, h) + h*h*(GravityValue(h));
+	return InertiaValue(xtilde, h) + h*h*(MassSpringValue(h));
 }
 Matrix3Xf Object::IPGradient(Matrix3Xf& xtilde, float h) {
-	return InertiaGradient(xtilde, h) + h*h*(GravityGradient(h));
+	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h));
 }
 MatrixXf Object::IPHessian(Matrix3Xf& xtilde, float h) {
-	return InertiaHessian(xtilde, h);
+	return InertiaHessian(xtilde, h) + h*h*MassSpringHessian(h);
 }
 
 
@@ -270,8 +270,13 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		velocities = Matrix3Xf::Zero(3, numPoints);
 		isFixedPoint = vector<bool>(numPoints, false);
 		
+		// Stretch dat thang
 		for (int vidx=0; vidx<numPoints; vidx++) {
-			velocities.col(vidx) = Vector3f(0.0002f, 1, 0.0001f);
+			if (positions.col(vidx)[0] == 0) {
+				positions.col(vidx) -= Vector3f(0.2, 0, 0);
+			} else {
+				positions.col(vidx) += Vector3f(0.2, 0, 0);
+			}
 		}
 	}
 
