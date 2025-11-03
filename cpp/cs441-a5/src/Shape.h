@@ -50,4 +50,5 @@ public:
 
 	static std::shared_ptr<Shape> buildSphere(int v);
 	static std::shared_ptr<Shape> buildCube(float segmentLength, int segments);
+	static std::shared_ptr<Shape> buildPlane(float segmentLength, int segments);
 };

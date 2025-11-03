@@ -179,7 +179,7 @@ static void init() {
 	}
 	
 	models.insert({"sphere", Shape::buildSphere(20)});
-	models.insert({"cube", Shape::buildCube(1, 1)});
+	models.insert({"cube", Shape::buildPlane(0.5, 2)});
 	// --------------------------------------------------------------------------
 
 
@@ -248,11 +248,11 @@ static void render() {
 	
 	for (auto worldObject: worldObjects) {
 		if (doPhysics && worldObject->physicsObject) {
-			worldObject->implicitStepForward(1/30.0f, 0.01f, 100);
-			cout << "Object Positions: " << endl << worldObject->positions << endl;
+			worldObject->implicitStepForward(1/30.0f, 0.01f, 10);
+			// cout << "Object Positions: " << endl << worldObject->positions << endl;
 			// worldObject->symplecticStepForward(1/60.0f);
 			
-			doPhysics = false;
+			// doPhysics = false;
 		}
 		worldObject->draw(MV, bphongProg);
 	}

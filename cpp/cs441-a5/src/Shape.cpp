@@ -49,6 +49,52 @@ shared_ptr<Shape> Shape::buildSphere(int v) {
 	return sphere;
 }
 
+shared_ptr<Shape> Shape::buildPlane(float segmentLength, int segments) {
+	shared_ptr<Shape> plane = make_shared<Shape>();
+
+	for (int x = 0; x <= segments; x++) {
+		for (int y = 0; y <= segments; y++) {
+			plane->posBuf.insert(plane->posBuf.end(), {x*segmentLength, 0, y*segmentLength});
+			plane->norBuf.insert(plane->norBuf.end(), {0,1,0}); // Upward normals
+			
+
+			// Construct triangles
+			unsigned int k = x + (segments+1)*y;
+
+			if (x < segments && y < segments) {
+				unsigned int k = x + (segments+1)*y;
+				plane->indBuf.insert(plane->indBuf.end(), {k, k+1, k+segments+2, k+segments+2, k+segments+1, k});
+			}
+
+			// Construct spring edges
+			if (x < segments) {	// Horizontal
+				plane->edgeList.push_back({k, k+1});
+			}
+			if (y < segments) { // Vertical
+				plane->edgeList.push_back({k, k+segments+1});
+			}
+			if (x < segments && y < segments) { // Diagonal
+				plane->edgeList.push_back({k, k+segments+2});
+				plane->edgeList.push_back({k+1, k+segments+1});
+			}
+		}
+	}
+
+
+
+	
+	// Calculate resting spring lengths squared
+	for (int edgeIdx=0; edgeIdx < plane->edgeList.size(); edgeIdx++) {
+		int vIdx1 = plane->edgeList[edgeIdx][0];
+		int vIdx2 = plane->edgeList[edgeIdx][1];
+		plane->lengthsSquared.push_back(pow(plane->posBuf[3*vIdx1] - plane->posBuf[3*vIdx2], 2) + pow(plane->posBuf[3*vIdx1+1] - plane->posBuf[3*vIdx2+1], 2) + pow(plane->posBuf[3*vIdx1+2] - plane->posBuf[3*vIdx2+2], 2));
+	}
+
+	plane->procedural = true;
+	plane->init();
+	return plane;
+}
+
 shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	shared_ptr<Shape> cube = make_shared<Shape>();
 	
@@ -60,8 +106,6 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	vector<vector<unsigned int>>& edgeList = cube->edgeList;
 	vector<float>& lengthsSquared = cube->lengthsSquared;
 
-	vector<bool> isSurfaceVertex;
-
 	// Sample uniformly in cube from (0,0,0) -> (sideLength, sideLength, sideLength)
 	for (int x = 0; x <= segments; x++) {
 		for (int y = 0; y <= segments; y++) {
@@ -69,12 +113,6 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 
 				posBuf.insert(posBuf.end(), {x*segmentLength, y*segmentLength, z*segmentLength});
 				
-				// Surface vertices
-				if (x == 0 || x == segments || y == 0 || y == segments || z == 0 || z == segments) {
-					isSurfaceVertex.push_back(true);
-				} else {
-					isSurfaceVertex.push_back(false);
-				}
 
 				norBuf.insert(norBuf.end(), {0,0,0}); // Placeholder normals
 				texBuf.insert(texBuf.end(), {0,0}); // Placeholder tex coords

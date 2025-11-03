@@ -149,7 +149,10 @@ MatrixXf Object::MassSpringHessian(float h) {
 		// Essemble 6x6 hessian for the 6 DOFs on the two vertices of the edge. diffHess is symmetric, so 
 		// this block matrix will also be symmetric so we can use a SelfAdjointEigenSolver to make PSD
 		MatrixXf localHess(6, 6);
-		localHess << diffHess, -diffHess, -diffHess, diffHess; // de1e1 = de2e2 = -de1e2 = -de2e1
+		localHess.block<3,3>(0,0) = diffHess;
+		localHess.block<3,3>(0,3) = -diffHess;
+		localHess.block<3,3>(3,0) = -diffHess;
+		localHess.block<3,3>(3,3) = diffHess;
 		makePSD(localHess);
 
 		hess.block<3, 3>(3*edge[0], 3*edge[0]) += localHess.block<3, 3>(0, 0);
@@ -224,7 +227,7 @@ void Object::implicitStepForward(float h, float tol, int maxIter) {
 }
 
 void Object::symplecticStepForward(float h) {
-	Vector3f gravity = Vector3f(0, -9.81, 0);
+	Vector3f gravity = Vector3f(0, 0, 0);
 
 	// Currently just Symplectic Euler
 	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
@@ -273,9 +276,9 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		// Stretch dat thang
 		for (int vidx=0; vidx<numPoints; vidx++) {
 			if (positions.col(vidx)[0] == 0) {
-				positions.col(vidx) -= Vector3f(0.2, 0, 0);
-			} else {
-				positions.col(vidx) += Vector3f(0.2, 0, 0);
+				positions.col(vidx) -= Vector3f(0.1, 0, 0);
+			} else if (positions.col(vidx)[0] == 1) {
+				positions.col(vidx) += Vector3f(0.1, 0, 0);
 			}
 		}
 	}
