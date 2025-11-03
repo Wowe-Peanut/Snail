@@ -30,10 +30,14 @@ Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		if (isFixedPoint[vidx]) {
 			grad.col(vidx) = Vector3f(0, 0, 0);
+			
+			// What's below is meant to zero out the hessian for fixed points but since we solve against the gradient, it's zero anyways...
+			// I think it's included in the TB to reduce the number of non-zero points in the CVR matrix since they use sparse solvers...
 
-			for (int row=0; row<numPoints; row++) {
-				hess(row, vidx) = (int) (row == vidx);
-			}
+			// for (int row=0; row<numPoints*3; row++) {
+			// 	hess(row, vidx) = hess(row, vidx+1) = hess(row, vidx+2) = (int) (row == vidx);
+			// 	hess(vidx, row) = hess(vidx+1, row) = hess(vidx+2, row) = (int) (row == vidx);
+			// }
 		}
 	}
 
@@ -72,13 +76,13 @@ void Object::makePSD(MatrixXf& hess) {
 
 // Incremental Potential Energy --------------------------------------------------------------------------------------
 float Object::IPValue(Matrix3Xf& xtilde, float h) {
-	return InertiaValue(xtilde, h) + h*h*(MassSpringValue(h));
+	return InertiaValue(xtilde, h) + h*h*(MassSpringValue(h) + GravityValue(h));
 }
 Matrix3Xf Object::IPGradient(Matrix3Xf& xtilde, float h) {
-	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h));
+	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h) + GravityGradient(h));
 }
 MatrixXf Object::IPHessian(Matrix3Xf& xtilde, float h) {
-	return InertiaHessian(xtilde, h) + h*h*MassSpringHessian(h);
+	return InertiaHessian(xtilde, h) + h*h*(MassSpringHessian(h));
 }
 
 
@@ -272,15 +276,9 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		// INITIAL CONDITIONS
 		velocities = Matrix3Xf::Zero(3, numPoints);
 		isFixedPoint = vector<bool>(numPoints, false);
-		
-		// Stretch dat thang
-		for (int vidx=0; vidx<numPoints; vidx++) {
-			if (positions.col(vidx)[0] == 0) {
-				positions.col(vidx) -= Vector3f(0.1, 0, 0);
-			} else if (positions.col(vidx)[0] == 1) {
-				positions.col(vidx) += Vector3f(0.1, 0, 0);
-			}
-		}
+
+		isFixedPoint[numPoints-1] = true;
+		isFixedPoint[numPoints-3] = true;
 	}
 
 	
