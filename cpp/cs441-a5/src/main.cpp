@@ -179,7 +179,7 @@ static void init() {
 	}
 	
 	models.insert({"sphere", Shape::buildSphere(20)});
-	models.insert({"cube", Shape::buildPlane(1, 1)});
+	models.insert({"cube", Shape::buildCube(0.5, 2)});
 	// --------------------------------------------------------------------------
 
 

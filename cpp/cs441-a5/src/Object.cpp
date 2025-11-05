@@ -31,15 +31,15 @@ Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
 		if (isFixedPoint[vidx]) {
 			grad.col(vidx) = Vector3f(0, 0, 0);
 
-			hess.row(vidx).setZero();
-			hess.row(vidx + 1).setZero();
-			hess.row(vidx + 2).setZero();
+			// hess.row(vidx).setZero();
+			// hess.row(vidx + 1).setZero();
+			// hess.row(vidx + 2).setZero();
 
-			hess.col(vidx).setZero();
-			hess.col(vidx + 1).setZero();
-			hess.col(vidx + 2).setZero();
+			// hess.col(vidx).setZero();
+			// hess.col(vidx + 1).setZero();
+			// hess.col(vidx + 2).setZero();
 
-			hess.block<3, 3>(vidx, vidx).setIdentity();
+			// hess.block<3, 3>(vidx, vidx).setIdentity();
 		}
 	}
 
@@ -150,7 +150,7 @@ MatrixXf Object::MassSpringHessian(float h) {
 		float l2 = shape->lengthsSquared[edgeIdx];
 
 		// Hessian for the energy of single edge, 3x3 for each DIFFERENCE in the two vertices
-		Matrix3f diffHess = 2 * springStiffness * ((2 * diff * diff.transpose() + (diff.dot(diff) - l2) * Matrix3f::Identity()) / l2);
+		Matrix3f diffHess = 2 * springStiffness / l2 * (2 * diff * diff.transpose() + (diff.dot(diff) - l2) * Matrix3f::Identity());
 
 		// Essemble 6x6 hessian for the 6 DOFs on the two vertices of the edge. diffHess is symmetric, so 
 		// this block matrix will also be symmetric so we can use a SelfAdjointEigenSolver to make PSD
@@ -162,9 +162,9 @@ MatrixXf Object::MassSpringHessian(float h) {
 		makePSD(localHess);
 
 		hess.block<3, 3>(3*edge[0], 3*edge[0]) += localHess.block<3, 3>(0, 0);
+		hess.block<3, 3>(3*edge[0], 3*edge[1]) += localHess.block<3, 3>(3, 0); 
+		hess.block<3, 3>(3*edge[1], 3*edge[0]) += localHess.block<3, 3>(0, 3); 
 		hess.block<3, 3>(3*edge[1], 3*edge[1]) += localHess.block<3, 3>(3, 3);
-		hess.block<3, 3>(3*edge[0], 3*edge[1]) += localHess.block<3, 3>(0, 3); 
-		hess.block<3, 3>(3*edge[1], 3*edge[0]) += localHess.block<3, 3>(3, 0); 
 	}
 
 	return hess;
@@ -280,7 +280,7 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		isFixedPoint = vector<bool>(numPoints, false);
 
 		isFixedPoint[numPoints-1] = true;
-		// isFixedPoint[numPoints-2] = true;
+		isFixedPoint[numPoints-3] = true;
 	}
 
 	
