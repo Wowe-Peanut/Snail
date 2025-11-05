@@ -30,38 +30,32 @@ Matrix3Xf Object::getSearchDirection(Matrix3Xf& xtilde, float h) {
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		if (isFixedPoint[vidx]) {
 			grad.col(vidx) = Vector3f(0, 0, 0);
-			
-			// What's below is meant to zero out the hessian for fixed points but since we solve against the gradient, it's zero anyways...
-			// I think it's included in the TB to reduce the number of non-zero points in the CVR matrix since they use sparse solvers...
 
-			// for (int row=0; row<numPoints*3; row++) {
-			// 	hess.row(vidx).setZero();
-			// 	hess.row(vidx + 1).setZero();
-			// 	hess.row(vidx + 2).setZero();
+			hess.row(vidx).setZero();
+			hess.row(vidx + 1).setZero();
+			hess.row(vidx + 2).setZero();
 
-			// 	hess.col(vidx).setZero();
-			// 	hess.col(vidx + 1).setZero();
-			// 	hess.col(vidx + 2).setZero();
+			hess.col(vidx).setZero();
+			hess.col(vidx + 1).setZero();
+			hess.col(vidx + 2).setZero();
 
-			// 	hess.block<3, 3>(vidx, vidx).setIdentity();
-			// }
+			hess.block<3, 3>(vidx, vidx).setIdentity();
 		}
 	}
 
 
 	// LDLT is Chomsky Decomposition which is fast at solving Ax = b systems when A is SPD (symmetric positive definite)
-	// Eigen::LDLT<MatrixXf> solver;
-	// solver.compute(hess);
-	// if (solver.info() != Eigen::Success) {
-	// 	cerr << "Failed to decompose hessian" << endl;
-	// 	return Matrix3Xf::Zero(3, numPoints);
-	// }
+	Eigen::LDLT<MatrixXf> solver;
+	solver.compute(hess);
+	if (solver.info() != Eigen::Success) {
+		cerr << "Failed to decompose hessian" << endl;
+		return Matrix3Xf::Zero(3, numPoints);
+	}
 
 	// Solve for search direction, p = -H^-1 g
 	// Map is used to resize the grad matrix to a VectorXf without making a copy
-	// VectorXf p = solver.solve(-Eigen::Map<VectorXf>(grad.data(), 3*numPoints));
+	VectorXf p = solver.solve(-Eigen::Map<VectorXf>(grad.data(), 3*numPoints));
 
-	VectorXf p = hess.lu().solve(-Eigen::Map<VectorXf>(grad.data(), 3*numPoints));
 	return Eigen::Map<Matrix3Xf>(p.data(), 3, numPoints);
 }
 
@@ -286,7 +280,7 @@ shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(phy
 		isFixedPoint = vector<bool>(numPoints, false);
 
 		isFixedPoint[numPoints-1] = true;
-		isFixedPoint[numPoints-2] = true;
+		// isFixedPoint[numPoints-2] = true;
 	}
 
 	
