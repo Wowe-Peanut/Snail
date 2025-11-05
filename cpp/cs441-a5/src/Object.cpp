@@ -162,9 +162,9 @@ MatrixXf Object::MassSpringHessian(float h) {
 		makePSD(localHess);
 
 		hess.block<3, 3>(3*edge[0], 3*edge[0]) += localHess.block<3, 3>(0, 0);
-		hess.block<3, 3>(3*edge[1], 3*edge[1]) += localHess.block<3, 3>(0, 0);
-		hess.block<3, 3>(3*edge[0], 3*edge[1]) += localHess.block<3, 3>(0, 0); 
-		hess.block<3, 3>(3*edge[1], 3*edge[0]) += localHess.block<3, 3>(0, 0); 
+		hess.block<3, 3>(3*edge[1], 3*edge[1]) += localHess.block<3, 3>(3, 3);
+		hess.block<3, 3>(3*edge[0], 3*edge[1]) += localHess.block<3, 3>(0, 3); 
+		hess.block<3, 3>(3*edge[1], 3*edge[0]) += localHess.block<3, 3>(3, 0); 
 	}
 
 	return hess;
