@@ -47,6 +47,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeTestCompilerCommon.cmake"
+  "/usr/share/cmake-3.28/Modules/CMakeUnixFindMake.cmake"
   "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake"
   "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake"
   "/usr/share/cmake-3.28/Modules/CheckIncludeFile.cmake"
@@ -144,18 +145,18 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/3.28.3/CMakeCCompiler.cmake"
   "CMakeFiles/3.28.3/CMakeCXXCompiler.cmake"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
-  "/usr/local/lib/glfw-3.4/debug/src/glfw3Config.cmake"
-  "/usr/local/lib/glfw-3.4/debug/src/glfw3ConfigVersion.cmake"
-  "/usr/local/lib/glfw-3.4/debug/cmake_uninstall.cmake"
-  "/usr/local/lib/glfw-3.4/debug/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "/usr/local/lib/glfw-3.4/debug/src/glfw3.pc"
-  "/usr/local/lib/glfw-3.4/debug/src/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "/usr/local/lib/glfw-3.4/release/src/glfw3Config.cmake"
+  "/usr/local/lib/glfw-3.4/release/src/glfw3ConfigVersion.cmake"
+  "/usr/local/lib/glfw-3.4/release/cmake_uninstall.cmake"
+  "/usr/local/lib/glfw-3.4/release/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "/usr/local/lib/glfw-3.4/release/src/glfw3.pc"
+  "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/A5.dir/DependInfo.cmake"
-  "/usr/local/lib/glfw-3.4/debug/CMakeFiles/uninstall.dir/DependInfo.cmake"
-  "/usr/local/lib/glfw-3.4/debug/src/CMakeFiles/glfw.dir/DependInfo.cmake"
-  "/usr/local/lib/glfw-3.4/debug/src/CMakeFiles/update_mappings.dir/DependInfo.cmake"
+  "/usr/local/lib/glfw-3.4/release/CMakeFiles/uninstall.dir/DependInfo.cmake"
+  "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/DependInfo.cmake"
+  "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/update_mappings.dir/DependInfo.cmake"
   )

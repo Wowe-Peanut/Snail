@@ -184,13 +184,20 @@ CMakeFiles/A5.dir/src/Camera.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/C
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
   /usr/include/x86_64-linux-gnu/bits/sched.h \
+  /usr/include/x86_64-linux-gnu/bits/select-decl.h \
   /usr/include/x86_64-linux-gnu/bits/select.h \
+  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/x86_64-linux-gnu/bits/setjmp.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
@@ -229,6 +236,8 @@ CMakeFiles/A5.dir/src/Camera.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/C
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
@@ -544,13 +553,22 @@ CMakeFiles/A5.dir/src/GLSL.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLS
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
   /usr/include/x86_64-linux-gnu/bits/sched.h \
+  /usr/include/x86_64-linux-gnu/bits/select-decl.h \
   /usr/include/x86_64-linux-gnu/bits/select.h \
+  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/x86_64-linux-gnu/bits/setjmp.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
+  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
@@ -588,6 +606,8 @@ CMakeFiles/A5.dir/src/GLSL.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLS
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h \
@@ -753,13 +773,20 @@ CMakeFiles/A5.dir/src/MatrixStack.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
   /usr/include/x86_64-linux-gnu/bits/sched.h \
+  /usr/include/x86_64-linux-gnu/bits/select-decl.h \
   /usr/include/x86_64-linux-gnu/bits/select.h \
+  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/x86_64-linux-gnu/bits/setjmp.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
@@ -797,6 +824,8 @@ CMakeFiles/A5.dir/src/MatrixStack.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h \
@@ -1201,13 +1230,22 @@ CMakeFiles/A5.dir/src/Object.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/O
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
   /usr/include/x86_64-linux-gnu/bits/sched.h \
+  /usr/include/x86_64-linux-gnu/bits/select-decl.h \
   /usr/include/x86_64-linux-gnu/bits/select.h \
+  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/x86_64-linux-gnu/bits/setjmp.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
+  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
@@ -1246,6 +1284,8 @@ CMakeFiles/A5.dir/src/Object.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/O
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
@@ -1903,13 +1943,20 @@ CMakeFiles/A5.dir/src/Program.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
   /usr/include/x86_64-linux-gnu/bits/sched.h \
+  /usr/include/x86_64-linux-gnu/bits/select-decl.h \
   /usr/include/x86_64-linux-gnu/bits/select.h \
+  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/x86_64-linux-gnu/bits/setjmp.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
@@ -1947,6 +1994,8 @@ CMakeFiles/A5.dir/src/Program.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h \
@@ -2182,13 +2231,22 @@ CMakeFiles/A5.dir/src/Shape.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/Sh
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
   /usr/include/x86_64-linux-gnu/bits/sched.h \
+  /usr/include/x86_64-linux-gnu/bits/select-decl.h \
   /usr/include/x86_64-linux-gnu/bits/select.h \
+  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/x86_64-linux-gnu/bits/setjmp.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
+  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
@@ -2227,6 +2285,8 @@ CMakeFiles/A5.dir/src/Shape.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/Sh
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
@@ -2629,13 +2689,22 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
   /usr/include/x86_64-linux-gnu/bits/sched.h \
+  /usr/include/x86_64-linux-gnu/bits/select-decl.h \
   /usr/include/x86_64-linux-gnu/bits/select.h \
+  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/x86_64-linux-gnu/bits/setjmp.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
+  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
@@ -2674,6 +2743,8 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
@@ -3380,8 +3451,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/eigen3/Eigen/src/Geometry/EulerAngles.h:
 
-/usr/local/lib/eigen3/Eigen/src/Geometry/AlignedBox.h:
-
 /usr/local/lib/eigen3/Eigen/src/Eigenvalues/SelfAdjointEigenSolver.h:
 
 /usr/local/lib/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h:
@@ -3494,15 +3563,21 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/eigen3/Eigen/src/Core/Replicate.h:
 
-/usr/local/lib/glm-1.0.1/glm/detail/func_integer.inl:
+/usr/local/lib/eigen3/Eigen/src/Core/arch/Default/BFloat16.h:
 
-/usr/include/c++/13/array:
+/usr/local/lib/eigen3/Eigen/src/Core/Ref.h:
 
-/usr/local/lib/eigen3/Eigen/src/Householder/Householder.h:
+/usr/local/lib/eigen3/Eigen/src/Core/RealView.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h:
+/usr/local/lib/eigen3/Eigen/src/IterativeLinearSolvers/IncompleteCholesky.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+/usr/local/lib/eigen3/Eigen/src/Core/Random.h:
+
+/usr/local/lib/eigen3/Eigen/src/Core/Product.h:
+
+/usr/local/lib/eigen3/Eigen/src/Core/PlainObjectBase.h:
+
+/usr/local/lib/eigen3/Eigen/src/Core/PermutationMatrix.h:
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
@@ -3513,8 +3588,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/include/c++/13/bits/node_handle.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h:
 
 /usr/include/c++/13/bits/char_traits.h:
 
@@ -3530,10 +3603,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h:
-
-/usr/local/lib/glm-1.0.1/glm/ext/matrix_float4x2_precision.hpp:
-
 /usr/local/lib/glm-1.0.1/glm/ext/matrix_clip_space.inl:
 
 /usr/local/lib/eigen3/Eigen/src/SparseCore/SparseUtil.h:
@@ -3544,10 +3613,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/x86_64-linux-gnu/bits/uio_lim.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h:
-
-/usr/include/c++/13/tr1/modified_bessel_func.tcc:
-
 /usr/include/x86_64-linux-gnu/bits/typesizes.h:
 
 /usr/local/lib/eigen3/Eigen/IterativeLinearSolvers:
@@ -3557,10 +3622,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/local/lib/eigen3/Eigen/src/Core/functors/AssignmentFunctors.h:
 
 /usr/include/c++/13/ext/atomicity.h:
-
-/usr/include/c++/13/numeric:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
 
 /usr/local/lib/eigen3/Eigen/src/SparseCore/SparseVector.h:
 
@@ -3596,6 +3657,20 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/x86_64-linux-gnu/bits/select.h:
 
+/usr/local/lib/eigen3/Eigen/src/Geometry/AlignedBox.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:
+
+/usr/local/lib/glm-1.0.1/glm/integer.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/stdio2-decl.h:
+
+/usr/local/lib/eigen3/Eigen/src/Core/BandMatrix.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdio.h:
+
+/usr/local/lib/glm-1.0.1/glm/detail/type_vec4.hpp:
+
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
 /usr/include/c++/13/cwchar:
@@ -3607,6 +3682,10 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/local/lib/eigen3/Eigen/src/Core/util/Constants.h:
 
 /usr/local/lib/glm-1.0.1/glm/detail/type_mat2x3.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/select2.h:
+
+/usr/local/lib/glm-1.0.1/glm/mat4x4.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/sched.h:
 
@@ -3686,11 +3765,13 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/linux/limits.h:
 
+/usr/local/lib/glm-1.0.1/glm/detail/type_mat3x4.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
+
 /usr/local/lib/glm-1.0.1/glm/ext/matrix_projection.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/float.h:
-
-/usr/local/lib/glm-1.0.1/glm/detail/type_mat4x4.inl:
 
 /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
 
@@ -3710,9 +3791,11 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/glm-1.0.1/glm/ext/matrix_clip_space.hpp:
 
-/usr/local/lib/glm-1.0.1/glm/detail/_fixes.hpp:
-
 /usr/include/c++/13/bits/exception_defines.h:
+
+/usr/include/c++/13/tr1/modified_bessel_func.tcc:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h:
 
 /usr/include/c++/13/tr1/legendre_function.tcc:
 
@@ -3729,12 +3812,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/local/lib/eigen3/Eigen/SparseLU:
 
 /usr/local/lib/glm-1.0.1/glm/detail/type_vec3.hpp:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/cpu_defines.h:
-
-/usr/local/lib/glm-1.0.1/glm/ext/vector_uint2.hpp:
 
 /usr/local/lib/glm-1.0.1/glm/detail/_vectorize.hpp:
 
@@ -3798,10 +3875,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/eigen3/Eigen/src/Core/Dot.h:
 
-/usr/local/lib/glm-1.0.1/glm/ext/matrix_float3x4_precision.hpp:
-
-/usr/local/lib/glm-1.0.1/glm/detail/func_packing.inl:
-
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
 /usr/local/lib/glm-1.0.1/glm/ext/matrix_double4x2.hpp:
@@ -3852,6 +3925,12 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/c++/13/bits/istream.tcc:
 
+/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+
+/usr/local/lib/eigen3/Eigen/src/Householder/Householder.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h:
+
 /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.h:
 
 /usr/local/lib/glm-1.0.1/glm/gtc/epsilon.inl:
@@ -3897,8 +3976,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/include/c++/13/bits/ostream.tcc:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/c++locale.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/BandMatrix.h:
 
 /usr/include/c++/13/bits/locale_facets.tcc:
 
@@ -4068,13 +4145,9 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
 
+/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
+
 /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
-
-/usr/include/linux/errno.h:
-
-/usr/include/c++/13/bits/std_abs.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/PermutationMatrix.h:
 
 /usr/local/lib/eigen3/Eigen/src/Core/util/Macros.h:
 
@@ -4154,12 +4227,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h:
 
-/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
-
-/usr/local/lib/glm-1.0.1/glm/detail/type_mat3x4.hpp:
-
-/usr/local/lib/glm-1.0.1/glm/mat4x4.hpp:
-
 /usr/include/c++/13/tr1/riemann_zeta.tcc:
 
 /usr/include/c++/13/ostream:
@@ -4176,6 +4243,10 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/c++/13/cstdint:
 
+/usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h:
+
+/usr/include/x86_64-linux-gnu/bits/select-decl.h:
+
 /usr/include/c++/13/debug/assertions.h:
 
 /usr/local/lib/glm-1.0.1/glm/gtc/constants.inl:
@@ -4183,6 +4254,20 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/include/c++/13/ext/concurrence.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/c++/13/bits/std_abs.h:
+
+/usr/include/x86_64-linux-gnu/bits/wchar2-decl.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs.h:
+
+/usr/include/c++/13/bits/erase_if.h:
+
+/usr/include/c++/13/debug/debug.h:
+
+/usr/include/c++/13/bits/stl_list.h:
 
 /usr/local/lib/eigen3/Eigen/src/SparseCore/SparseDiagonalProduct.h:
 
@@ -4208,10 +4293,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/glm-1.0.1/glm/ext/vector_bool4.hpp:
 
-/usr/local/lib/eigen3/Eigen/src/IterativeLinearSolvers/IncompleteCholesky.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/Random.h:
-
 /usr/include/c++/13/bits/ostream_insert.h:
 
 /usr/include/c++/13/system_error:
@@ -4233,6 +4314,32 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/include/c++/13/cctype:
 
 /usr/include/c++/13/tr1/gamma.tcc:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/cpu_defines.h:
+
+/usr/local/lib/glm-1.0.1/glm/ext/vector_uint2.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
+
+/usr/include/c++/13/numeric:
+
+/usr/local/lib/glm-1.0.1/glm/detail/type_mat4x4.inl:
+
+/usr/local/lib/glm-1.0.1/glm/ext/matrix_float4x2_precision.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h:
+
+/usr/local/lib/glm-1.0.1/glm/detail/_fixes.hpp:
+
+/usr/local/lib/glm-1.0.1/glm/detail/func_integer.inl:
+
+/usr/include/c++/13/array:
+
+/usr/local/lib/glm-1.0.1/glm/ext/matrix_float3x4_precision.hpp:
+
+/usr/local/lib/glm-1.0.1/glm/detail/func_packing.inl:
 
 /usr/local/lib/glm-1.0.1/glm/detail/setup.hpp:
 
@@ -4332,8 +4439,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/glm-1.0.1/glm/ext/matrix_float2x2.hpp:
 
-/usr/local/lib/eigen3/Eigen/src/Core/Product.h:
-
 /usr/local/lib/eigen3/Eigen/src/Core/SelfCwiseBinaryOp.h:
 
 /usr/local/lib/glm-1.0.1/glm/ext/matrix_float2x3.hpp:
@@ -4389,6 +4494,14 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/local/lib/glm-1.0.1/glm/ext/vector_float3.hpp:
 
 /usr/local/lib/glm-1.0.1/glm/ext/vector_float3_precision.hpp:
+
+/usr/local/lib/eigen3/Eigen/src/Core/PartialReduxEvaluator.h:
+
+/usr/include/c++/13/cstdlib:
+
+/usr/include/limits.h:
+
+/usr/local/lib/eigen3/Eigen/src/Core/ConditionEstimator.h:
 
 /usr/local/lib/glm-1.0.1/glm/ext/vector_float4.hpp:
 
@@ -4466,6 +4579,12 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/glm-1.0.1/glm/mat3x4.hpp:
 
+/usr/local/lib/eigen3/Eigen/src/misc/RealSvd2x2.h:
+
+/usr/local/lib/eigen3/Eigen/src/Core/Redux.h:
+
+/usr/local/lib/glm-1.0.1/glm/mat4x3.hpp:
+
 /usr/include/c++/13/map:
 
 /usr/local/lib/glm-1.0.1/glm/matrix.hpp:
@@ -4488,16 +4607,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/glm-1.0.1/glm/detail/qualifier.hpp:
 
-/usr/include/c++/13/cstdlib:
-
-/usr/include/limits.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/ConditionEstimator.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/PartialReduxEvaluator.h:
-
-/usr/local/lib/glm-1.0.1/glm/detail/type_vec4.hpp:
-
 /usr/local/lib/glm-1.0.1/glm/ext/matrix_float4x4.hpp:
 
 /home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.h:
@@ -4506,13 +4615,13 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/local/lib/eigen3/Eigen/Dense:
 
+/usr/include/x86_64-linux-gnu/bits/wchar2.h:
+
 /usr/local/lib/glm-1.0.1/glm/ext/matrix_transform.inl:
 
 /usr/local/lib/glm-1.0.1/glm/gtc/matrix_transform.hpp:
 
 /usr/local/lib/glm-1.0.1/glm/gtc/matrix_transform.inl:
-
-/usr/local/lib/glm-1.0.1/glm/integer.hpp:
 
 /usr/local/lib/glm-1.0.1/glm/trigonometric.hpp:
 
@@ -4534,7 +4643,11 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/strings.h:
 
+/usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
+
 /usr/include/c++/13/bits/stl_bvector.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib.h:
 
 /usr/include/c++/13/bits/stl_vector.h:
 
@@ -4565,16 +4678,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/include/c++/13/tr1/bessel_function.tcc:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/mmintrin.h:
-
-/usr/include/x86_64-linux-gnu/gnu/stubs.h:
-
-/usr/include/c++/13/bits/erase_if.h:
-
-/usr/include/c++/13/debug/debug.h:
-
-/usr/include/c++/13/bits/stl_list.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/PlainObjectBase.h:
 
 /usr/include/c++/13/bits/hashtable_policy.h:
 
@@ -4649,6 +4752,12 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/local/lib/eigen3/Eigen/src/OrderingMethods/Eigen_Colamd.h:
 
 /usr/local/lib/eigen3/Eigen/src/Cholesky/LLT.h:
+
+/usr/local/lib/eigen3/Eigen/src/SparseCholesky/InternalHeaderCheck.h:
+
+/usr/local/lib/eigen3/Eigen/src/Core/RandomImpl.h:
+
+/usr/local/lib/eigen3/Eigen/src/plugins/ArrayCwiseBinaryOps.inc:
 
 /usr/local/lib/eigen3/Eigen/src/plugins/ArrayCwiseUnaryOps.inc:
 
@@ -4730,6 +4839,8 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 
 /usr/include/c++/13/initializer_list:
 
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:
+
 /usr/local/lib/eigen3/Eigen/src/Core/Fuzzy.h:
 
 /usr/local/lib/eigen3/Eigen/src/Core/MathFunctionsImpl.h:
@@ -4743,21 +4854,3 @@ CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/mai
 /usr/local/lib/eigen3/Eigen/src/Core/MatrixBase.h:
 
 /usr/local/lib/eigen3/Eigen/src/Core/NestByValue.h:
-
-/usr/local/lib/eigen3/Eigen/src/SparseCholesky/InternalHeaderCheck.h:
-
-/usr/local/lib/eigen3/Eigen/src/plugins/ArrayCwiseBinaryOps.inc:
-
-/usr/local/lib/eigen3/Eigen/src/Core/RandomImpl.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/RealView.h:
-
-/usr/local/lib/eigen3/Eigen/src/misc/RealSvd2x2.h:
-
-/usr/local/lib/glm-1.0.1/glm/mat4x3.hpp:
-
-/usr/local/lib/eigen3/Eigen/src/Core/Redux.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/arch/Default/BFloat16.h:
-
-/usr/local/lib/eigen3/Eigen/src/Core/Ref.h:

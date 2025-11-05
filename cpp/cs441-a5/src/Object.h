@@ -32,8 +32,8 @@ class Object {
 		float s = 200;
 		
 		bool physicsObject;	
-		float springStiffness = 2000.0f;
-		float pointMass = 250;
+		float springStiffness = 3500.0f;
+		float pointMass = 200;
 		Eigen::Vector3f gravity = Eigen::Vector3f(0, -9.81, 0);
 
 		// Eigen::Matrix3Xf is typedef for Eigen::Matrix<float, 3, Eigen::Dynamic>
