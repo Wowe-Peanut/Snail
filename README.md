@@ -1,7 +1,23 @@
 # TODO
 
-- [] QOL: Make initial conditions & simulation parameters setable from input file
-  - That way I don't have to recompile anytime I want to fuck around with the sim
+- Refactoring:
+  - [] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
+  - [] Applying Google C++ Stylesheet
+
+- QOL: 
+  - [] Make initial conditions & simulation parameters setable from input file
+  - [] Add reset animation button
+  - [] Add single step button 
+  - [] Zoom in and out with camera
+
+- IPC:
+  - [] Fixed boundary condition
+  - [] Moving boundary condition
+  - [] Mesh on Mesh contact
+  - [] Inversion free
+  - [] Friction energy
+
+- [] Investigate sticky DBC Hessian transformation more (whether it's actually necessary since I can't get it to work)
 
 - [] Improve Cube Construction:
   - Should only draw the minimum number of external triangles and not draw any internal supports (might make it hard to tell if structure inverted but idgaf rn)
@@ -32,9 +48,6 @@
   - Hessian is nearly always sparse so storing in CVR (or similar) format and using a sparse eigen solver 
   - Eigen has a sparse matrix object which I need to investigate
 
-- [] IPC Contact Energy
-
-- [] Friction Energy
 
 # Notes:
 - ALWAYS CHECK CMAKELIST FOR DEBUG/RELEASE
