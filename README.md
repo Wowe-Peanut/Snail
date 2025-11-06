@@ -1,8 +1,15 @@
+# Currently working on:
+- Planning new structure, making renderer and physics engine classes, cleaning shit up
+
 # TODO
 
 - Refactoring:
+  - [] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
   - [] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
-  - [] Applying Google C++ Stylesheet
+  - [] Get rid of shared pointers and try and keep stuff within the class it was declared (use unique_ptr for changing ownership) or
+  just pass shit by reference whenever possible
+  - [] Matrixstack stuff still uses glm but it would be nice to switch everything over to eigen
+  - [] Make storing the light information more clean
 
 - QOL: 
   - [] Make initial conditions & simulation parameters setable from input file
@@ -52,6 +59,7 @@
 # Notes:
 - ALWAYS CHECK CMAKELIST FOR DEBUG/RELEASE
 - Checkout OGC Paper from UofU
+- Applying Google C++ Stylesheet
 
 
 

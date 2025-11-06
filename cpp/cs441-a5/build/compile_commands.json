@@ -1,182 +1,162 @@
 [
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/Camera.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.cpp",
-  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.cpp",
-  "output": "CMakeFiles/A5.dir/src/Camera.cpp.o"
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/Camera.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.cpp"
 },
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/GLSL.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.cpp",
-  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.cpp",
-  "output": "CMakeFiles/A5.dir/src/GLSL.cpp.o"
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/GLSL.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.cpp"
 },
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/MatrixStack.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.cpp",
-  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.cpp",
-  "output": "CMakeFiles/A5.dir/src/MatrixStack.cpp.o"
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/MatrixStack.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.cpp"
 },
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/Object.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Object.cpp",
-  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Object.cpp",
-  "output": "CMakeFiles/A5.dir/src/Object.cpp.o"
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/Object.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Object.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Object.cpp"
 },
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/Program.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp",
-  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp",
-  "output": "CMakeFiles/A5.dir/src/Program.cpp.o"
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.cpp"
 },
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/Shape.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.cpp",
-  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.cpp",
-  "output": "CMakeFiles/A5.dir/src/Shape.cpp.o"
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/Program.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp"
 },
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
-  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/main.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp",
-  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp",
-  "output": "CMakeFiles/A5.dir/src/main.cpp.o"
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/Renderer.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/context.c.o -c /usr/local/lib/glfw-3.4/src/context.c",
-  "file": "/usr/local/lib/glfw-3.4/src/context.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/context.c.o"
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/Shape.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.cpp"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/init.c.o -c /usr/local/lib/glfw-3.4/src/init.c",
-  "file": "/usr/local/lib/glfw-3.4/src/init.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/init.c.o"
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -g -o CMakeFiles/A5.dir/src/main.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/input.c.o -c /usr/local/lib/glfw-3.4/src/input.c",
-  "file": "/usr/local/lib/glfw-3.4/src/input.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/input.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/context.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/context.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/context.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/monitor.c.o -c /usr/local/lib/glfw-3.4/src/monitor.c",
-  "file": "/usr/local/lib/glfw-3.4/src/monitor.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/monitor.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/init.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/init.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/init.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/platform.c.o -c /usr/local/lib/glfw-3.4/src/platform.c",
-  "file": "/usr/local/lib/glfw-3.4/src/platform.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/platform.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/input.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/input.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/input.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/vulkan.c.o -c /usr/local/lib/glfw-3.4/src/vulkan.c",
-  "file": "/usr/local/lib/glfw-3.4/src/vulkan.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/vulkan.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/monitor.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/monitor.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/monitor.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/window.c.o -c /usr/local/lib/glfw-3.4/src/window.c",
-  "file": "/usr/local/lib/glfw-3.4/src/window.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/window.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/platform.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/platform.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/platform.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/egl_context.c.o -c /usr/local/lib/glfw-3.4/src/egl_context.c",
-  "file": "/usr/local/lib/glfw-3.4/src/egl_context.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/egl_context.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/vulkan.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/vulkan.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/vulkan.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/osmesa_context.c.o -c /usr/local/lib/glfw-3.4/src/osmesa_context.c",
-  "file": "/usr/local/lib/glfw-3.4/src/osmesa_context.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/osmesa_context.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/window.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/window.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/window.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_init.c.o -c /usr/local/lib/glfw-3.4/src/null_init.c",
-  "file": "/usr/local/lib/glfw-3.4/src/null_init.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/null_init.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/egl_context.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/egl_context.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/egl_context.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_monitor.c.o -c /usr/local/lib/glfw-3.4/src/null_monitor.c",
-  "file": "/usr/local/lib/glfw-3.4/src/null_monitor.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/null_monitor.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/osmesa_context.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/osmesa_context.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/osmesa_context.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_window.c.o -c /usr/local/lib/glfw-3.4/src/null_window.c",
-  "file": "/usr/local/lib/glfw-3.4/src/null_window.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/null_window.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/null_init.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/null_init.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/null_init.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_joystick.c.o -c /usr/local/lib/glfw-3.4/src/null_joystick.c",
-  "file": "/usr/local/lib/glfw-3.4/src/null_joystick.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/null_joystick.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/null_monitor.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/null_monitor.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/null_monitor.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_module.c.o -c /usr/local/lib/glfw-3.4/src/posix_module.c",
-  "file": "/usr/local/lib/glfw-3.4/src/posix_module.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/posix_module.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/null_window.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/null_window.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/null_window.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_time.c.o -c /usr/local/lib/glfw-3.4/src/posix_time.c",
-  "file": "/usr/local/lib/glfw-3.4/src/posix_time.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/posix_time.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/null_joystick.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/null_joystick.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/null_joystick.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_thread.c.o -c /usr/local/lib/glfw-3.4/src/posix_thread.c",
-  "file": "/usr/local/lib/glfw-3.4/src/posix_thread.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/posix_thread.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/posix_module.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/posix_module.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/posix_module.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_init.c.o -c /usr/local/lib/glfw-3.4/src/x11_init.c",
-  "file": "/usr/local/lib/glfw-3.4/src/x11_init.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/x11_init.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/posix_time.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/posix_time.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/posix_time.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_monitor.c.o -c /usr/local/lib/glfw-3.4/src/x11_monitor.c",
-  "file": "/usr/local/lib/glfw-3.4/src/x11_monitor.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/x11_monitor.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/posix_thread.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/posix_thread.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/posix_thread.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_window.c.o -c /usr/local/lib/glfw-3.4/src/x11_window.c",
-  "file": "/usr/local/lib/glfw-3.4/src/x11_window.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/x11_window.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/x11_init.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/x11_init.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/x11_init.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/xkb_unicode.c.o -c /usr/local/lib/glfw-3.4/src/xkb_unicode.c",
-  "file": "/usr/local/lib/glfw-3.4/src/xkb_unicode.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/xkb_unicode.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/x11_monitor.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/x11_monitor.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/x11_monitor.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/glx_context.c.o -c /usr/local/lib/glfw-3.4/src/glx_context.c",
-  "file": "/usr/local/lib/glfw-3.4/src/glx_context.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/glx_context.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/x11_window.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/x11_window.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/x11_window.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/linux_joystick.c.o -c /usr/local/lib/glfw-3.4/src/linux_joystick.c",
-  "file": "/usr/local/lib/glfw-3.4/src/linux_joystick.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/linux_joystick.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/xkb_unicode.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/xkb_unicode.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/xkb_unicode.c"
 },
 {
-  "directory": "/usr/local/lib/glfw-3.4/release/src",
-  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glfw-3.4/src -I/usr/local/lib/glfw-3.4/release/src -O3 -DNDEBUG -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_poll.c.o -c /usr/local/lib/glfw-3.4/src/posix_poll.c",
-  "file": "/usr/local/lib/glfw-3.4/src/posix_poll.c",
-  "output": "/usr/local/lib/glfw-3.4/release/src/CMakeFiles/glfw.dir/posix_poll.c.o"
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/glx_context.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/glx_context.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/glx_context.c"
+},
+{
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/linux_joystick.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/linux_joystick.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/linux_joystick.c"
+},
+{
+  "directory": "/usr/local/lib/opengl-libs/glfw-3.4/debug/src",
+  "command": "/usr/bin/cc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glfw-3.4/src -I/usr/local/lib/opengl-libs/glfw-3.4/debug/src -g -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/posix_poll.c.o -c /usr/local/lib/opengl-libs/glfw-3.4/src/posix_poll.c",
+  "file": "/usr/local/lib/opengl-libs/glfw-3.4/src/posix_poll.c"
 }
 ]
