@@ -1,0 +1,17 @@
+{
+    "parameters": {
+        "delta": 0.0167,
+        "tol": 0.01,
+        "maxiter": 10 
+    },
+
+    "objects": [{
+        "shape": "cube",
+        "segmentLength": 0.5,
+        "segments": 2,
+        "transformation": {
+            "translation": [0, 1, 0]
+        }
+        
+    }]
+}

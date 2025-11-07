@@ -1,13 +1,12 @@
 # Currently working on:
-- Planning new structure, making renderer and physics engine classes, cleaning shit up
+- Planning new structure, making renderer and physics engine classes, cleaning shit up, reading jsons
 
 # TODO
 
 - Refactoring:
   - [] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
   - [] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
-  - [] Get rid of shared pointers and try and keep stuff within the class it was declared (use unique_ptr for changing ownership) or
-  just pass shit by reference whenever possible
+  - [] Get rid of shared pointers, try and keep stuff within the class it was declared (use unique_ptr for changing ownership) or just pass shit by reference
   - [] Matrixstack stuff still uses glm but it would be nice to switch everything over to eigen
   - [] Make storing the light information more clean
 
@@ -30,6 +29,7 @@
   - Should only draw the minimum number of external triangles and not draw any internal supports (might make it hard to tell if structure inverted but idgaf rn)
   - Normals should be mapped directly outwards 
   - Texture coordinates should be set for triangles
+  - Variable spring stiffness and point mass
 
 - [] Texture Map Shader
 
