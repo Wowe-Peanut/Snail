@@ -5,7 +5,7 @@
 
 class PhysicsEngine {
     public:
-        PhysicsEngine(vector<Object>& objectList, double deltatime, double tolerance, int maxIterations);
+        PhysicsEngine(std::vector<Object>& objectList, double deltatime, double tolerance, int maxIterations);
         ~PhysicsEngine();
 
         

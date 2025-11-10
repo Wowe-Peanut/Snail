@@ -17,27 +17,36 @@
 #include "Object.h"
 
 #define MAX_LIGHTS 10
-#define DEFAULT_WIDTH 800;
-#define DEFAULT_HEIGHT 600;
+#define DEFAULT_WIDTH 800
+#define DEFAULT_HEIGHT 600
 
 class Renderer {
 	public:
-		Renderer(vector<Object>& obj);
-		~Renderer();
+		GLFWwindow* window;
 
-		void init();
-		void playback();
+		Renderer(std::vector<Object>& objectList, std::string resourceDirectory);
+		void render();
+
+		// GLFW member callback functions (some callbacks require Renderer member variables)
+		void mouseCallback(GLFWwindow* window, int button, int action, int mods);
+		void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+		void charCallback(GLFWwindow* window, unsigned int key);
+		void resizeCallback(GLFWwindow* window, int width, int height);
+
+		// GLFW static callback functions
+		static void staticErrorCallback(int error, const char *description);
+		static void staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void staticMouseCallback(GLFWwindow* window, int button, int action, int mods);
+		static void staticCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+		static void staticCharCallback(GLFWwindow* window, unsigned int key);
+		static void staticResizeCallback(GLFWwindow* window, int width, int height);
 
 	private:
 
-		unsigned int toggles;
-		enum class ViewingToggles {
-			CULLING 			= 1 << 0, 
-			FILL_TRIANGLES 		= 1 << 1,
-			PAUSED				= 1 << 2,
-		};
+		bool PAUSED = true;
+		bool CULL = true;
+		bool FILL = true;
 
-		GLFWwindow* window;
 		int viewportWidth;
 		int viewportHeight;
 
@@ -52,15 +61,11 @@ class Renderer {
 		Camera camera;
 		MatrixStack P;
 		MatrixStack MV;
-		
-		// GLFW Callback Functions (glfw expects first arg to be window pointer even though its a member variable)
-		void errorCallback(int error, const char *description);
-		void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-		void mouseCallback(GLFWwindow* window, int button, int action, int mods);
-		void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-		void charCallback(GLFWwindow* window, unsigned int c);
-		void resizeCallback(GLFWwindow* window, int width, int height);
-		
-		// 😻
-		void render();
+
+		// Helper functions
+		std::shared_ptr<Program> makeProg(std::string name, std::vector<std::string> attributeNames, std::vector<std::string> uniformNames);
+		void initWindow();
+		void initScene();
+
+
 };

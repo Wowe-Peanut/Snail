@@ -58,11 +58,15 @@ void replay(vector<Object>& objects, json parameters) {
 	cerr << "REPLAY NOT IMLEMENTED YET" << endl;
 }
 
-void simulate(vector<Object>& objects, json parameters) {
-	Renderer renderer(objects);
-	PhysicsEngine engine(objects, parameters["deltat"], parameters["tol"], parameters["maxiter"]);
+void simulate(vector<Object>& objects, json parameters, string resourcePath) {
+	Renderer renderer(objects, resourcePath);
+	// PhysicsEngine engine(objects, parameters["deltat"], parameters["tol"], parameters["maxiter"]);
 
-	
+	while (!glfwWindowShouldClose(renderer.window)) {
+		renderer.render();
+		glfwSwapBuffers(renderer.window);
+		glfwPollEvents();
+	}
 }
 
 
@@ -110,7 +114,7 @@ int main(int argc, char **argv) {
 	if (mode == "-r" || mode == "--replay") {
 		replay(objects, parameters);
 	} else if (mode == "-s" || mode == "--simulate") {
-		simulate(objects, parameters);
+		simulate(objects, parameters, resourcePath);
 	} else {
 		cerr << "'" << mode << "'" << "is not a valid mode" << endl;
 		return 1;
