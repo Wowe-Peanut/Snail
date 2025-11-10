@@ -20,11 +20,10 @@ vec3 jtovec3 (json jsonlist) {
 	return vec3(jsonlist[0], jsonlist[1], jsonlist[2]);
 }
 
-vector<Object> parseObjects(json objectListJson) {
-	vector<Object> objects;
+vector<shared_ptr<Object>> parseObjects(json objectListJson) {
+	vector<shared_ptr<Object>> objects;
 
-	for (json obj: objectListJson["objects"]) {
-
+	for (auto& obj: objectListJson) {
 		string shape = obj["shape"];
 		json transform = obj["transformation"];
 		vec3 translation = jtovec3(transform["translation"]);
@@ -37,13 +36,13 @@ vector<Object> parseObjects(json objectListJson) {
 			double segLen = obj["segmentLength"];
 			int segNum = obj["segments"];
 			
-			objects.emplace_back(Shape::buildCube(segLen, segNum), translation, rotation, scale, true);
+			objects.push_back(make_shared<Object>(Shape::buildCube(segLen, segNum), translation, rotation, scale, true));
 		}
 		else if (shape == "plane") {
 			double segLen = obj["segmentLength"];
 			int segNum = obj["segments"];
 
-			objects.emplace_back(Shape::buildPlane(segLen, segNum), translation, rotation, scale, true);
+			objects.push_back(make_shared<Object>(Shape::buildPlane(segLen, segNum), translation, rotation, scale, true));
 		}
 		else {
 			cout << "UNKNOWN SHAPE IN TARGET JSON" << endl;
@@ -54,22 +53,17 @@ vector<Object> parseObjects(json objectListJson) {
 	return objects;
 }
 
-void replay(vector<Object>& objects, json parameters) {
-	cerr << "REPLAY NOT IMLEMENTED YET" << endl;
-}
-
-void simulate(vector<Object>& objects, json parameters, string resourcePath) {
+void simulate(vector<shared_ptr<Object>>& objects, json parameters, string resourcePath) {
 	Renderer renderer(objects, resourcePath);
 	// PhysicsEngine engine(objects, parameters["deltat"], parameters["tol"], parameters["maxiter"]);
 
+	renderer.init();
 	while (!glfwWindowShouldClose(renderer.window)) {
 		renderer.render();
 		glfwSwapBuffers(renderer.window);
 		glfwPollEvents();
 	}
 }
-
-
 
 int main(int argc, char **argv) {
 
@@ -98,13 +92,13 @@ int main(int argc, char **argv) {
 	}
 
 	try {
-		json data = json::parse(f);
+		data = json::parse(f);
 	} catch (json::parse_error& ex) {
 		cerr << "JSON Parse error at byte " << ex.byte << endl;
 		return 1;
 	} 
 
-	vector<Object> objects = parseObjects(data["objects"]);
+	vector<shared_ptr<Object>> objects = parseObjects(data["objects"]);
 	json parameters = data["parameters"];
 
 
@@ -112,7 +106,8 @@ int main(int argc, char **argv) {
 	// Mode specific calls
 	// -----------------------------------------------------------
 	if (mode == "-r" || mode == "--replay") {
-		replay(objects, parameters);
+		cerr << "REPLAY NOT IMLEMENTED YET" << endl;
+
 	} else if (mode == "-s" || mode == "--simulate") {
 		simulate(objects, parameters, resourcePath);
 	} else {

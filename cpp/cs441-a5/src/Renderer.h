@@ -24,7 +24,8 @@ class Renderer {
 	public:
 		GLFWwindow* window;
 
-		Renderer(std::vector<Object>& objectList, std::string resourceDirectory);
+		Renderer(std::vector<std::shared_ptr<Object>>& objectList, std::string resourceDirectory);
+		void init();
 		void render();
 
 		// GLFW member callback functions (some callbacks require Renderer member variables)
@@ -50,17 +51,17 @@ class Renderer {
 		int viewportWidth;
 		int viewportHeight;
 
-		std::vector<Object> objects;
+		std::vector<std::shared_ptr<Object>> objects;
 		
 		std::string resourceDir = "./";
-		Program bphongProg;
+		std::shared_ptr<Program> bphongProg;
 		glm::vec3 lightPositions[MAX_LIGHTS];
 		glm::vec3 lightColors[MAX_LIGHTS];
 		int lightCount;
 
-		Camera camera;
-		MatrixStack P;
-		MatrixStack MV;
+		std::shared_ptr<Camera> camera;
+		std::shared_ptr<MatrixStack> P;
+		std::shared_ptr<MatrixStack> MV;
 
 		// Helper functions
 		std::shared_ptr<Program> makeProg(std::string name, std::vector<std::string> attributeNames, std::vector<std::string> uniformNames);

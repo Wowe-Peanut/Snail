@@ -6,8 +6,7 @@
 - Refactoring:
   - [] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
   - [] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
-  - [] Get rid of shared pointers, try and keep stuff within the class it was declared (use unique_ptr for changing ownership) or just pass shit by reference
-    - Shape::build___ should return and object constructor should accept unique_ptr instead of shared and object should handle deallocation (maybe)
+  - [] Move away from shared pointers
   - [] Matrixstack stuff still uses glm but it would be nice to switch everything over to eigen
   - [] Make storing the light information more clean
 
@@ -16,6 +15,7 @@
   - [] Add reset animation button
   - [] Add single step button 
   - [] Zoom in and out with camera
+  - [] Add light count, positions, and colors as JSON parameter
 
 - IPC:
   - [] Fixed boundary condition

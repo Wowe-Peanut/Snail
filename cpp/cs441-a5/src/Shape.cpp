@@ -19,36 +19,6 @@ Shape::Shape(): posBufID(0), norBufID(0), texBufID(0), procedural(false) {}
 Shape::~Shape() {}
 float Shape::getBaseY() { return this->baseY; }
 
-shared_ptr<Shape> Shape::buildSphere(int v) {
-	shared_ptr<Shape> sphere = make_shared<Shape>();
-	
-	float r = 1;	
-	for (int y=v-1; y>=0; y--) {
-		for (int x=0; x<v; x++) {
-			float alpha = x / (float) (v-1);
-			float beta = y / (float) (v-1);
-			
-			float theta = M_PI * (1 - beta);
-			float phi = 2*M_PI * (1 - alpha);	
-			glm::vec3 p = r*glm::vec3(sin(theta)*sin(phi), cos(theta), sin(theta)*cos(phi));
-			
-			sphere->posBuf.insert(sphere->posBuf.end(), {p.x, p.y, p.z});
-			sphere->norBuf.insert(sphere->norBuf.end(), {p.x/r, p.y/r, p.z/r});
-			sphere->texBuf.insert(sphere->texBuf.end(), {alpha * 10, beta * 10});
-			
-			if (x != v-1 && y != v-1) {
-				unsigned int k = x + v*y;
-				sphere->indBuf.insert(sphere->indBuf.end(), {k, k+1, k+v+1, k+v+1, k+v, k});
-			} 
-		}
-	}
-
-	
-	sphere->procedural = true;
-	sphere->init();
-	return sphere;
-}
-
 shared_ptr<Shape> Shape::buildPlane(float segmentLength, int segments) {
 	shared_ptr<Shape> plane = make_shared<Shape>();
 
@@ -91,7 +61,7 @@ shared_ptr<Shape> Shape::buildPlane(float segmentLength, int segments) {
 	}
 
 	plane->procedural = true;
-	plane->init();
+	// plane->init(); // Commented out so that it can be called manually by Renderer after opengl context setup
 	return plane;
 }
 
@@ -163,7 +133,7 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	
 
 	cube->procedural = true;
-	cube->init();
+	// cube->init(); // Commented out so that it can be called manually by Renderer after opengl context setup
 	return cube;
 }
 

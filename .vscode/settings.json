@@ -87,6 +87,8 @@
 		"any": "cpp",
 		"forward_list": "cpp",
 		"regex": "cpp",
-		"ranges": "cpp"
+		"ranges": "cpp",
+		"__bit_reference": "cpp",
+		"filesystem": "cpp"
 	}
 }

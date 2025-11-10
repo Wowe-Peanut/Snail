@@ -3,14 +3,56 @@
 
 using namespace std;
 using vec3 = glm::vec3;
+using vec4 = glm::vec4;
 
-Renderer::Renderer(std::vector<Object>& objectList, std::string resourceDirectory): objects(objectList), resourceDir(resourceDirectory) {
+Renderer::Renderer(vector<shared_ptr<Object>>& objectList, string resourceDirectory): objects(objectList), resourceDir(resourceDirectory) {
 	initWindow();
 	initScene();
 }
 
 void Renderer::render() {
-	// TODO
+	// Clear color & depth buffers, enable depth test, and set viewport size
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glViewport(0, 0, viewportWidth, viewportHeight);
+
+	// Set camera aspect ratio
+	camera->setAspect(viewportWidth / (float) viewportHeight);
+
+	// Apply camera transforms to P and MV
+	P->pushMatrix();
+	MV->pushMatrix();
+	camera->applyProjectionMatrix(P);
+	camera->applyViewMatrix(MV);	
+
+	// Transform and load light positions into buffer to send to GPU
+	vec3 transformedLightPositions[MAX_LIGHTS];
+	for (int li=0; li<lightCount; li++) {
+		transformedLightPositions[li] = MV->topMatrix() * vec4(lightPositions[li], 1);
+	}
+
+
+	// Send uniforms to GPU
+	glUniformMatrix4fv(bphongProg->getUniform("MV"), 1, GL_FALSE, value_ptr(MV->topMatrix()));
+	glUniformMatrix4fv(bphongProg->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
+	glUniform1i(bphongProg->getUniform("lightCount"), lightCount); 
+	glUniform3fv(bphongProg->getUniform("lightPositions"), lightCount, value_ptr(transformedLightPositions[0]));
+	glUniform3fv(bphongProg->getUniform("lightColors"), lightCount, value_ptr(lightColors[0]));
+	
+	
+	for (auto obj: objects) {
+		obj->draw(MV, bphongProg);
+	}
+	
+	P->popMatrix();
+	MV->popMatrix();
+	GLSL::checkError(GET_FILE_LINE);
+}
+
+void Renderer::init() {
+	for (auto obj: objects) {
+		obj->shape->init();
+	}
 }
 
 void Renderer::initWindow() {
@@ -55,7 +97,37 @@ void Renderer::initWindow() {
 }
 
 void Renderer::initScene() {
+	// Initialize time.
+	glfwSetTime(0.0); 			
 
+	// Set background color.
+	glClearColor(0.5f, 0.5f, 0.5f, 0.5f); 	
+
+	// Enable z-buffer test
+	glEnable(GL_DEPTH_TEST); 				
+
+	// Initialize shader
+	vector<string> attributeNames = {"aPos", "aNor"};
+	vector<string> uniformNames  = {"MV", "P", "MVIT", "ka", "kd", "ks", "s", "lightCount", "lightPositions", "lightColors"};
+	bphongProg 	= makeProg("bphong", attributeNames, uniformNames);
+
+	// Initialize camera
+	camera = make_shared<Camera>();
+	camera->setInitDistance(4.5f);
+
+	// Initialize matrix stacks
+	P = make_shared<MatrixStack>();
+	MV = make_shared<MatrixStack>();
+
+	// Manually initialize lights (for now) 
+	lightCount = 2;
+	lightColors[0] 		= vec3(0.5, 0.5, 0.5);
+	lightPositions[0] 	= vec3(-1, 1, -1);
+	lightColors[1] 		= vec3(0.5, 0.5, 0.5);
+	lightPositions[1] 	= vec3(1, 1, 1);
+
+	bphongProg->bind(); 
+	GLSL::checkError(GET_FILE_LINE);
 }
 
 
@@ -103,14 +175,14 @@ void Renderer::mouseCallback(GLFWwindow* window, int button, int action, int mod
 		bool shift = (mods & GLFW_MOD_SHIFT) != 0;
 		bool ctrl  = (mods & GLFW_MOD_CONTROL) != 0;
 		bool alt   = (mods & GLFW_MOD_ALT) != 0;
-		camera.mouseClicked((float)xmouse, (float)ymouse, shift, ctrl, alt);
+		camera->mouseClicked((float)xmouse, (float)ymouse, shift, ctrl, alt);
 	}
 }
 
 void Renderer::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if(state == GLFW_PRESS) {
-		camera.mouseMoved((float)xpos, (float)ypos);
+		camera->mouseMoved((float)xpos, (float)ypos);
 	}
 }
 
