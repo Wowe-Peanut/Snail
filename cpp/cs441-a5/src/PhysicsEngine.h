@@ -1,18 +1,19 @@
 #pragma once
 
-
+#include "Object.h"
+#include "Shape.h"
 
 class PhysicsEngine {
     public:
+        PhysicsEngine(vector<Object>& objectList, double deltatime, double tolerance, int maxIterations);
+        ~PhysicsEngine();
 
-        enum class IntegrationMethod {
-			EXPLICIT,
-            SYMPLECTIC,
-            IMPLICIT,
-		};
-
-        PhysicsEngine(IntegrationMethod method);
-
+        
+    private:
+        std::vector<Object> objects;
+        double h;
+        double tol;
+        double maxiter;
         
 
 

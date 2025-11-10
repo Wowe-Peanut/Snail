@@ -83,6 +83,10 @@
 		"format": "cpp",
 		"span": "cpp",
 		"sparse": "cpp",
-		"*.inc": "cpp"
+		"*.inc": "cpp",
+		"any": "cpp",
+		"forward_list": "cpp",
+		"regex": "cpp",
+		"ranges": "cpp"
 	}
 }
