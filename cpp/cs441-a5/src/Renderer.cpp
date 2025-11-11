@@ -87,7 +87,9 @@ void Renderer::initGraphics() {
 	glfwSetFramebufferSizeCallback(window, staticResizeCallback);
 }
 
-void Renderer::initScene(vector<shared_ptr<Object>>& objects) {
+void Renderer::initScene(vector<shared_ptr<Object>>& objectList) {
+	objects = objectList;
+
 	// Initialize time.
 	glfwSetTime(0.0); 			
 

@@ -16,8 +16,27 @@ using vec3 = glm::vec3;
 using namespace std;
 
 
-vec3 jtovec3 (json jsonlist) {
+vec3 jsontovec3 (json jsonlist) {
 	return vec3(jsonlist[0], jsonlist[1], jsonlist[2]);
+}
+
+json openjson(string path) {
+	ifstream f(path);
+	json data;
+	
+	if (!f.is_open()) {
+		cerr << "Failed to open JSON file" << endl;
+		exit(1);
+	}
+
+	try {
+		data = json::parse(f);
+	} catch (json::parse_error& ex) {
+		cerr << "JSON Parse error at byte " << ex.byte << endl;
+		exit(1);
+	} 
+
+	return data;
 }
 
 vector<shared_ptr<Object>> parseObjects(json objectListJson) {
@@ -26,9 +45,9 @@ vector<shared_ptr<Object>> parseObjects(json objectListJson) {
 	for (auto obj: objectListJson) {
 		string shape = obj["shape"];
 		json transform = obj["transformation"];
-		vec3 translation = jtovec3(transform["translation"]);
-		vec3 scale = jtovec3(transform["scale"]);
-		vec3 rotation = jtovec3(transform["rotation"]);
+		vec3 translation = jsontovec3(transform["translation"]);
+		vec3 scale = jsontovec3(transform["scale"]);
+		vec3 rotation = jsontovec3(transform["rotation"]);
 		
 
 		// Shape specific initializiation
@@ -53,11 +72,17 @@ vector<shared_ptr<Object>> parseObjects(json objectListJson) {
 	return objects;
 }
 
-void simulate(vector<shared_ptr<Object>>& objects, json parameters, string resourcePath) {
+void simulate(string resourcePath, string jsonPath) {
 	Renderer renderer(resourcePath);
-	
-	// Trying to move object creation after render creation
+	// PhysicsEngine engine();
+	json data = openjson(resourcePath + jsonPath);
 
+	// initGraphics must come before any objects - opengl must be initialized before objects can create their buffers
+	renderer.initGraphics(); 
+	vector<shared_ptr<Object>> objects = parseObjects(data["objects"]);
+	renderer.initScene(objects);
+
+	
 	while (!glfwWindowShouldClose(renderer.window)) {
 		renderer.render();
 		glfwSwapBuffers(renderer.window);
@@ -78,38 +103,12 @@ int main(int argc, char **argv) {
 	string mode = argv[2];
 	string jsonPath = argv[3];
 
-
-
-	// Parse Input Json 
-	// -----------------------------------------------------------
-	ifstream f(resourcePath + jsonPath);
-	json data;
-	
-
-	if (!f.is_open()) {
-		cerr << "Failed to open JSON file" << endl;
-		return 1;
-	}
-
-	try {
-		data = json::parse(f);
-	} catch (json::parse_error& ex) {
-		cerr << "JSON Parse error at byte " << ex.byte << endl;
-		return 1;
-	} 
-
-	vector<shared_ptr<Object>> objects = parseObjects(data["objects"]);
-	json parameters = data["parameters"];
-
-
-
 	// Mode specific calls
 	// -----------------------------------------------------------
 	if (mode == "-r" || mode == "--replay") {
 		cerr << "REPLAY NOT IMLEMENTED YET" << endl;
-
 	} else if (mode == "-s" || mode == "--simulate") {
-		simulate(objects, parameters, resourcePath);
+		simulate(resourcePath, jsonPath);
 	} else {
 		cerr << "'" << mode << "'" << "is not a valid mode" << endl;
 		return 1;

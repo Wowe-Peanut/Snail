@@ -16,9 +16,9 @@
 #include "Shape.h"
 #include "Object.h"
 
-#define MAX_LIGHTS 10
-#define DEFAULT_WIDTH 800
-#define DEFAULT_HEIGHT 600
+float constexpr DEFAULT_WIDTH		= 800;
+float constexpr DEFAULT_HEIGHT		= 600;
+int   constexpr MAX_LIGHTS 			= 10;
 
 class Renderer {
 	public:
@@ -27,7 +27,7 @@ class Renderer {
 		Renderer(std::string resourceDirectory);
 		void render();
 		void initGraphics();
-		void initScene(std::vector<std::shared_ptr<Object>>& objects);
+		void initScene(std::vector<std::shared_ptr<Object>>& objectList);
 
 		// GLFW member callback functions (some callbacks require Renderer member variables)
 		void mouseCallback(GLFWwindow* window, int button, int action, int mods);
@@ -49,8 +49,8 @@ class Renderer {
 		bool CULL = true;
 		bool FILL = true;
 
-		int viewportWidth;
-		int viewportHeight;
+		int viewportWidth = DEFAULT_WIDTH;
+		int viewportHeight = DEFAULT_HEIGHT;
 
 		std::vector<std::shared_ptr<Object>> objects;
 		
