@@ -5,10 +5,7 @@ using namespace std;
 using vec3 = glm::vec3;
 using vec4 = glm::vec4;
 
-Renderer::Renderer(vector<shared_ptr<Object>>& objectList, string resourceDirectory): objects(objectList), resourceDir(resourceDirectory) {
-	initWindow();
-	initScene();
-}
+Renderer::Renderer(string resourceDirectory): resourceDir(resourceDirectory) {}
 
 void Renderer::render() {
 	// Clear color & depth buffers, enable depth test, and set viewport size
@@ -49,13 +46,7 @@ void Renderer::render() {
 	GLSL::checkError(GET_FILE_LINE);
 }
 
-void Renderer::init() {
-	for (auto obj: objects) {
-		obj->shape->init();
-	}
-}
-
-void Renderer::initWindow() {
+void Renderer::initGraphics() {
 
 	// Set error callback.
 	glfwSetErrorCallback(staticErrorCallback);
@@ -96,7 +87,7 @@ void Renderer::initWindow() {
 	glfwSetFramebufferSizeCallback(window, staticResizeCallback);
 }
 
-void Renderer::initScene() {
+void Renderer::initScene(vector<shared_ptr<Object>>& objects) {
 	// Initialize time.
 	glfwSetTime(0.0); 			
 

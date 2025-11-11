@@ -61,7 +61,7 @@ shared_ptr<Shape> Shape::buildPlane(float segmentLength, int segments) {
 	}
 
 	plane->procedural = true;
-	// plane->init(); // Commented out so that it can be called manually by Renderer after opengl context setup
+	plane->init();
 	return plane;
 }
 
@@ -133,7 +133,7 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 	
 
 	cube->procedural = true;
-	// cube->init(); // Commented out so that it can be called manually by Renderer after opengl context setup
+	cube->init();
 	return cube;
 }
 

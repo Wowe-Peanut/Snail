@@ -24,9 +24,10 @@ class Renderer {
 	public:
 		GLFWwindow* window;
 
-		Renderer(std::vector<std::shared_ptr<Object>>& objectList, std::string resourceDirectory);
-		void init();
+		Renderer(std::string resourceDirectory);
 		void render();
+		void initGraphics();
+		void initScene(std::vector<std::shared_ptr<Object>>& objects);
 
 		// GLFW member callback functions (some callbacks require Renderer member variables)
 		void mouseCallback(GLFWwindow* window, int button, int action, int mods);
@@ -65,8 +66,4 @@ class Renderer {
 
 		// Helper functions
 		std::shared_ptr<Program> makeProg(std::string name, std::vector<std::string> attributeNames, std::vector<std::string> uniformNames);
-		void initWindow();
-		void initScene();
-
-
 };

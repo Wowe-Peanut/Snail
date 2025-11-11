@@ -23,7 +23,7 @@ vec3 jtovec3 (json jsonlist) {
 vector<shared_ptr<Object>> parseObjects(json objectListJson) {
 	vector<shared_ptr<Object>> objects;
 
-	for (auto& obj: objectListJson) {
+	for (auto obj: objectListJson) {
 		string shape = obj["shape"];
 		json transform = obj["transformation"];
 		vec3 translation = jtovec3(transform["translation"]);
@@ -42,7 +42,7 @@ vector<shared_ptr<Object>> parseObjects(json objectListJson) {
 			double segLen = obj["segmentLength"];
 			int segNum = obj["segments"];
 
-			objects.push_back(make_shared<Object>(Shape::buildPlane(segLen, segNum), translation, rotation, scale, true));
+			objects.push_back(make_shared<Object>(Shape::buildPlane(segLen, segNum), translation, rotation, scale, false));
 		}
 		else {
 			cout << "UNKNOWN SHAPE IN TARGET JSON" << endl;
@@ -54,10 +54,10 @@ vector<shared_ptr<Object>> parseObjects(json objectListJson) {
 }
 
 void simulate(vector<shared_ptr<Object>>& objects, json parameters, string resourcePath) {
-	Renderer renderer(objects, resourcePath);
-	// PhysicsEngine engine(objects, parameters["deltat"], parameters["tol"], parameters["maxiter"]);
+	Renderer renderer(resourcePath);
+	
+	// Trying to move object creation after render creation
 
-	renderer.init();
 	while (!glfwWindowShouldClose(renderer.window)) {
 		renderer.render();
 		glfwSwapBuffers(renderer.window);
