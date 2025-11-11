@@ -5,7 +5,9 @@ using namespace std;
 using vec3 = glm::vec3;
 using vec4 = glm::vec4;
 
-Renderer::Renderer(string resourceDirectory): resourceDir(resourceDirectory) {}
+Renderer::Renderer(string resourceDirectory): resourceDir(resourceDirectory) {
+	initGraphics();
+}
 
 void Renderer::render() {
 	// Clear color & depth buffers, enable depth test, and set viewport size

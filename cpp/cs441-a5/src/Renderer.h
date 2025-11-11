@@ -16,9 +16,9 @@
 #include "Shape.h"
 #include "Object.h"
 
-float constexpr DEFAULT_WIDTH		= 800;
-float constexpr DEFAULT_HEIGHT		= 600;
-int   constexpr MAX_LIGHTS 			= 10;
+float constexpr DEFAULT_WIDTH = 800;
+float constexpr DEFAULT_HEIGHT = 600;
+int constexpr MAX_LIGHTS = 10;
 
 class Renderer {
 	public:

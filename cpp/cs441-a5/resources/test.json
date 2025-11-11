@@ -1,6 +1,6 @@
 {
     "parameters": {
-        "delta": 0.0167,
+        "dt": 0.0167,
         "tol": 0.01,
         "maxiter": 10 
     },
@@ -9,8 +9,8 @@
         
         {
             "shape": "cube",
-            "segmentLength": 0.5,
-            "segments": 2,
+            "segmentLength": 0.25,
+            "segments": 4,
             "transformation": {
                 "translation":  [-0.5, 1, -0.5],
                 "scale":        [1, 1, 1],
