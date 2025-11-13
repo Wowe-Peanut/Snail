@@ -11,7 +11,8 @@
 class PhysicsEngine {
     public:
         PhysicsEngine(std::vector<std::shared_ptr<Object>>& objectList, float deltatime, float tolerance, int maxIterations);
-        void step();
+        void implicitStep();
+        void symplecticStep();
 
         
     private:
@@ -20,21 +21,27 @@ class PhysicsEngine {
         float tol;
         int maxiter;
 
-        // Energy methods
         Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde, float h);
-        void makePSD(Eigen::MatrixXf& hess);
+        
+        // Helper
         float IPValue(Eigen::Matrix3Xf& xtilde, float h);
         Eigen::Matrix3Xf IPGradient(Eigen::Matrix3Xf& xtilde, float h);
         Eigen::MatrixXf IPHessian(Eigen::Matrix3Xf& xtilde, float h);
+        void makePSD(Eigen::MatrixXf& hess);
+
+        // Inertia
         float InertiaValue(Eigen::Matrix3Xf& xtilde, float h);
         Eigen::Matrix3Xf InertiaGradient(Eigen::Matrix3Xf& xtilde, float h);
         Eigen::MatrixXf InertiaHessian(Eigen::Matrix3Xf& xtilde, float h);
-        float MassSpringValue(float h);
-        Eigen::Matrix3Xf MassSpringGradient(float h);
-        Eigen::MatrixXf MassSpringHessian(float h);
+        
+        // Gravity
         float GravityValue(float h);
         Eigen::Matrix3Xf GravityGradient(float h);
 
+        // Spring
+        float MassSpringValue(float h);
+        Eigen::Matrix3Xf MassSpringGradient(float h);
+        Eigen::MatrixXf MassSpringHessian(float h);
 
 
 

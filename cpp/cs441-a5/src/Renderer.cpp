@@ -51,7 +51,7 @@ void Renderer::render() {
 void Renderer::initGraphics() {
 
 	// Set error callback.
-	glfwSetErrorCallback(staticErrorCallback);
+	glfwSetErrorCallback(errorCallback);
 
 	// Initialize the library.
 	if(!glfwInit()) {
@@ -82,11 +82,11 @@ void Renderer::initGraphics() {
 	// Set vsync.
 	glfwSwapInterval(1);
 	// Set keyboard callback.
-	glfwSetKeyCallback(window, staticKeyCallback);
-	glfwSetCharCallback(window, staticCharCallback);
-	glfwSetCursorPosCallback(window, staticCursorPosCallback);
-	glfwSetMouseButtonCallback(window, staticMouseCallback);
-	glfwSetFramebufferSizeCallback(window, staticResizeCallback);
+	glfwSetKeyCallback(window, keyCallback);
+	glfwSetCharCallback(window, charCallback);
+	glfwSetCursorPosCallback(window, cursorPosCallback);
+	glfwSetMouseButtonCallback(window, mouseCallback);
+	glfwSetFramebufferSizeCallback(window, resizeCallback);
 }
 
 void Renderer::initScene(vector<shared_ptr<Object>>& objectList) {
@@ -125,41 +125,19 @@ void Renderer::initScene(vector<shared_ptr<Object>>& objectList) {
 	GLSL::checkError(GET_FILE_LINE);
 }
 
-
-
-// Some callback functions need access to Renderer member variables. Rather than use a singleton these functions read
-// the glfw 'window user pointer' which is set to the Renderer instance in question and calls the appropriate member callback.
-void Renderer::staticErrorCallback(int error, const char *description) {
+void Renderer::errorCallback(int error, const char *description) {
 	cerr << description << endl;
 }
 
-void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void Renderer::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 }
 
-void Renderer::staticMouseCallback(GLFWwindow* window, int button, int action, int mods) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
-	renderer->mouseCallback(window, button, action, mods);
-}
-
-void Renderer::staticCursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
-	renderer->cursorPosCallback(window, xpos, ypos);
-}
-
-void Renderer::staticCharCallback(GLFWwindow* window, unsigned int key) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
-	renderer->charCallback(window, key);
-}
-
-void Renderer::staticResizeCallback(GLFWwindow* window, int width, int height) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
-	renderer->resizeCallback(window, width, height);
-}
-
 void Renderer::mouseCallback(GLFWwindow* window, int button, int action, int mods) {
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+
 	// Get the current mouse position.
 	double xmouse, ymouse;
 	glfwGetCursorPos(window, &xmouse, &ymouse);
@@ -170,28 +148,31 @@ void Renderer::mouseCallback(GLFWwindow* window, int button, int action, int mod
 		bool shift = (mods & GLFW_MOD_SHIFT) != 0;
 		bool ctrl  = (mods & GLFW_MOD_CONTROL) != 0;
 		bool alt   = (mods & GLFW_MOD_ALT) != 0;
-		camera->mouseClicked((float)xmouse, (float)ymouse, shift, ctrl, alt);
+		renderer->camera->mouseClicked((float)xmouse, (float)ymouse, shift, ctrl, alt);
 	}
 }
 
 void Renderer::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+	
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if(state == GLFW_PRESS) {
-		camera->mouseMoved((float)xpos, (float)ypos);
+		renderer->camera->mouseMoved((float)xpos, (float)ypos);
 	}
 }
 
 void Renderer::charCallback(GLFWwindow* window, unsigned int key) {
-
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+	
 	switch (key) {
 		case 'n':
-			PAUSED = !PAUSED;
-			cerr << "Physics simulation: " << (PAUSED ? "ON" : "OFF") << endl;
+			renderer->PAUSED = !renderer->PAUSED;
+			cerr << "Physics simulation: " << (renderer->PAUSED ? "ON" : "OFF") << endl;
 			break;
 
 		case 'c':
-			CULL = !CULL;
-			if (CULL) {
+			renderer->CULL = !renderer->CULL;
+			if (renderer->CULL) {
 				glEnable(GL_CULL_FACE);
 			} else {
 				glDisable(GL_CULL_FACE);
@@ -200,15 +181,17 @@ void Renderer::charCallback(GLFWwindow* window, unsigned int key) {
 		
 		// Toggle triangle full OR wireframe
 		case 'z':
-			FILL = !FILL;
-			glPolygonMode(GL_FRONT_AND_BACK, FILL ? GL_FILL : GL_LINE);
+			renderer->FILL = !renderer->FILL;
+			glPolygonMode(GL_FRONT_AND_BACK, renderer->FILL ? GL_FILL : GL_LINE);
 			break;
 	}
 }
 
 void Renderer::resizeCallback(GLFWwindow* window, int width, int height) {
-	viewportWidth = width;
-	viewportHeight = height;
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+
+	renderer->viewportWidth = width;
+	renderer->viewportHeight = height;
 	glViewport(0, 0, width, height);
 }
 

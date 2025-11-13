@@ -29,21 +29,13 @@ class Renderer {
 		void initGraphics();
 		void initScene(std::vector<std::shared_ptr<Object>>& objectList);
 
-		// GLFW member callback functions (some callbacks require Renderer member variables)
-		void mouseCallback(GLFWwindow* window, int button, int action, int mods);
-		void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-		void charCallback(GLFWwindow* window, unsigned int key);
-		void resizeCallback(GLFWwindow* window, int width, int height);
-
-		// GLFW static callback functions
-		static void staticErrorCallback(int error, const char *description);
-		static void staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-		static void staticMouseCallback(GLFWwindow* window, int button, int action, int mods);
-		static void staticCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-		static void staticCharCallback(GLFWwindow* window, unsigned int key);
-		static void staticResizeCallback(GLFWwindow* window, int width, int height);
-
-	private:
+		// GLFW callback functions
+		static void errorCallback(int error, const char *description);
+		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
+		static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+		static void charCallback(GLFWwindow* window, unsigned int key);
+		static void resizeCallback(GLFWwindow* window, int width, int height);
 
 		bool PAUSED = true;
 		bool CULL = true;
