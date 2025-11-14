@@ -9,8 +9,8 @@
         
         {
             "shape": "cube",
-            "segmentLength": 0.25,
-            "segments": 4,
+            "segmentLength": 0.5,
+            "segments": 2,
             "transformation": {
                 "translation":  [-0.5, 1, -0.5],
                 "scale":        [1, 1, 1],
