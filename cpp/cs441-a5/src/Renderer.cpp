@@ -167,7 +167,7 @@ void Renderer::charCallback(GLFWwindow* window, unsigned int key) {
 	switch (key) {
 		case 'n':
 			renderer->PAUSED = !renderer->PAUSED;
-			cerr << "Physics simulation: " << (renderer->PAUSED ? "ON" : "OFF") << endl;
+			cerr << "Physics simulation: " << (renderer->PAUSED ? "OFF" : "ON") << endl;
 			break;
 
 		case 'c':

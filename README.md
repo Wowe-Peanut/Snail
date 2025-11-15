@@ -10,7 +10,8 @@
   - [] Make storing the light information more clean
 
 - QOL: 
-  - [X] Make initial conditions & simulation parameters setable from input file
+  - [X] Make scene & simulation parameters setable from input file
+  - [] Add fixed points, velocity, and stretch initial condition parameters to json
   - [] Add reset animation button
   - [] Add single step button 
   - [] Zoom in and out with camera

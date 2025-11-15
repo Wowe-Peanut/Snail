@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Shape.h"
+#include "json.hpp"
 
 #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Sparse>
@@ -10,7 +11,7 @@
 
 class PhysicsEngine {
     public:
-        PhysicsEngine(std::vector<std::shared_ptr<Object>>& objectList, float deltatime, float tolerance, int maxIterations);
+        PhysicsEngine(std::vector<std::shared_ptr<Object>>& objectList, nlohmann::json parameters);
         void implicitStep();
         void symplecticStep();
 
@@ -21,18 +22,30 @@ class PhysicsEngine {
         float h;
         float tol;
         int maxiter;
+        float springStiffness;
+		float pointMass;
+        Eigen::Vector3f gravity;
 
         std::vector<std::shared_ptr<Object>> physicsObjects; 
-        std::vector<int> objectIndicies; // starting index of each physicsObject's point positions in 'positions'
+        std::vector<int> objectOffsets; // starting index of each physicsObject's point positions in 'positions' & 'velocities'
 
         // Combined properties of all objects
+        int numPoints;
         Eigen::Matrix3Xf positions;
         Eigen::Matrix3Xf velocities;
-        std::vector<std::vector<unsigned int>> edgeList;
-
-        Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde, float h);
-        void copyToObjects(); // copy the engine positions to each object's OpenGL buffer
+        std::vector<bool> isFixedPoint;
         
+        int numEdges;
+        std::vector<std::vector<unsigned int>> edgeList;
+        std::vector<float> edgeRestLengthSquares;
+        
+        
+
+        // Helper
+        void makePSD(Eigen::MatrixXf& hess);
+        void updateObjectPositions(); 
+        Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde, float h);
+
         // Total energy
         float IPValue(Eigen::Matrix3Xf& xtilde, float h);
         Eigen::Matrix3Xf IPGradient(Eigen::Matrix3Xf& xtilde, float h);
@@ -55,6 +68,14 @@ class PhysicsEngine {
 
 
 /**
+ * I also need to consider broad and narrow phase checking... with the implementation I currently have planned even objects that are not 
+ * touching will be put into the same ensemble 'positions', 'velocities', etc... but that is only necessary for objects that are touching
+ * (and therefore the Hessian of their combined system will have non-zero values in cross-object entries so they need to be together). However,
+ * updating this for every broad and narrow phase seems super fucking expensive though it might allow for easier multithreading...
+ * 
+ * AHHH, but the main issue is the barrier energy calculations no? so if we use broad phase + bounding volume hierarchies to only 
+ * turn on the collisions detection when objects are close... 
+ * 
  * To prepare for contact forces a little further down the line, I need to be minimizing incremental potential energy 
  * OF THE ENTIRE SYSTEM (that is E(x) is now a function that takes in the positions of the points of ALL objects). I'm going to move
  * away from the eigen::map for now, since I'll be copying over if I want to do double precision physics sims and have to cast to float

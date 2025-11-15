@@ -48,20 +48,21 @@ vector<shared_ptr<Object>> parseObjects(json objectListJson) {
 		vec3 translation = jsontovec3(transform["translation"]);
 		vec3 scale = jsontovec3(transform["scale"]);
 		vec3 rotation = jsontovec3(transform["rotation"]);
+		bool isPhysicsObject = obj["is_physics_object"];
 		
 
 		// Shape specific initializiation
 		if (shape == "cube") {
-			double segLen = obj["segmentLength"];
+			double segLen = obj["segment_length"];
 			int segNum = obj["segments"];
 			
-			objects.push_back(make_shared<Object>(Shape::buildCube(segLen, segNum), translation, rotation, scale, true));
+			objects.push_back(make_shared<Object>(Shape::buildCube(segLen, segNum), translation, rotation, scale, isPhysicsObject));
 		}
 		else if (shape == "plane") {
-			double segLen = obj["segmentLength"];
+			double segLen = obj["segment_length"];
 			int segNum = obj["segments"];
 
-			objects.push_back(make_shared<Object>(Shape::buildPlane(segLen, segNum), translation, rotation, scale, false));
+			objects.push_back(make_shared<Object>(Shape::buildPlane(segLen, segNum), translation, rotation, scale, isPhysicsObject));
 		}
 		else {
 			cout << "UNKNOWN SHAPE IN TARGET JSON" << endl;
@@ -80,11 +81,12 @@ void simulate(string resourcePath, string jsonPath) {
 	vector<shared_ptr<Object>> objects = parseObjects(data["objects"]);
 	renderer.initScene(objects);
 
-	// json param = data["parameters"];
-	// PhysicsEngine engine(objects, param["dt"], param["tol"], param["maxiter"]);
+	PhysicsEngine engine(objects, data["parameters"]);
 	
 	while (!glfwWindowShouldClose(renderer.window)) {
-
+		if (!renderer.PAUSED) {
+			engine.implicitStep();
+		}
 		renderer.render();
 		glfwSwapBuffers(renderer.window);
 		glfwPollEvents();
