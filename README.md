@@ -1,14 +1,16 @@
 # TODO
 
 - Refactoring:
-  - [] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
-  - [] Applying Google C++ Stylesheet
+  - [X] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
+  - [X] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
 
 - QOL: 
-  - [] Make initial conditions & simulation parameters setable from input file
+  - [X] Make scene & simulation parameters setable from input file
+  - [] Add fixed points, velocity, and stretch initial condition parameters to json
   - [] Add reset animation button
   - [] Add single step button 
   - [] Zoom in and out with camera
+  - [] Add light count, positions, and colors as JSON parameter
 
 - IPC:
   - [] Fixed boundary condition
@@ -23,11 +25,13 @@
   - Should only draw the minimum number of external triangles and not draw any internal supports (might make it hard to tell if structure inverted but idgaf rn)
   - Normals should be mapped directly outwards 
   - Texture coordinates should be set for triangles
+  - Variable spring stiffness and point mass
 
 - [] Texture Map Shader
 
 - [] Frame Interpolation:
   - Physics should run at a set rate different than renderer and the renderer should interpolate the positions AND normals
+  - "we can render sometime between the most current physics step and the step before that, meaning our rendering is actually slightly behind our simluation. As stated anecdotally in Fixed-Time-Step Implementation, this is both imperceptible to the user as well as common practice on all major games" - https://kirbysayshi.com/2013/09/24/interpolated-physics-rendering.html
 
 - [] Normal Movement:
   - The physics sims needs to update the normals somehow. Not quite sure how to go about this right now... 
@@ -52,6 +56,7 @@
 # Notes:
 - ALWAYS CHECK CMAKELIST FOR DEBUG/RELEASE
 - Checkout OGC Paper from UofU
+- Applying Google C++ Stylesheet
 
 
 

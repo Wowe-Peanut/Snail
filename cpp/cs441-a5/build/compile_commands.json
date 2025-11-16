@@ -25,9 +25,21 @@
 },
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.cpp",
+  "output": "CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o"
+},
+{
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
   "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/Program.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp",
   "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp",
   "output": "CMakeFiles/A5.dir/src/Program.cpp.o"
+},
+{
+  "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",
+  "command": "/usr/bin/c++  -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/A5.dir/src/Renderer.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp",
+  "file": "/home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp",
+  "output": "CMakeFiles/A5.dir/src/Renderer.cpp.o"
 },
 {
   "directory": "/home/rpomullan/proj/sims/cpp/cs441-a5/build",

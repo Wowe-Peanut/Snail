@@ -1,7 +1,8 @@
-CMakeFiles/A5.dir/src/main.cpp.o: \
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp \
- /usr/include/stdc-predef.h /usr/include/c++/13/iostream \
- /usr/include/c++/13/bits/requires_hosted.h \
+CMakeFiles/A5.dir/src/Renderer.cpp.o: \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp \
+ /usr/include/stdc-predef.h \
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.h \
+ /usr/include/c++/13/iostream /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -158,7 +159,6 @@ CMakeFiles/A5.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/basic_ios.tcc \
  /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
  /usr/include/c++/13/bits/istream.tcc \
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.h \
  /usr/local/lib/glew-2.1.0/include/GL/glew.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
@@ -739,36 +739,4 @@ CMakeFiles/A5.dir/src/main.cpp.o: \
  /usr/local/lib/eigen3/Eigen/src/Eigenvalues/RealQZ.h \
  /usr/local/lib/eigen3/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h \
  /usr/local/lib/eigen3/Eigen/src/Eigenvalues/./RealQZ.h \
- /usr/local/lib/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h \
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.h \
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/json.hpp \
- /usr/include/c++/13/iterator /usr/include/c++/13/bits/stream_iterator.h \
- /usr/include/c++/13/utility /usr/include/c++/13/bits/stl_relops.h \
- /usr/include/c++/13/forward_list /usr/include/c++/13/bits/forward_list.h \
- /usr/include/c++/13/bits/forward_list.tcc /usr/include/c++/13/valarray \
- /usr/include/c++/13/bits/valarray_array.h \
- /usr/include/c++/13/bits/valarray_array.tcc \
- /usr/include/c++/13/bits/valarray_before.h \
- /usr/include/c++/13/bits/slice_array.h \
- /usr/include/c++/13/bits/valarray_after.h \
- /usr/include/c++/13/bits/gslice.h \
- /usr/include/c++/13/bits/gslice_array.h \
- /usr/include/c++/13/bits/mask_array.h \
- /usr/include/c++/13/bits/indirect_array.h /usr/include/c++/13/version \
- /usr/include/c++/13/filesystem /usr/include/c++/13/bits/fs_fwd.h \
- /usr/include/c++/13/bits/chrono.h /usr/include/c++/13/ratio \
- /usr/include/c++/13/ctime /usr/include/c++/13/bits/parse_numbers.h \
- /usr/include/c++/13/bits/fs_path.h /usr/include/c++/13/locale \
- /usr/include/c++/13/bits/locale_facets_nonio.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h \
- /usr/include/libintl.h /usr/include/c++/13/bits/codecvt.h \
- /usr/include/c++/13/bits/locale_facets_nonio.tcc \
- /usr/include/c++/13/bits/locale_conv.h /usr/include/c++/13/iomanip \
- /usr/include/c++/13/bits/quoted_string.h /usr/include/c++/13/codecvt \
- /usr/include/c++/13/bits/fs_dir.h /usr/include/c++/13/bits/fs_ops.h \
- /usr/include/c++/13/optional /usr/include/c++/13/any \
- /usr/include/c++/13/fstream \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc
+ /usr/local/lib/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h

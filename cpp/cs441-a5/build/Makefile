@@ -309,6 +309,30 @@ src/Object.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/A5.dir/build.make CMakeFiles/A5.dir/src/Object.cpp.s
 .PHONY : src/Object.cpp.s
 
+src/PhysicsEngine.o: src/PhysicsEngine.cpp.o
+.PHONY : src/PhysicsEngine.o
+
+# target to build an object file
+src/PhysicsEngine.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A5.dir/build.make CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o
+.PHONY : src/PhysicsEngine.cpp.o
+
+src/PhysicsEngine.i: src/PhysicsEngine.cpp.i
+.PHONY : src/PhysicsEngine.i
+
+# target to preprocess a source file
+src/PhysicsEngine.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A5.dir/build.make CMakeFiles/A5.dir/src/PhysicsEngine.cpp.i
+.PHONY : src/PhysicsEngine.cpp.i
+
+src/PhysicsEngine.s: src/PhysicsEngine.cpp.s
+.PHONY : src/PhysicsEngine.s
+
+# target to generate assembly for a file
+src/PhysicsEngine.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A5.dir/build.make CMakeFiles/A5.dir/src/PhysicsEngine.cpp.s
+.PHONY : src/PhysicsEngine.cpp.s
+
 src/Program.o: src/Program.cpp.o
 .PHONY : src/Program.o
 
@@ -332,6 +356,30 @@ src/Program.s: src/Program.cpp.s
 src/Program.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/A5.dir/build.make CMakeFiles/A5.dir/src/Program.cpp.s
 .PHONY : src/Program.cpp.s
+
+src/Renderer.o: src/Renderer.cpp.o
+.PHONY : src/Renderer.o
+
+# target to build an object file
+src/Renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A5.dir/build.make CMakeFiles/A5.dir/src/Renderer.cpp.o
+.PHONY : src/Renderer.cpp.o
+
+src/Renderer.i: src/Renderer.cpp.i
+.PHONY : src/Renderer.i
+
+# target to preprocess a source file
+src/Renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A5.dir/build.make CMakeFiles/A5.dir/src/Renderer.cpp.i
+.PHONY : src/Renderer.cpp.i
+
+src/Renderer.s: src/Renderer.cpp.s
+.PHONY : src/Renderer.s
+
+# target to generate assembly for a file
+src/Renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A5.dir/build.make CMakeFiles/A5.dir/src/Renderer.cpp.s
+.PHONY : src/Renderer.cpp.s
 
 src/Shape.o: src/Shape.cpp.o
 .PHONY : src/Shape.o
@@ -409,9 +457,15 @@ help:
 	@echo "... src/Object.o"
 	@echo "... src/Object.i"
 	@echo "... src/Object.s"
+	@echo "... src/PhysicsEngine.o"
+	@echo "... src/PhysicsEngine.i"
+	@echo "... src/PhysicsEngine.s"
 	@echo "... src/Program.o"
 	@echo "... src/Program.i"
 	@echo "... src/Program.s"
+	@echo "... src/Renderer.o"
+	@echo "... src/Renderer.i"
+	@echo "... src/Renderer.s"
 	@echo "... src/Shape.o"
 	@echo "... src/Shape.i"
 	@echo "... src/Shape.s"

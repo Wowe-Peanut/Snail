@@ -83,6 +83,12 @@
 		"format": "cpp",
 		"span": "cpp",
 		"sparse": "cpp",
-		"*.inc": "cpp"
+		"*.inc": "cpp",
+		"any": "cpp",
+		"forward_list": "cpp",
+		"regex": "cpp",
+		"ranges": "cpp",
+		"__bit_reference": "cpp",
+		"filesystem": "cpp"
 	}
 }

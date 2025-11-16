@@ -125,10 +125,24 @@ CMakeFiles/A5.dir/src/Object.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/A5.dir/src/Object.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/rpomullan/proj/sims/cpp/cs441-a5/src/Object.cpp -o CMakeFiles/A5.dir/src/Object.cpp.s
 
+CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o: CMakeFiles/A5.dir/flags.make
+CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.cpp
+CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o: CMakeFiles/A5.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o -MF CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o.d -o CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.cpp
+
+CMakeFiles/A5.dir/src/PhysicsEngine.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/A5.dir/src/PhysicsEngine.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.cpp > CMakeFiles/A5.dir/src/PhysicsEngine.cpp.i
+
+CMakeFiles/A5.dir/src/PhysicsEngine.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/A5.dir/src/PhysicsEngine.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/rpomullan/proj/sims/cpp/cs441-a5/src/PhysicsEngine.cpp -o CMakeFiles/A5.dir/src/PhysicsEngine.cpp.s
+
 CMakeFiles/A5.dir/src/Program.cpp.o: CMakeFiles/A5.dir/flags.make
 CMakeFiles/A5.dir/src/Program.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp
 CMakeFiles/A5.dir/src/Program.cpp.o: CMakeFiles/A5.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/A5.dir/src/Program.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/A5.dir/src/Program.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/A5.dir/src/Program.cpp.o -MF CMakeFiles/A5.dir/src/Program.cpp.o.d -o CMakeFiles/A5.dir/src/Program.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp
 
 CMakeFiles/A5.dir/src/Program.cpp.i: cmake_force
@@ -139,10 +153,24 @@ CMakeFiles/A5.dir/src/Program.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/A5.dir/src/Program.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.cpp -o CMakeFiles/A5.dir/src/Program.cpp.s
 
+CMakeFiles/A5.dir/src/Renderer.cpp.o: CMakeFiles/A5.dir/flags.make
+CMakeFiles/A5.dir/src/Renderer.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp
+CMakeFiles/A5.dir/src/Renderer.cpp.o: CMakeFiles/A5.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/A5.dir/src/Renderer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/A5.dir/src/Renderer.cpp.o -MF CMakeFiles/A5.dir/src/Renderer.cpp.o.d -o CMakeFiles/A5.dir/src/Renderer.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp
+
+CMakeFiles/A5.dir/src/Renderer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/A5.dir/src/Renderer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp > CMakeFiles/A5.dir/src/Renderer.cpp.i
+
+CMakeFiles/A5.dir/src/Renderer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/A5.dir/src/Renderer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/rpomullan/proj/sims/cpp/cs441-a5/src/Renderer.cpp -o CMakeFiles/A5.dir/src/Renderer.cpp.s
+
 CMakeFiles/A5.dir/src/Shape.cpp.o: CMakeFiles/A5.dir/flags.make
 CMakeFiles/A5.dir/src/Shape.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.cpp
 CMakeFiles/A5.dir/src/Shape.cpp.o: CMakeFiles/A5.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/A5.dir/src/Shape.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/A5.dir/src/Shape.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/A5.dir/src/Shape.cpp.o -MF CMakeFiles/A5.dir/src/Shape.cpp.o.d -o CMakeFiles/A5.dir/src/Shape.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/Shape.cpp
 
 CMakeFiles/A5.dir/src/Shape.cpp.i: cmake_force
@@ -156,7 +184,7 @@ CMakeFiles/A5.dir/src/Shape.cpp.s: cmake_force
 CMakeFiles/A5.dir/src/main.cpp.o: CMakeFiles/A5.dir/flags.make
 CMakeFiles/A5.dir/src/main.cpp.o: /home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp
 CMakeFiles/A5.dir/src/main.cpp.o: CMakeFiles/A5.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/A5.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/A5.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/A5.dir/src/main.cpp.o -MF CMakeFiles/A5.dir/src/main.cpp.o.d -o CMakeFiles/A5.dir/src/main.cpp.o -c /home/rpomullan/proj/sims/cpp/cs441-a5/src/main.cpp
 
 CMakeFiles/A5.dir/src/main.cpp.i: cmake_force
@@ -173,7 +201,9 @@ A5_OBJECTS = \
 "CMakeFiles/A5.dir/src/GLSL.cpp.o" \
 "CMakeFiles/A5.dir/src/MatrixStack.cpp.o" \
 "CMakeFiles/A5.dir/src/Object.cpp.o" \
+"CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o" \
 "CMakeFiles/A5.dir/src/Program.cpp.o" \
+"CMakeFiles/A5.dir/src/Renderer.cpp.o" \
 "CMakeFiles/A5.dir/src/Shape.cpp.o" \
 "CMakeFiles/A5.dir/src/main.cpp.o"
 
@@ -184,7 +214,9 @@ A5: CMakeFiles/A5.dir/src/Camera.cpp.o
 A5: CMakeFiles/A5.dir/src/GLSL.cpp.o
 A5: CMakeFiles/A5.dir/src/MatrixStack.cpp.o
 A5: CMakeFiles/A5.dir/src/Object.cpp.o
+A5: CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o
 A5: CMakeFiles/A5.dir/src/Program.cpp.o
+A5: CMakeFiles/A5.dir/src/Renderer.cpp.o
 A5: CMakeFiles/A5.dir/src/Shape.cpp.o
 A5: CMakeFiles/A5.dir/src/main.cpp.o
 A5: CMakeFiles/A5.dir/build.make
@@ -193,7 +225,7 @@ A5: /usr/local/lib/glew-2.1.0/lib/libGLEW.a
 A5: /usr/lib/x86_64-linux-gnu/librt.a
 A5: /usr/lib/x86_64-linux-gnu/libm.so
 A5: CMakeFiles/A5.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable A5"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/rpomullan/proj/sims/cpp/cs441-a5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable A5"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/A5.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
