@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/usr/local/lib/glm-1.0.1 -I/usr/local/lib/glfw-3.4/include -I/usr/local/lib/glew-2.1.0/include -I/usr/local/lib/eigen3
 
-CXX_FLAGS =  -Wall -pedantic -g -std=gnu++17
+CXX_FLAGS =  -Wall -pedantic -O3 -DNDEBUG -std=gnu++17
 

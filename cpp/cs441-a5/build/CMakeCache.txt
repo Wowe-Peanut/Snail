@@ -40,7 +40,7 @@ CMAKE_BUILD_TYPE:STRING=
 CMAKE_COLOR_MAKEFILE:BOOL=ON
 
 //CXX compiler
-CMAKE_CXX_COMPILER:STRING=/usr/bin/c++
+CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/c++
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
@@ -66,7 +66,7 @@ CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
 //C compiler
-CMAKE_C_COMPILER:STRING=/usr/bin/cc
+CMAKE_C_COMPILER:FILEPATH=/usr/bin/cc
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
@@ -309,7 +309,7 @@ Fontconfig_INCLUDE_DIR:PATH=/usr/include
 Fontconfig_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libfontconfig.so
 
 //Value Computed by CMake
-GLFW_BINARY_DIR:STATIC=/usr/local/lib/glfw-3.4/debug
+GLFW_BINARY_DIR:STATIC=/usr/local/lib/glfw-3.4/release
 
 //Build the GLFW documentation
 GLFW_BUILD_DOCS:BOOL=OFF
@@ -736,10 +736,10 @@ X11_xcb_xvmc_INCLUDE_PATH:PATH=X11_xcb_xvmc_INCLUDE_PATH-NOTFOUND
 X11_xcb_xvmc_LIB:FILEPATH=X11_xcb_xvmc_LIB-NOTFOUND
 
 //Path to a file.
-X11_xkbcommon_INCLUDE_PATH:PATH=/usr/include
+X11_xkbcommon_INCLUDE_PATH:PATH=X11_xkbcommon_INCLUDE_PATH-NOTFOUND
 
 //Path to a library.
-X11_xkbcommon_LIB:FILEPATH=/usr/lib/x86_64-linux-gnu/libxkbcommon.so
+X11_xkbcommon_LIB:FILEPATH=X11_xkbcommon_LIB-NOTFOUND
 
 //Path to a file.
 X11_xkbcommon_X11_INCLUDE_PATH:PATH=X11_xkbcommon_X11_INCLUDE_PATH-NOTFOUND
@@ -848,8 +848,6 @@ CMAKE_HAVE_CONNECT:INTERNAL=1
 CMAKE_HAVE_GETHOSTBYNAME:INTERNAL=1
 //Test CMAKE_HAVE_LIBC_PTHREAD
 CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=1
-//Have include pthread.h
-CMAKE_HAVE_PTHREAD_H:INTERNAL=1
 //Have function remove
 CMAKE_HAVE_REMOVE:INTERNAL=1
 //Have function shmat

@@ -5,7 +5,7 @@
 
 - Refactoring:
   - [X] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
-  - [] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
+  - [X] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
   - [] Move away from shared pointers
   - [] Make storing the light information more clean
 

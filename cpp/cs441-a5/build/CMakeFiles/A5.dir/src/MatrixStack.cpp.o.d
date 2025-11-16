@@ -78,6 +78,8 @@ CMakeFiles/A5.dir/src/MatrixStack.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h \
  /usr/include/c++/13/bits/shared_ptr_base.h /usr/include/c++/13/typeinfo \
  /usr/include/c++/13/bits/allocated_ptr.h \
  /usr/include/c++/13/ext/aligned_buffer.h \
@@ -133,7 +135,10 @@ CMakeFiles/A5.dir/src/MatrixStack.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h /usr/include/c++/13/vector \
+ /usr/include/c++/13/bits/stl_vector.h \
  /usr/include/c++/13/bits/stl_bvector.h \
  /usr/include/c++/13/bits/vector.tcc /usr/local/lib/glm-1.0.1/glm/glm.hpp \
  /usr/local/lib/glm-1.0.1/glm/detail/_fixes.hpp /usr/include/c++/13/cmath \
@@ -155,7 +160,11 @@ CMakeFiles/A5.dir/src/MatrixStack.cpp.o: \
  /usr/include/x86_64-linux-gnu/sys/select.h \
  /usr/include/x86_64-linux-gnu/bits/select.h \
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h \
- /usr/include/alloca.h /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/bits/select2.h \
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h /usr/include/alloca.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h \
  /usr/include/c++/13/bits/specfun.h /usr/include/c++/13/limits \
  /usr/include/c++/13/tr1/gamma.tcc \
  /usr/include/c++/13/tr1/special_function_util.h \

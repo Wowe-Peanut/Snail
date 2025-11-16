@@ -38,8 +38,10 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 
     //! REMOVE ME
     isFixedPoint[numPoints-1] = true;
+	isFixedPoint[numPoints-3] = true;
     //!
 
+	numEdges = 0;
     for (int objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
         auto obj = physicsObjects[objIdx];
         int offset = objectOffsets[objIdx];
@@ -50,6 +52,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
             edgeList.push_back({offset+edge[0], offset+edge[1]});
         }
 
+		numEdges += obj->shape->edgeList.size();
         edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->lengthsSquared.begin(), obj->shape->lengthsSquared.end());
     }
 }
