@@ -21,6 +21,7 @@ public:
 	Camera();
 	virtual ~Camera();
 	void setInitDistance(float z) { translations.z = -std::abs(z); }
+	void zoom(float z) { translations.z += z; }
 	void setAspect(float a) { aspect = a; };
 	void setRotationFactor(float f) { rfactor = f; };
 	void setTranslationFactor(float f) { tfactor = f; };

@@ -12,6 +12,7 @@
 class PhysicsEngine {
     public:
         PhysicsEngine(std::vector<std::shared_ptr<Object>>& objectList, nlohmann::json parameters);
+        void reset();
         void implicitStep();
         void symplecticStep();
 
@@ -34,13 +35,14 @@ class PhysicsEngine {
         Eigen::Matrix3Xf positions;
         Eigen::Matrix3Xf velocities;
         std::vector<bool> isFixedPoint;
+
+        Eigen::Matrix3Xf initialPositions;
+        Eigen::Matrix3Xf initialVelocities;
         
         int numEdges;
         std::vector<std::vector<unsigned int>> edgeList;
         std::vector<float> edgeRestLengthSquares;
         
-        
-
         // Helper
         void makePSD(Eigen::MatrixXf& hess);
         void updateObjectPositions(); 

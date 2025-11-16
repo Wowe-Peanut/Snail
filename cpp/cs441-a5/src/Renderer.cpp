@@ -81,12 +81,14 @@ void Renderer::initGraphics() {
 
 	// Set vsync.
 	glfwSwapInterval(1);
-	// Set keyboard callback.
+
+	// Set glfw callback functions
 	glfwSetKeyCallback(window, keyCallback);
 	glfwSetCharCallback(window, charCallback);
 	glfwSetCursorPosCallback(window, cursorPosCallback);
 	glfwSetMouseButtonCallback(window, mouseCallback);
 	glfwSetFramebufferSizeCallback(window, resizeCallback);
+	glfwSetScrollCallback(window, scrollCallback);
 }
 
 void Renderer::initScene(vector<shared_ptr<Object>>& objectList) {
@@ -165,9 +167,24 @@ void Renderer::charCallback(GLFWwindow* window, unsigned int key) {
 	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
 	
 	switch (key) {
-		case 'n':
+		case 'x':
 			renderer->PAUSED = !renderer->PAUSED;
+			if (renderer->PAUSED) {
+				renderer->STEP = false;
+			}
 			cerr << "Physics simulation: " << (renderer->PAUSED ? "OFF" : "ON") << endl;
+			break;
+
+		case 'r':
+			renderer->RESET = true;
+			renderer->PAUSED = true;
+			renderer->STEP = false;
+			break;
+		
+		case 's':
+			if (renderer->PAUSED) {
+				renderer->STEP = true;
+			}
 			break;
 
 		case 'c':
@@ -179,7 +196,6 @@ void Renderer::charCallback(GLFWwindow* window, unsigned int key) {
 			}
 			break;
 		
-		// Toggle triangle full OR wireframe
 		case 'z':
 			renderer->FILL = !renderer->FILL;
 			glPolygonMode(GL_FRONT_AND_BACK, renderer->FILL ? GL_FILL : GL_LINE);
@@ -194,6 +210,14 @@ void Renderer::resizeCallback(GLFWwindow* window, int width, int height) {
 	renderer->viewportHeight = height;
 	glViewport(0, 0, width, height);
 }
+
+void Renderer::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+
+	renderer->camera->zoom(yoffset*ZOOM_SPEED);
+}
+
+
 
 shared_ptr<Program> Renderer::makeProg(string name, vector<string> attributeNames, vector<string> uniformNames) {
 	auto prog = make_shared<Program>();

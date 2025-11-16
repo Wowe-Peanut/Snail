@@ -3,13 +3,14 @@
 - Refactoring:
   - [X] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
   - [X] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
+  - [] Get rid of compiler warnings...
 
 - QOL: 
   - [X] Make scene & simulation parameters setable from input file
   - [] Add fixed points, velocity, and stretch initial condition parameters to json
-  - [] Add reset animation button
-  - [] Add single step button 
-  - [] Zoom in and out with camera
+  - [X] Add reset animation button
+  - [X] Add single step button 
+  - [X] Zoom in and out with camera
   - [] Add light count, positions, and colors as JSON parameter
 
 - IPC:

@@ -9,7 +9,6 @@
     },
 
     "objects": [
-        
         {
             "shape": "cube",
             "segment_length": 0.25,

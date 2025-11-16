@@ -84,13 +84,28 @@ void simulate(string resourcePath, string jsonPath) {
 	PhysicsEngine engine(objects, data["parameters"]);
 	
 	while (!glfwWindowShouldClose(renderer.window)) {
-		if (!renderer.PAUSED) {
+		if (renderer.PAUSED) {
+			if (renderer.STEP) {
+				engine.implicitStep();
+				renderer.STEP = false;
+			}
+		} else {
 			engine.implicitStep();
 		}
+
+		if (renderer.RESET) {
+			engine.reset();
+			renderer.RESET = false;
+		}
+
 		renderer.render();
 		glfwSwapBuffers(renderer.window);
 		glfwPollEvents();
 	}
+
+	renderer.bphongProg->unbind();
+	glfwDestroyWindow(renderer.window);
+	glfwTerminate();
 }
 
 int main(int argc, char **argv) {

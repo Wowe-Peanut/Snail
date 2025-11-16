@@ -11,7 +11,6 @@ using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf, Eigen
 
 
 PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parameters) {
-
     // Read parameters
     h                   = parameters["delta_time"];
     tol                 = parameters["tolerance"];
@@ -55,7 +54,12 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 		numEdges += obj->shape->edgeList.size();
         edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->lengthsSquared.begin(), obj->shape->lengthsSquared.end());
     }
+
+	initialPositions = positions;
+	initialVelocities = velocities;
 }
+
+
 
 
 // Step functions
@@ -149,6 +153,13 @@ void PhysicsEngine::updateObjectPositions() {
 		obj->positions = positions.middleCols(offset, obj->numPoints);
 	}
 }
+void PhysicsEngine::reset() {
+	positions = initialPositions;
+	velocities = initialVelocities;
+
+	updateObjectPositions();
+}
+
 
 
 // Incremental Potential Energy

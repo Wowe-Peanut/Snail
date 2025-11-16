@@ -16,9 +16,12 @@
 #include "Shape.h"
 #include "Object.h"
 
-float constexpr DEFAULT_WIDTH = 800;
-float constexpr DEFAULT_HEIGHT = 600;
-int constexpr MAX_LIGHTS = 10;
+float constexpr 	DEFAULT_WIDTH = 800;
+float constexpr 	DEFAULT_HEIGHT = 600;
+int constexpr	 	MAX_LIGHTS = 10;
+float constexpr		ZOOM_SPEED = 0.5;
+
+
 
 class Renderer {
 	public:
@@ -36,10 +39,13 @@ class Renderer {
 		static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 		static void charCallback(GLFWwindow* window, unsigned int key);
 		static void resizeCallback(GLFWwindow* window, int width, int height);
+		static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 		bool PAUSED = true;
 		bool CULL = true;
 		bool FILL = true;
+		bool STEP = false;
+		bool RESET = false;
 
 		int viewportWidth = DEFAULT_WIDTH;
 		int viewportHeight = DEFAULT_HEIGHT;
