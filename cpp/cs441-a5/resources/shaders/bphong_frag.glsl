@@ -20,9 +20,9 @@ void main()
 	vec3 pos = fPos;
 	vec3 nor = fNor;
 
-	vec3 n = normalize(nor);
-	vec3 e = normalize(-pos);  
-	vec3 fragColor = ka;
+	// vec3 n = normalize(nor);
+	// vec3 e = normalize(-pos);  
+	// vec3 fragColor = ka;
 
 	// for (int li=0; li<lightCount; li++) {
 	// 	vec3 l = normalize(lightPositions[li] - pos);

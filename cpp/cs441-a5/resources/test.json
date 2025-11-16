@@ -3,17 +3,18 @@
         "delta_time": 0.01,
         "tolerance": 0.01,
         "max_iterations": 10,
-        "point_mass": 200,
-        "spring_stiffness": 3500,
+        "point_mass": 100,
+        "spring_stiffness": 100000,
         "gravity": -9.81
     },
 
     "objects": [
         {
             "shape": "cube",
-            "segment_length": 0.25,
-            "segments": 4,
+            "segment_length": 0.5,
+            "segments": 2,
             "is_physics_object": true,
+            
             "transformation": {
                 "translation":  [-0.5, 1, -0.5],
                 "scale":        [1, 1, 1],
