@@ -138,6 +138,16 @@ shared_ptr<Shape> Shape::buildCube(float segmentLength, int segments) {
 }
 
 
+/**
+ * So after doing some research I've come face-to-face with the world of volumetric mesh generation. Needless to say it's fucking massive and super cool. However, for now I'm going 
+ * to focus on the simulating part and perhaps I can revisit that later on. Instead, I'm going to look into some external libraries to generate volumetric meshes and convert
+ * them to a format that this fucking shit show of an engine can understand and work with. The main difficulty will be my original goal with this improvement, which was not sending
+ * internal triangles to the GPU, however this also has the benefit of allowing for any models to be imported.
+ * 
+ * 
+ */
+
+
 void Shape::loadMeshFile(const string &meshName)
 {
 	this->procedural = false;
