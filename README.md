@@ -1,7 +1,6 @@
 # Currently working on:
-- Improved cube construction. I want to get this done before contact so that I can make sure contact is only considered for the outer shell of surfaces/points and one of my goals with 
-improving the cube creation is differentiating between internal and external (so that only
-outer triangles are drawn and only outer surfaces are collided with)
+- I stared into the void of volumetric mesh generation and the void stared back... so instead I'm going to focus on using other software to generate the volumetric meshes and
+focus on the simulation part of it. 
 
 # TODO
 
@@ -25,7 +24,11 @@ outer triangles are drawn and only outer surfaces are collided with)
   - [ ] Inversion free
   - [ ] Friction energy
 
-- [ ] Investigate sticky DBC Hessian transformation more (whether it's actually necessary since I can't get it to work)
+- [ ] Fix sticky DBC Hessian transformation more (I think it's causing the fixed point to move around rn)
+
+- [ ] Investigate the bug where the sim will freeze up and never return (I think it's prematurely reach a minimum somewhere and getting a search direction of zero): see *buggy_scene.json* 
+
+- [ ] Download MATLAB & Simulink w/ the TAMU free student license and mess around with the sims to see how accurate this piece of shit is in comparison
 
 - [ ] Improve Cube Construction:
   - Should only draw the minimum number of external triangles and not draw any internal supports (might make it hard to tell if structure inverted but idgaf rn)
@@ -58,7 +61,7 @@ outer triangles are drawn and only outer surfaces are collided with)
 - [ ] Animation saving & replaying
   - Saving just outmost positions and normals to file 
 
-
+- [ ] Investigate time-dependent forces (e.g. simulating viscoelasticity where the speed of the deformation plays a role in the force that is applied back)
 
 # Notes:
 - ALWAYS CHECK CMAKELIST FOR DEBUG/RELEASE
