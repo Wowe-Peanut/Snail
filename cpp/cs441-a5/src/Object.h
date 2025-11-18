@@ -11,7 +11,6 @@
 #include <random>
 
 #define EIGEN_DONT_ALIGN_STATICALLY
-#include <Eigen/Sparse>
 #include <Eigen/Dense>
 
 #include <glm/glm.hpp> 

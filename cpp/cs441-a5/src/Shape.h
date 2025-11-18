@@ -6,45 +6,36 @@
 
 class Program;
 
-/**
- * A shape defined by a list of triangles
- * - posBuf should be of length 3*ntris
- * - norBuf should be of length 3*ntris (if normals are available)
- * - texBuf should be of length 2*ntris (if texture coords are available)
- * posBufID, norBufID, and texBufID are OpenGL buffer identifiers.
- */
-class Shape
-{
-public:
-	std::vector<float> posBuf;
-	std::vector<float> norBuf;
-	std::vector<float> texBuf;
-	std::vector<unsigned int> indBuf;
-	unsigned posBufID;
-	unsigned norBufID;
-	unsigned texBufID;
-	unsigned indBufID;
+class Shape {
+	public:
 
-	std::vector<std::vector<unsigned int>> edgeList;
-	std::vector<float> lengthsSquared; // resting distance of edges in mesh squared (for spring calculations)
+		// OpenGL Buffers
+		std::vector<float> posBuf;
+		unsigned posBufID;
 
-	float baseY;
-	bool procedural;
+		std::vector<float> norBuf;
+		unsigned norBufID;
 
+		std::vector<float> texBuf;
+		unsigned texBufID;
 
-	Shape();
-	virtual ~Shape();
-	void loadMeshFile(const std::string &meshName);
-	void loadMeshBuffers(std::vector<float> posBuf, std::vector<float> norBuf, std::vector<float> texBuf, std::vector<unsigned int> indBuf);
-	void fitToUnitBox();
-	void init();
+		std::vector<unsigned int> indBuf;
+		unsigned indBufID;
 
-	float getBaseY();
-	void draw(const std::shared_ptr<Program> prog) const;
-	void drawArrays(const std::shared_ptr<Program> prog) const;
-	void drawElements(const std::shared_ptr<Program> prog) const;
+		// Spring edges
+		std::vector<std::vector<unsigned int>> edgeList;
+		std::vector<float> edgeRestLengthSquares;
+		
+		Shape();
+		void init(); // Initializes OpenGL buffers
 
-	static std::shared_ptr<Shape> buildSphere(int v);
-	static std::shared_ptr<Shape> buildCube(float segmentLength, int segments);
-	static std::shared_ptr<Shape> buildPlane(float segmentLength, int segments);
+		void loadFromFile(const std::string &fileName);
+		void loadObjFile(const std::string &fileName);	// .obj
+		void loadMeshFile(const std::string &fileName);	// .msh
+
+		bool drawWithElements;
+		void draw(const std::shared_ptr<Program> prog) const;			
+		void drawArrays(const std::shared_ptr<Program> prog) const;		// Triangles defined by structure of 'posBuf'
+		void drawElements(const std::shared_ptr<Program> prog) const;	// Triangles defined by 'posBuf' + 'indBuf'
+
 };

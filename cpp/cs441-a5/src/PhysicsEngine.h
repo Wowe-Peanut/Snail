@@ -5,7 +5,6 @@
 #include "json.hpp"
 
 #define EIGEN_DONT_ALIGN_STATICALLY
-#include <Eigen/Sparse>
 #include <Eigen/Dense>
 
 

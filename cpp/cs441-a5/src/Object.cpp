@@ -14,7 +14,6 @@
 #include <glm/gtc/type_ptr.hpp>
 	
 #define EIGEN_DONT_ALIGN_STATICALLY
-#include <Eigen/Sparse>
 #include <Eigen/Dense>
 
 using namespace std;
@@ -45,9 +44,6 @@ void Object::draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog) {
 	MV->rotate(rotation.z, 0, 0, 1);
 	MV->scale(scale);
 
-	// Fix bottom to y=0
-	MV->translate(0, -shape->getBaseY(), 0);
-	
 	// Send properties to GPU
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 	glUniformMatrix4fv(prog->getUniform("MVIT"), 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MV->topMatrix()))));

@@ -2,7 +2,6 @@
 #include <iostream>
 
 #define EIGEN_DONT_ALIGN_STATICALLY
-#include <Eigen/Sparse>
 #include <Eigen/Dense>
 
 using json = nlohmann::json;
@@ -41,7 +40,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
     //!
 
 	numEdges = 0;
-    for (int objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
+    for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
         auto obj = physicsObjects[objIdx];
         int offset = objectOffsets[objIdx];
 
@@ -52,7 +51,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
         }
 
 		numEdges += obj->shape->edgeList.size();
-        edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->lengthsSquared.begin(), obj->shape->lengthsSquared.end());
+        edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->edgeRestLengthSquares.begin(), obj->shape->edgeRestLengthSquares.end());
     }
 
 	initialPositions = positions;
@@ -146,7 +145,7 @@ void PhysicsEngine::makePSD(MatrixXf& hess) {
 	hess = evecs * evals.asDiagonal() * evecs.transpose();
 }
 void PhysicsEngine::updateObjectPositions() {
-	for (int objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
+	for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
 		auto obj = physicsObjects[objIdx];
         int offset = objectOffsets[objIdx];
 

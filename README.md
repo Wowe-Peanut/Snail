@@ -1,6 +1,5 @@
 # Currently working on:
-- I stared into the void of volumetric mesh generation and the void stared back... so instead I'm going to focus on using other software to generate the volumetric meshes and
-focus on the simulation part of it. 
+- I stared into the void of volumetric mesh generation and the void stared back... so I'm using gmash and meshlabs instead
 
 # TODO
 
