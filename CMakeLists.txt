@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 set(CMAKE_BUILD_TYPE Debug)
 
 # Name of the project
-PROJECT(A5)
+PROJECT(sim)
 
 # Use glob to get the list of all source files.
 # We don't really need to include header and resource files to build, but it's

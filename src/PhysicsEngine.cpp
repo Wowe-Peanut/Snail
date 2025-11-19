@@ -29,7 +29,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
     }
 
 	if (physicsObjects.empty()) {
-		cerr << "No physics objects in simulation!" << endl;
+		cerr << "WARNING | None of the constructed objects are set to be physicsObjects..." << endl;
 
 	} else {
 		 // Initialize the ensemble state of all objects

@@ -90,28 +90,14 @@ void simulate(string resourcePath, string jsonPath) {
 }
 
 int main(int argc, char **argv) {
-
-	// Read in cmdargs
-	// -----------------------------------------------------------
-	if (argc < 4) {
-		cerr << "BAD USAGE - A5 RESOURCEDIR MODE JSON" << endl;
+	if (argc < 3) {
+		cerr << "BAD USAGE - A5 RESOURCEDIR JSON" << endl;
 		return 1;
 	}
 
 	string resourcePath = argv[1] + string("/");
-	string mode = argv[2];
-	string jsonPath = argv[3];
+	string jsonPath = argv[2];
 
-	// Mode specific calls
-	// -----------------------------------------------------------
-	if (mode == "-r" || mode == "--replay") {
-		cerr << "REPLAY NOT IMLEMENTED YET" << endl;
-	} else if (mode == "-s" || mode == "--simulate") {
-		simulate(resourcePath, jsonPath);
-	} else {
-		cerr << "'" << mode << "'" << "is not a valid mode" << endl;
-		return 1;
-	}
-
+	simulate(resourcePath, jsonPath);
 	return 0;
 }
