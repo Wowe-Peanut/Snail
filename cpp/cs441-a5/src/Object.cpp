@@ -18,20 +18,11 @@
 
 using namespace std;
 
-Object::Object(shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject): 
-shape(shape), translation(trans), rotation(rot), scale(scale), physicsObject(physicsObject), positions(shape->posBuf.data(), 3, shape->posBuf.size()/3) {
-	
-	// Preprocess physics objects to avoid excessive data copying to and from buffer
-	if (physicsObject) {
-
-		// Ensures the shape is using drawElement with an index buffer so we only have
-		// to change the position data in a single location (unlike drawArrays)
-		assert(shape->procedural);
-		numPoints = shape->posBuf.size()/3;
-		numEdges = shape->edgeList.size();
-	}
-
-	
+Object::Object(string meshpath, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject): 
+translation(trans), rotation(rot), scale(scale), physicsObject(physicsObject) {
+	shape = make_shared<Shape>(meshpath);
+	numPoints = shape->posBuf.size()/3;
+	numEdges = shape->edgeList.size();
 }
 
 void Object::draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog) {

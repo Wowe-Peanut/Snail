@@ -10,11 +10,8 @@
 
     "objects": [
         {
-            "shape": "cube",
-            "segment_length": 0.25,
-            "segments": 4,
-            "is_physics_object": true,
-            
+            "mesh": "models/cube/cube.obj",
+            "is_physics_object": false,        
             "transformation": {
                 "translation":  [-0.5, 1, -0.5],
                 "scale":        [1, 1, 1],
@@ -23,9 +20,7 @@
         },
 
         {
-            "shape": "plane",
-            "segment_length": 1,
-            "segments": 1,
+            "mesh": "models/plane.obj",
             "is_physics_object": false,
             "transformation": {
                 "translation":  [-1.5, 0, -1.5],

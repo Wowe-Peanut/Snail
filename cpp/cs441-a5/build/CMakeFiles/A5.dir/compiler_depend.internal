@@ -59,7 +59,6 @@ CMakeFiles/A5.dir/src/Camera.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
@@ -67,9 +66,7 @@ CMakeFiles/A5.dir/src/Camera.cpp.o
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/specfun.h
  /usr/include/c++/11/bits/stl_algobase.h
  /usr/include/c++/11/bits/functexcept.h
@@ -115,7 +112,6 @@ CMakeFiles/A5.dir/src/Camera.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/exception
  /usr/include/c++/11/bits/exception.h
  /usr/include/c++/11/bits/exception_ptr.h
@@ -182,8 +178,6 @@ CMakeFiles/A5.dir/src/Camera.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/cerrno
  /usr/include/errno.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
@@ -464,7 +458,6 @@ CMakeFiles/A5.dir/src/GLSL.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/exception
  /usr/include/c++/11/bits/exception.h
  /usr/include/c++/11/bits/exception_ptr.h
@@ -563,11 +556,8 @@ CMakeFiles/A5.dir/src/GLSL.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/std_abs.h
  /usr/include/c++/11/cstdio
  /usr/include/stdio.h
@@ -576,8 +566,6 @@ CMakeFiles/A5.dir/src/GLSL.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/cerrno
  /usr/include/errno.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
@@ -614,8 +602,6 @@ CMakeFiles/A5.dir/src/GLSL.cpp.o
  /usr/include/c++/11/cstring
  /usr/include/string.h
  /usr/include/strings.h
- /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
- /usr/include/x86_64-linux-gnu/bits/string_fortified.h
 
 CMakeFiles/A5.dir/src/MatrixStack.cpp.o
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.cpp
@@ -709,7 +695,6 @@ CMakeFiles/A5.dir/src/MatrixStack.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/bits/shared_ptr_base.h
  /usr/include/c++/11/typeinfo
  /usr/include/c++/11/bits/allocated_ptr.h
@@ -773,8 +758,6 @@ CMakeFiles/A5.dir/src/MatrixStack.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/vector
  /usr/include/c++/11/bits/stl_vector.h
  /usr/include/c++/11/bits/stl_bvector.h
@@ -803,11 +786,8 @@ CMakeFiles/A5.dir/src/MatrixStack.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/specfun.h
  /usr/include/c++/11/limits
  /usr/include/c++/11/tr1/gamma.tcc
@@ -1037,7 +1017,6 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/cstdint
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h
  /usr/include/stdint.h
@@ -1118,11 +1097,8 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/std_abs.h
  /usr/include/c++/11/cstdio
  /usr/include/stdio.h
@@ -1131,8 +1107,6 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/cerrno
  /usr/include/errno.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
@@ -1177,6 +1151,16 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/c++/11/backward/auto_ptr.h
  /usr/include/c++/11/pstl/glue_memory_defs.h
  /usr/include/c++/11/pstl/execution_defs.h
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.h
+ /usr/include/c++/11/map
+ /usr/include/c++/11/bits/stl_tree.h
+ /usr/include/c++/11/bits/node_handle.h
+ /usr/include/c++/11/bits/stl_map.h
+ /usr/include/c++/11/bits/stl_multimap.h
+ /usr/include/c++/11/bits/erase_if.h
+ /usr/local/lib/opengl-libs/glew-2.1.0/include/GL/glew.h
+ /usr/include/GL/glu.h
+ /usr/include/GL/gl.h
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.h
  /usr/include/c++/11/stack
  /usr/include/c++/11/deque
@@ -1190,16 +1174,6 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/assert.h
  /usr/include/c++/11/cstddef
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/simd/platform.h
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.h
- /usr/include/c++/11/map
- /usr/include/c++/11/bits/stl_tree.h
- /usr/include/c++/11/bits/node_handle.h
- /usr/include/c++/11/bits/stl_map.h
- /usr/include/c++/11/bits/stl_multimap.h
- /usr/include/c++/11/bits/erase_if.h
- /usr/local/lib/opengl-libs/glew-2.1.0/include/GL/glew.h
- /usr/include/GL/glu.h
- /usr/include/GL/gl.h
  /usr/include/c++/11/cfloat
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h
  /usr/include/c++/11/random
@@ -1286,8 +1260,6 @@ CMakeFiles/A5.dir/src/Object.cpp.o
  /usr/include/c++/11/cstring
  /usr/include/string.h
  /usr/include/strings.h
- /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
- /usr/include/x86_64-linux-gnu/bits/string_fortified.h
  /usr/include/c++/11/climits
  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h
  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h
@@ -1755,7 +1727,6 @@ CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/cstdint
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h
  /usr/include/stdint.h
@@ -1836,11 +1807,8 @@ CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/std_abs.h
  /usr/include/c++/11/cstdio
  /usr/include/stdio.h
@@ -1849,8 +1817,6 @@ CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/cerrno
  /usr/include/errno.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
@@ -1895,6 +1861,16 @@ CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o
  /usr/include/c++/11/backward/auto_ptr.h
  /usr/include/c++/11/pstl/glue_memory_defs.h
  /usr/include/c++/11/pstl/execution_defs.h
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.h
+ /usr/include/c++/11/map
+ /usr/include/c++/11/bits/stl_tree.h
+ /usr/include/c++/11/bits/node_handle.h
+ /usr/include/c++/11/bits/stl_map.h
+ /usr/include/c++/11/bits/stl_multimap.h
+ /usr/include/c++/11/bits/erase_if.h
+ /usr/local/lib/opengl-libs/glew-2.1.0/include/GL/glew.h
+ /usr/include/GL/glu.h
+ /usr/include/GL/gl.h
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/MatrixStack.h
  /usr/include/c++/11/stack
  /usr/include/c++/11/deque
@@ -1908,16 +1884,6 @@ CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o
  /usr/include/assert.h
  /usr/include/c++/11/cstddef
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/simd/platform.h
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.h
- /usr/include/c++/11/map
- /usr/include/c++/11/bits/stl_tree.h
- /usr/include/c++/11/bits/node_handle.h
- /usr/include/c++/11/bits/stl_map.h
- /usr/include/c++/11/bits/stl_multimap.h
- /usr/include/c++/11/bits/erase_if.h
- /usr/local/lib/opengl-libs/glew-2.1.0/include/GL/glew.h
- /usr/include/GL/glu.h
- /usr/include/GL/gl.h
  /usr/include/c++/11/cfloat
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h
  /usr/include/c++/11/random
@@ -2004,8 +1970,6 @@ CMakeFiles/A5.dir/src/PhysicsEngine.cpp.o
  /usr/include/c++/11/cstring
  /usr/include/string.h
  /usr/include/strings.h
- /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
- /usr/include/x86_64-linux-gnu/bits/string_fortified.h
  /usr/include/c++/11/climits
  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h
  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h
@@ -2483,7 +2447,6 @@ CMakeFiles/A5.dir/src/Program.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/cstdint
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h
  /usr/include/stdint.h
@@ -2552,11 +2515,8 @@ CMakeFiles/A5.dir/src/Program.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/std_abs.h
  /usr/include/c++/11/cstdio
  /usr/include/stdio.h
@@ -2565,8 +2525,6 @@ CMakeFiles/A5.dir/src/Program.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/cerrno
  /usr/include/errno.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
@@ -2653,7 +2611,6 @@ CMakeFiles/A5.dir/src/Renderer.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/exception
  /usr/include/c++/11/bits/exception.h
  /usr/include/c++/11/bits/exception_ptr.h
@@ -2759,11 +2716,8 @@ CMakeFiles/A5.dir/src/Renderer.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/std_abs.h
  /usr/include/c++/11/cstdio
  /usr/include/stdio.h
@@ -2772,8 +2726,6 @@ CMakeFiles/A5.dir/src/Renderer.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/cerrno
  /usr/include/errno.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
@@ -3041,8 +2993,6 @@ CMakeFiles/A5.dir/src/Renderer.cpp.o
  /usr/include/c++/11/cstring
  /usr/include/string.h
  /usr/include/strings.h
- /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
- /usr/include/x86_64-linux-gnu/bits/string_fortified.h
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/gtc/type_ptr.inl
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.h
  /usr/include/c++/11/memory
@@ -3388,7 +3338,6 @@ CMakeFiles/A5.dir/src/Shape.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/cstdint
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h
  /usr/include/stdint.h
@@ -3469,11 +3418,8 @@ CMakeFiles/A5.dir/src/Shape.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/std_abs.h
  /usr/include/c++/11/cstdio
  /usr/include/stdio.h
@@ -3482,8 +3428,6 @@ CMakeFiles/A5.dir/src/Shape.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/cerrno
  /usr/include/errno.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
@@ -3528,6 +3472,16 @@ CMakeFiles/A5.dir/src/Shape.cpp.o
  /usr/include/c++/11/backward/auto_ptr.h
  /usr/include/c++/11/pstl/glue_memory_defs.h
  /usr/include/c++/11/pstl/execution_defs.h
+ /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.h
+ /usr/include/c++/11/map
+ /usr/include/c++/11/bits/stl_tree.h
+ /usr/include/c++/11/bits/node_handle.h
+ /usr/include/c++/11/bits/stl_map.h
+ /usr/include/c++/11/bits/stl_multimap.h
+ /usr/include/c++/11/bits/erase_if.h
+ /usr/local/lib/opengl-libs/glew-2.1.0/include/GL/glew.h
+ /usr/include/GL/glu.h
+ /usr/include/GL/gl.h
  /usr/include/c++/11/filesystem
  /usr/include/c++/11/bits/fs_fwd.h
  /usr/include/c++/11/system_error
@@ -3576,16 +3530,6 @@ CMakeFiles/A5.dir/src/Shape.cpp.o
  /usr/include/c++/11/bits/fs_ops.h
  /usr/include/c++/11/iostream
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/GLSL.h
- /usr/local/lib/opengl-libs/glew-2.1.0/include/GL/glew.h
- /usr/include/GL/glu.h
- /usr/include/GL/gl.h
- /home/rpomullan/proj/sims/cpp/cs441-a5/src/Program.h
- /usr/include/c++/11/map
- /usr/include/c++/11/bits/stl_tree.h
- /usr/include/c++/11/bits/node_handle.h
- /usr/include/c++/11/bits/stl_map.h
- /usr/include/c++/11/bits/stl_multimap.h
- /usr/include/c++/11/bits/erase_if.h
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/glm.hpp
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/detail/_fixes.hpp
  /usr/include/c++/11/cmath
@@ -3770,8 +3714,6 @@ CMakeFiles/A5.dir/src/Shape.cpp.o
  /usr/include/c++/11/cstring
  /usr/include/string.h
  /usr/include/strings.h
- /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
- /usr/include/x86_64-linux-gnu/bits/string_fortified.h
  /usr/include/c++/11/fstream
  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h
@@ -3829,7 +3771,6 @@ CMakeFiles/A5.dir/src/main.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
- /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/c++/11/exception
  /usr/include/c++/11/bits/exception.h
  /usr/include/c++/11/bits/exception_ptr.h
@@ -3935,11 +3876,8 @@ CMakeFiles/A5.dir/src/main.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
- /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/alloca.h
- /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
- /usr/include/x86_64-linux-gnu/bits/stdlib.h
  /usr/include/c++/11/bits/std_abs.h
  /usr/include/c++/11/cstdio
  /usr/include/stdio.h
@@ -3948,8 +3886,6 @@ CMakeFiles/A5.dir/src/main.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
- /usr/include/x86_64-linux-gnu/bits/stdio.h
- /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/c++/11/cerrno
  /usr/include/errno.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
@@ -4218,8 +4154,6 @@ CMakeFiles/A5.dir/src/main.cpp.o
  /usr/include/c++/11/cstring
  /usr/include/string.h
  /usr/include/strings.h
- /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
- /usr/include/x86_64-linux-gnu/bits/string_fortified.h
  /usr/local/lib/opengl-libs/glm-1.0.1/glm/gtc/type_ptr.inl
  /home/rpomullan/proj/sims/cpp/cs441-a5/src/Camera.h
  /usr/include/c++/11/memory

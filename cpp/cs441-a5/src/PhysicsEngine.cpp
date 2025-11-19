@@ -28,34 +28,38 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
         }
     }
 
+	if (physicsObjects.empty()) {
+		cerr << "No physics objects in simulation!" << endl;
 
-    // Initialize the ensemble state of all objects
-    positions = Matrix3Xf::Zero(3, numPoints);
-    velocities = Matrix3Xf::Zero(3, numPoints); 
-    isFixedPoint = vector<bool>(numPoints, false);
+	} else {
+		 // Initialize the ensemble state of all objects
+		positions = Matrix3Xf::Zero(3, numPoints);
+		velocities = Matrix3Xf::Zero(3, numPoints); 
+		isFixedPoint = vector<bool>(numPoints, false);
 
-    //! REMOVE ME
-    isFixedPoint[numPoints-1] = true;
-	isFixedPoint[numPoints-3] = true;
-    //!
+		//! REMOVE ME
+		isFixedPoint[numPoints-1] = true;
+		isFixedPoint[numPoints-3] = true;
+		//!
 
-	numEdges = 0;
-    for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
-        auto obj = physicsObjects[objIdx];
-        int offset = objectOffsets[objIdx];
+		numEdges = 0;
+		for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
+			auto obj = physicsObjects[objIdx];
+			int offset = objectOffsets[objIdx];
 
-        positions.middleCols(offset, obj->numPoints) = Eigen::Map<Matrix3Xf>(obj->shape->posBuf.data(), 3, obj->numPoints);
-        
-        for (auto edge: obj->shape->edgeList) {
-            edgeList.push_back({offset+edge[0], offset+edge[1]});
-        }
+			positions.middleCols(offset, obj->numPoints) = Eigen::Map<Matrix3Xf>(obj->shape->posBuf.data(), 3, obj->numPoints);
+			
+			for (auto edge: obj->shape->edgeList) {
+				edgeList.push_back({offset+edge[0], offset+edge[1]});
+			}
 
-		numEdges += obj->shape->edgeList.size();
-        edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->edgeRestLengthSquares.begin(), obj->shape->edgeRestLengthSquares.end());
-    }
+			numEdges += obj->shape->edgeList.size();
+			edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->edgeRestLengthSquares.begin(), obj->shape->edgeRestLengthSquares.end());
+		}
 
-	initialPositions = positions;
-	initialVelocities = velocities;
+		initialPositions = positions;
+		initialVelocities = velocities;
+	}
 }
 
 
@@ -63,6 +67,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 
 // Step functions
 void PhysicsEngine::implicitStep() {
+	if (physicsObjects.empty()) return;	
 
 	// Make copy of original positions & calculate explicit predicted positions
 	Matrix3Xf originalPositions = positions;
@@ -149,7 +154,8 @@ void PhysicsEngine::updateObjectPositions() {
 		auto obj = physicsObjects[objIdx];
         int offset = objectOffsets[objIdx];
 
-		obj->positions = positions.middleCols(offset, obj->numPoints);
+		auto submatrix = positions.middleCols(offset, obj->numPoints);
+		obj->shape->posBuf.assign(submatrix.data(), submatrix.data() + submatrix.size());
 	}
 }
 void PhysicsEngine::reset() {

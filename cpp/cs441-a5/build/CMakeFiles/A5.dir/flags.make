@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/usr/local/lib/opengl-libs/glm-1.0.1 -I/usr/local/lib/opengl-libs/glfw-3.4/include -I/usr/local/lib/opengl-libs/glew-2.1.0/include -I/usr/local/lib/eigen3
 
-CXX_FLAGS =  -Wall -pedantic -O3 -DNDEBUG
+CXX_FLAGS =  -Wall -pedantic -g
 

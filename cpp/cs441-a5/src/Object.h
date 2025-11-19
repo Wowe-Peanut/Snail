@@ -29,11 +29,10 @@ class Object {
 		float s = 200;		
 
 		bool physicsObject;	
-		Eigen::Map<Eigen::Matrix3Xf> positions;
 		int numPoints;
 		int numEdges;
 
-		Object(std::shared_ptr<Shape> shape, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject);
+		Object(std::string meshpath, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject);
 		void draw(std::shared_ptr<MatrixStack> MV, std::shared_ptr<Program> prog);
 };
 

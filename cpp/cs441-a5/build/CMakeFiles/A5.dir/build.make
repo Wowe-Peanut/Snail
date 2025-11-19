@@ -220,7 +220,7 @@ A5: CMakeFiles/A5.dir/src/Renderer.cpp.o
 A5: CMakeFiles/A5.dir/src/Shape.cpp.o
 A5: CMakeFiles/A5.dir/src/main.cpp.o
 A5: CMakeFiles/A5.dir/build.make
-A5: /usr/local/lib/opengl-libs/glfw-3.4/release/src/libglfw3.a
+A5: /usr/local/lib/opengl-libs/glfw-3.4/debug/src/libglfw3.a
 A5: /usr/local/lib/opengl-libs/glew-2.1.0/lib/libGLEW.a
 A5: /usr/lib/x86_64-linux-gnu/librt.a
 A5: /usr/lib/x86_64-linux-gnu/libm.so

@@ -7,7 +7,6 @@
 #include "GLSL.h"
 #include "Program.h"
 
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
@@ -18,7 +17,20 @@
 
 using namespace std;
 
-Shape::Shape(): posBufID(0), norBufID(0), texBufID(0), drawWithElements(false) {}
+Shape::Shape(string &fileName): posBufID(0), norBufID(0), texBufID(0) {
+
+	filesystem::path p(fileName);
+	string extension = p.extension().string();
+
+	if (extension == ".obj") {
+		loadObjFile(fileName);
+	} else if (extension == ".msh") {
+		loadMeshFile(fileName);
+	} else {
+		cerr << "Unsupported mesh filetype: " << extension << endl; 
+	}
+}
+
 void Shape::init() {	
 
 	// Send the position array to the GPU
@@ -53,21 +65,7 @@ void Shape::init() {
 
 	GLSL::checkError(GET_FILE_LINE);
 }
-
-
-void Shape::loadFromFile(const string &fileName) {
-	filesystem::path p(fileName);
-	string extension = p.extension().string();
-
-	if (extension == ".obj") {
-		loadObjFile(fileName);
-	} else if (extension == ".msh") {
-		loadMeshFile(fileName);
-	} else {
-		cerr << "Unsupported mesh filetype: " << extension << endl; 
-	}
-}
-void Shape::loadObjFile(const string &fileName) {
+void Shape::loadObjFile(string &fileName) {
 
 	// I'm currently not using .obj files for physics stuff so keep them 'drawArray' so I can continue to use this implementation
 	drawWithElements = false;
@@ -117,11 +115,11 @@ void Shape::loadObjFile(const string &fileName) {
 		}
 	}
 }
-void Shape::loadMeshFile(const string &fileName) {
+void Shape::loadMeshFile(string &fileName) {
 	drawWithElements = true;
+
+
 }
-
-
 
 void Shape::draw(const shared_ptr<Program> prog) const {
 	if (drawWithElements) {

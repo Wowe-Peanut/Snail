@@ -5,8 +5,9 @@ using namespace std;
 using vec3 = glm::vec3;
 using vec4 = glm::vec4;
 
-Renderer::Renderer(string resourceDirectory): resourceDir(resourceDirectory) {
+Renderer::Renderer(vector<shared_ptr<Object>>& objectList, string resourceDirectory): objects(objectList), resourceDir(resourceDirectory) {
 	initGraphics();
+	initScene();
 }
 
 void Renderer::render() {
@@ -89,10 +90,14 @@ void Renderer::initGraphics() {
 	glfwSetMouseButtonCallback(window, mouseCallback);
 	glfwSetFramebufferSizeCallback(window, resizeCallback);
 	glfwSetScrollCallback(window, scrollCallback);
+
+	// Initial all the object shapes now that the OpenGL context is created
+	for (auto obj: objects) {
+		obj->shape->init();
+	}
 }
 
-void Renderer::initScene(vector<shared_ptr<Object>>& objectList) {
-	objects = objectList;
+void Renderer::initScene() {
 
 	// Initialize time.
 	glfwSetTime(0.0); 			

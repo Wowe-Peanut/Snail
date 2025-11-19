@@ -3,8 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-
-class Program;
+#include "Program.h"
 
 class Shape {
 	public:
@@ -22,16 +21,14 @@ class Shape {
 		std::vector<unsigned int> indBuf;
 		unsigned indBufID;
 
-		// Spring edges
 		std::vector<std::vector<unsigned int>> edgeList;
 		std::vector<float> edgeRestLengthSquares;
 		
-		Shape();
+		Shape(std::string &fileName);
 		void init(); // Initializes OpenGL buffers
 
-		void loadFromFile(const std::string &fileName);
-		void loadObjFile(const std::string &fileName);	// .obj
-		void loadMeshFile(const std::string &fileName);	// .msh
+		void loadObjFile(std::string &fileName);	// .obj
+		void loadMeshFile(std::string &fileName);	// .msh
 
 		bool drawWithElements;
 		void draw(const std::shared_ptr<Program> prog) const;			

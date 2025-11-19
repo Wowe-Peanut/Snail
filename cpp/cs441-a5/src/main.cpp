@@ -39,48 +39,29 @@ json openjson(string path) {
 	return data;
 }
 
-vector<shared_ptr<Object>> parseObjects(json objectListJson) {
+vector<shared_ptr<Object>> parseObjects(string resourcePath, json objectListJson) {
 	vector<shared_ptr<Object>> objects;
 
 	for (auto obj: objectListJson) {
-		string shape = obj["shape"];
+		string meshpath = obj["mesh"];
 		json transform = obj["transformation"];
 		vec3 translation = jsontovec3(transform["translation"]);
 		vec3 scale = jsontovec3(transform["scale"]);
 		vec3 rotation = jsontovec3(transform["rotation"]);
 		bool isPhysicsObject = obj["is_physics_object"];
 		
-
-		// Shape specific initializiation
-		if (shape == "cube") {
-			double segLen = obj["segment_length"];
-			int segNum = obj["segments"];
-			
-			objects.push_back(make_shared<Object>(Shape::buildCube(segLen, segNum), translation, rotation, scale, isPhysicsObject));
-		}
-		else if (shape == "plane") {
-			double segLen = obj["segment_length"];
-			int segNum = obj["segments"];
-
-			objects.push_back(make_shared<Object>(Shape::buildPlane(segLen, segNum), translation, rotation, scale, isPhysicsObject));
-		}
-		else {
-			cout << "UNKNOWN SHAPE IN TARGET JSON" << endl;
-		}
-
+		objects.push_back(make_shared<Object>(resourcePath + meshpath, translation, rotation, scale, isPhysicsObject));
 	}
 	
 	return objects;
 }
 
 void simulate(string resourcePath, string jsonPath) {
+	
 	json data = openjson(resourcePath + jsonPath);
+	vector<shared_ptr<Object>> objects = parseObjects(resourcePath, data["objects"]);
 
-	// renderer must be initialized before objects can be created - opengl must be setup before objects can create their buffers
-	Renderer renderer(resourcePath);
-	vector<shared_ptr<Object>> objects = parseObjects(data["objects"]);
-	renderer.initScene(objects);
-
+	Renderer renderer(objects, resourcePath);
 	PhysicsEngine engine(objects, data["parameters"]);
 	
 	while (!glfwWindowShouldClose(renderer.window)) {

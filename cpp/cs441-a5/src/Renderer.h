@@ -27,10 +27,10 @@ class Renderer {
 	public:
 		GLFWwindow* window;
 
-		Renderer(std::string resourceDirectory);
+		Renderer(std::vector<std::shared_ptr<Object>>& objectList, std::string resourceDirectory);
 		void render();
 		void initGraphics();
-		void initScene(std::vector<std::shared_ptr<Object>>& objectList);
+		void initScene();
 
 		// GLFW callback functions
 		static void errorCallback(int error, const char *description);

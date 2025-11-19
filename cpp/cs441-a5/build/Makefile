@@ -184,7 +184,7 @@ uninstall: cmake_check_build_system
 
 # fast build rule for target.
 uninstall/fast:
-	$(MAKE) $(MAKESILENT) -f /usr/local/lib/opengl-libs/glfw-3.4/release/CMakeFiles/uninstall.dir/build.make /usr/local/lib/opengl-libs/glfw-3.4/release/CMakeFiles/uninstall.dir/build
+	$(MAKE) $(MAKESILENT) -f /usr/local/lib/opengl-libs/glfw-3.4/debug/CMakeFiles/uninstall.dir/build.make /usr/local/lib/opengl-libs/glfw-3.4/debug/CMakeFiles/uninstall.dir/build
 .PHONY : uninstall/fast
 
 #=============================================================================
@@ -197,7 +197,7 @@ glfw: cmake_check_build_system
 
 # fast build rule for target.
 glfw/fast:
-	$(MAKE) $(MAKESILENT) -f /usr/local/lib/opengl-libs/glfw-3.4/release/src/CMakeFiles/glfw.dir/build.make /usr/local/lib/opengl-libs/glfw-3.4/release/src/CMakeFiles/glfw.dir/build
+	$(MAKE) $(MAKESILENT) -f /usr/local/lib/opengl-libs/glfw-3.4/debug/src/CMakeFiles/glfw.dir/build.make /usr/local/lib/opengl-libs/glfw-3.4/debug/src/CMakeFiles/glfw.dir/build
 .PHONY : glfw/fast
 
 #=============================================================================
@@ -210,7 +210,7 @@ update_mappings: cmake_check_build_system
 
 # fast build rule for target.
 update_mappings/fast:
-	$(MAKE) $(MAKESILENT) -f /usr/local/lib/opengl-libs/glfw-3.4/release/src/CMakeFiles/update_mappings.dir/build.make /usr/local/lib/opengl-libs/glfw-3.4/release/src/CMakeFiles/update_mappings.dir/build
+	$(MAKE) $(MAKESILENT) -f /usr/local/lib/opengl-libs/glfw-3.4/debug/src/CMakeFiles/update_mappings.dir/build.make /usr/local/lib/opengl-libs/glfw-3.4/debug/src/CMakeFiles/update_mappings.dir/build
 .PHONY : update_mappings/fast
 
 src/Camera.o: src/Camera.cpp.o
