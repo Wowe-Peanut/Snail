@@ -127,11 +127,11 @@ void Shape::loadMeshFile(string filePath) {
 	while (getline(f, line)) {
 
 		// Nodes are vertices in gmsh and their locations are defined before their connections are
-		if (line == "$Nodes") {
+		if (line.find("$Nodes") != string::npos) {
 
 			int numBlocks, totalNodes, minTag, maxTag;
 			f >> numBlocks >> totalNodes >> minTag >> maxTag;
-			
+
 			vector<vector<float>> nodePositions(totalNodes, vector<float>(3, 0));
 		
 			// Iterate through each node block (gmsh likes to separate separate entities into separate blocks)
@@ -153,10 +153,12 @@ void Shape::loadMeshFile(string filePath) {
 		}
 
 		// Elements connect nodes together into primitives
-		if (line == "$Elements") {
+		if (line.find("$Elements") != string::npos) {
 			
 		}
 	}
+
+	f.close();
 }
 
 void Shape::draw(const shared_ptr<Program> prog) const {
