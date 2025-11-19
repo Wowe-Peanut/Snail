@@ -23,6 +23,9 @@ translation(trans), rotation(rot), scale(scale), physicsObject(physicsObject) {
 	shape = make_shared<Shape>(meshpath);
 	numPoints = shape->posBuf.size()/3;
 	numEdges = shape->edgeList.size();
+
+	// Physics objects should ALWAYS be drawn by element vectors b/c the vertex positions are always changing
+	assert(physicsObject ? shape->drawWithElements : true);
 }
 
 void Object::draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog) {

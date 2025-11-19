@@ -24,11 +24,11 @@ class Shape {
 		std::vector<std::vector<unsigned int>> edgeList;
 		std::vector<float> edgeRestLengthSquares;
 		
-		Shape(std::string &fileName);
+		Shape(std::string filePath);
 		void init(); // Initializes OpenGL buffers
 
-		void loadObjFile(std::string &fileName);	// .obj
-		void loadMeshFile(std::string &fileName);	// .msh
+		void loadObjFile(std::string filePath);	// .obj
+		void loadMeshFile(std::string filePath);	// .msh
 
 		bool drawWithElements;
 		void draw(const std::shared_ptr<Program> prog) const;			

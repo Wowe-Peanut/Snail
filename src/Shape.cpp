@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <fstream>
 
 #include "GLSL.h"
 #include "Program.h"
@@ -13,19 +14,17 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-#include "gmsh.h"
-
 using namespace std;
 
-Shape::Shape(string &fileName): posBufID(0), norBufID(0), texBufID(0) {
+Shape::Shape(string filePath): posBufID(0), norBufID(0), texBufID(0) {
 
-	filesystem::path p(fileName);
+	filesystem::path p(filePath);
 	string extension = p.extension().string();
 
 	if (extension == ".obj") {
-		loadObjFile(fileName);
+		loadObjFile(filePath);
 	} else if (extension == ".msh") {
-		loadMeshFile(fileName);
+		loadMeshFile(filePath);
 	} else {
 		cerr << "Unsupported mesh filetype: " << extension << endl; 
 	}
@@ -65,7 +64,7 @@ void Shape::init() {
 
 	GLSL::checkError(GET_FILE_LINE);
 }
-void Shape::loadObjFile(string &fileName) {
+void Shape::loadObjFile(string filePath) {
 
 	// I'm currently not using .obj files for physics stuff so keep them 'drawArray' so I can continue to use this implementation
 	drawWithElements = false;
@@ -75,7 +74,7 @@ void Shape::loadObjFile(string &fileName) {
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	string warnStr, errStr;
-	bool rc = tinyobj::LoadObj(&attrib, &shapes, &materials, &warnStr, &errStr, fileName.c_str());
+	bool rc = tinyobj::LoadObj(&attrib, &shapes, &materials, &warnStr, &errStr, filePath.c_str());
 	if(!rc) {
 		cerr << errStr << endl;
 	} else {
@@ -115,10 +114,49 @@ void Shape::loadObjFile(string &fileName) {
 		}
 	}
 }
-void Shape::loadMeshFile(string &fileName) {
+void Shape::loadMeshFile(string filePath) {
 	drawWithElements = true;
 
+	ifstream f(filePath);
+	if (!f.is_open()) {
+		cerr << "Failed to open '" << filePath << "'" << endl;
+		exit(1);
+	}
 
+	string line;
+	while (getline(f, line)) {
+
+		// Nodes are vertices in gmsh and their locations are defined before their connections are
+		if (line == "$Nodes") {
+
+			int numBlocks, totalNodes, minTag, maxTag;
+			f >> numBlocks >> totalNodes >> minTag >> maxTag;
+			
+			vector<vector<float>> nodePositions(totalNodes, vector<float>(3, 0));
+		
+			// Iterate through each node block (gmsh likes to separate separate entities into separate blocks)
+			for (int block=0; block<numBlocks; block++) {
+				int entityDim, entityTag, parametric, numNodesInBlock;
+				f >> entityDim >> entityTag >> parametric >> numNodesInBlock;
+
+				// Read node positions
+				vector<int> nodeIdxs(numNodesInBlock);
+				for (int node=0; node<numNodesInBlock; node++) {
+					f >> nodeIdxs[node];
+				}
+
+				for (int node=0; node<numNodesInBlock; node++) {
+					int nodeIdx = nodeIdxs[node] - 1;
+					f >> nodePositions[nodeIdx][0] >> nodePositions[nodeIdx][1] >> nodePositions[nodeIdx][2];  
+				}
+			}
+		}
+
+		// Elements connect nodes together into primitives
+		if (line == "$Elements") {
+			
+		}
+	}
 }
 
 void Shape::draw(const shared_ptr<Program> prog) const {
