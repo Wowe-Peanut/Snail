@@ -1,12 +1,13 @@
 #include "PhysicsEngine.h"
 #include <iostream>
 
-#define EIGEN_DONT_ALIGN_STATICALLY
+// #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 using json = nlohmann::json;
 using namespace std;
-using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf, Eigen::Matrix3f;
+using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf, Eigen::Matrix3f, Eigen::SparseMatrix, Eigen::Triplet;
 
 
 PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parameters) {
@@ -118,29 +119,37 @@ void PhysicsEngine::implicitStep() {
 
 // Helper
 Matrix3Xf PhysicsEngine::getSearchDirection(Matrix3Xf& xtilde, float h) {
-	MatrixXf hess = IPHessian(xtilde, h);
+	SparseMatrix<float> hess = IPHessian(xtilde, h);
 	Matrix3Xf grad = IPGradient(xtilde, h);
 
-	// Apply sticky DBCs
+	// Gradient sticky DBCs
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		if (isFixedPoint[vidx]) {
 			grad.col(vidx) = Vector3f(0, 0, 0);
 		}
 	}
 
-
-	// LDLT is Chomsky Decomposition which is fast at solving Ax = b systems when A is SPD (symmetric positive definite)
-	Eigen::LDLT<MatrixXf> solver;
+	// Hess sticky DBCs
+    for (int col=0; col<hess.outerSize(); col++) {
+        for (SparseMatrix<float>::InnerIterator it(hess, col); it; ++it) {
+			
+			int row = it.row();
+			if (isFixedPoint[(int) row / 3] || isFixedPoint[(int) col / 3]) {
+				it.valueRef() = row == col ? 1 : 0;
+			}
+        }
+    }
+ 
+	// Sparse solver 
+	Eigen::SimplicialLDLT<SparseMatrix<float>> solver;
 	solver.compute(hess);
-	if (solver.info() != Eigen::Success) {
-		cout << "Failed to decompose hessian" << endl;
-		return Matrix3Xf::Zero(3, numPoints);
-	}
 
-	// Solve for search direction, p = -H^-1 g
-	// Map is used to resize the grad matrix to a VectorXf without making a copy
+    if (solver.info() != Eigen::Success) {
+        std::cerr << "Solver failed to compute decompose Hessian!\n";
+        return Matrix3Xf::Zero(3, numPoints);
+    }
+
 	VectorXf p = solver.solve(-Eigen::Map<VectorXf>(grad.data(), 3*numPoints));
-
 	return Eigen::Map<Matrix3Xf>(p.data(), 3, numPoints);
 }
 void PhysicsEngine::makePSD(MatrixXf& hess) {
@@ -184,7 +193,7 @@ float PhysicsEngine::IPValue(Matrix3Xf& xtilde, float h) {
 Matrix3Xf PhysicsEngine::IPGradient(Matrix3Xf& xtilde, float h) {
 	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h) + GravityGradient(h));
 }
-MatrixXf PhysicsEngine::IPHessian(Matrix3Xf& xtilde, float h) {
+SparseMatrix<float> PhysicsEngine::IPHessian(Matrix3Xf& xtilde, float h) {
 	return InertiaHessian(xtilde, h) + h*h*(MassSpringHessian(h));
 }
 
@@ -203,8 +212,22 @@ float PhysicsEngine::InertiaValue(Matrix3Xf& xtilde, float h) {
 Matrix3Xf PhysicsEngine::InertiaGradient(Matrix3Xf& xtilde, float h) {
 	return pointMass * (positions - xtilde);
 }
-MatrixXf PhysicsEngine::InertiaHessian(Matrix3Xf& xtilde, float h) {
-	return pointMass * MatrixXf::Identity(3*numPoints, 3*numPoints);
+SparseMatrix<float> PhysicsEngine::InertiaHessian(Matrix3Xf& xtilde, float h) {
+
+	// From eigen docs: "The cost of a single purely random insertion into a SparseMatrix is O(nnz), 
+	// where nnz is the current number of non-zero coefficients."
+	// So it recommends using triplets, which constructs the SparseMatrix in O(n) with n the number of triplets
+
+	int dof = 3*numPoints;
+	vector<Triplet<float>> triplets(dof);
+	for (int i=0; i<dof; i++) {
+		triplets[i] = Triplet<float>(i, i, pointMass);
+	}
+
+	SparseMatrix<float> hess(dof, dof);
+	hess.setFromSortedTriplets(triplets.begin(), triplets.end());
+
+	return hess;
 }
 
 
@@ -236,8 +259,11 @@ Matrix3Xf PhysicsEngine::MassSpringGradient(float h) {
 
 	return grad;
 }
-MatrixXf PhysicsEngine::MassSpringHessian(float h) {
-	MatrixXf hess = MatrixXf::Zero(3*numPoints, 3*numPoints);
+SparseMatrix<float> PhysicsEngine::MassSpringHessian(float h) {
+
+	int dof = 3*numPoints;
+	vector<Triplet<float>> triplets(dof);
+	triplets.reserve(9*edgeList.size()); // 2 vertices per edge, each with 3 dofs = 3^2 = 9 second derivatives
 
 	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
 		auto edge = edgeList[edgeIdx];
@@ -256,11 +282,26 @@ MatrixXf PhysicsEngine::MassSpringHessian(float h) {
 		localHess.block<3,3>(3,3) = diffHess;
 		makePSD(localHess);
 
-		hess.block<3, 3>(3*edge[0], 3*edge[0]) += localHess.block<3, 3>(0, 0);
-		hess.block<3, 3>(3*edge[0], 3*edge[1]) += localHess.block<3, 3>(3, 0); 
-		hess.block<3, 3>(3*edge[1], 3*edge[0]) += localHess.block<3, 3>(0, 3); 
-		hess.block<3, 3>(3*edge[1], 3*edge[1]) += localHess.block<3, 3>(3, 3);
+
+		for (int blockRow=0; blockRow<=1; blockRow++) {
+			for (int blockCol=0; blockCol<=1; blockCol++) {
+
+				int startRow = 3*edge[blockRow];
+				int startCol = 3*edge[blockCol];
+
+				for (int row=0; row<3; row++) {
+					for (int col=0; col<3 ;col++) {
+						float value = localHess(3*blockRow+row, 3*blockCol+col);
+
+						triplets.push_back(Triplet<float>(startRow+row, startCol+col, value));
+					}
+				}	
+			}
+		}
 	}
+
+	SparseMatrix<float> hess = SparseMatrix<float>(3*numPoints, 3*numPoints);
+	hess.setFromTriplets(triplets.begin(), triplets.end());
 
 	return hess;
 }
