@@ -122,14 +122,23 @@ Matrix3Xf PhysicsEngine::getSearchDirection(Matrix3Xf& xtilde, float h) {
 	SparseMatrix<float> hess = IPHessian(xtilde, h);
 	Matrix3Xf grad = IPGradient(xtilde, h);
 
-	// Apply sticky DBCs
+	// Gradient sticky DBCs
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		if (isFixedPoint[vidx]) {
 			grad.col(vidx) = Vector3f(0, 0, 0);
 		}
-
-		// TODO | Add sticky DBCs to hessian
 	}
+
+	// Hess sticky DBCs
+    for (int col=0; col<hess.outerSize(); col++) {
+        for (SparseMatrix<float>::InnerIterator it(hess, col); it; ++it) {
+			
+			int row = it.row();
+			if (isFixedPoint[(int) row / 3] || isFixedPoint[(int) col / 3]) {
+				it.valueRef() = row == col ? 1 : 0;
+			}
+        }
+    }
 
  
 	// Sparse solver 

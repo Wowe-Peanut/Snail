@@ -24,7 +24,8 @@ lot faster...
   - [ ] **Animation saving & replaying**
 
 - Optimizations
-  - [ ] Sparse Hessian Solver
+  - [X] Sparse Hessian Solver
+  - [ ] Benchmark the different Eigen sparse solvers w/ the vscode profiler to find which works best for these sims
 
 - IPC:
   - [ ] Fixed boundary condition
@@ -34,13 +35,14 @@ lot faster...
   - [ ] Friction energy
 
 - Bugs
-  - [ ] Fix sticky DBC Hessian transformation more (I think it's causing the fixed point to move around rn)
+  - [X] Fix sticky DBC Hessian transformation more (I think it's causing the fixed point to move around rn)
   - [ ] Sometimes the engine will hit a minimum prematurely, resulting in a more sudden stop than is physically accurate. Lowering
   step size helps with this but that isn't always viable (see buggy_scene.json)
 
 - Meshes and Materials
   - [X] Be able to load gmsh .msh files that contain volumetric components
   - [X] It should only draw external triangles and not internal supports
+  - [ ] The JSON starting transformation should be appled to the physics object positions at the start as well
   - [ ] Calculate vertex normals by first calculating all triangle normals and then averaging
   - [ ] Somehow add texture mapping...
   - [ ] Per-object material qualities (spring stiffness, point mass)
