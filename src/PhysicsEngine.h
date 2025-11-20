@@ -4,8 +4,9 @@
 #include "Shape.h"
 #include "json.hpp"
 
-#define EIGEN_DONT_ALIGN_STATICALLY
+// #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 
 class PhysicsEngine {
@@ -50,19 +51,19 @@ class PhysicsEngine {
         // Total energy
         float IPValue(Eigen::Matrix3Xf& xtilde, float h);
         Eigen::Matrix3Xf IPGradient(Eigen::Matrix3Xf& xtilde, float h);
-        Eigen::MatrixXf IPHessian(Eigen::Matrix3Xf& xtilde, float h);
+        Eigen::SparseMatrix<float> IPHessian(Eigen::Matrix3Xf& xtilde, float h);
 
         // Inertia
         float InertiaValue(Eigen::Matrix3Xf& xtilde, float h);
         Eigen::Matrix3Xf InertiaGradient(Eigen::Matrix3Xf& xtilde, float h);
-        Eigen::MatrixXf InertiaHessian(Eigen::Matrix3Xf& xtilde, float h);
-        
-        // Gravity
-        float GravityValue(float h);
-        Eigen::Matrix3Xf GravityGradient(float h);
+        Eigen::SparseMatrix<float> InertiaHessian(Eigen::Matrix3Xf& xtilde, float h);
 
         // Spring
         float MassSpringValue(float h);
         Eigen::Matrix3Xf MassSpringGradient(float h);
-        Eigen::MatrixXf MassSpringHessian(float h);
+        Eigen::SparseMatrix<float> MassSpringHessian(float h);
+
+        // Gravity
+        float GravityValue(float h);
+        Eigen::Matrix3Xf GravityGradient(float h);
 };

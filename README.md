@@ -2,7 +2,8 @@
 - Before I go about adding 3D contact, I want to do some optimizations, mostly sparse stuff... gotta go fast
 - It's difficult to comparse the different solvers by eye, I gotta add timers and get the vscode profiler working 
 - Just converting to sparse at the last step seems to give *some* improvement, but it's not as large as I would have hoped... so
-I'm gonna try making each step of the 
+I'm gonna try making each step of the Hessian calculation use sparse... b/c sparseView, sparse adding, and sparse multipling should be a
+lot faster...
 
 
 
