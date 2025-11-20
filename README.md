@@ -1,5 +1,5 @@
 # Currently working on:
-- I stared into the void of volumetric mesh generation and the void stared back... so I'm using gmash and meshlabs instead
+- Before I go about adding 3D contact, I want to do some optimizations, mostly sparse stuff... gotta go fast
 
 # TODO
 
@@ -15,6 +15,10 @@
   - [X] Add single step button 
   - [X] Zoom in and out with camera
   - [ ] Add light count, positions, and colors as JSON parameter
+  - [ ] **Animation saving & replaying**
+
+- Optimizations
+  - [ ] Sparse Hessian Solver
 
 - IPC:
   - [ ] Fixed boundary condition
@@ -23,52 +27,32 @@
   - [ ] Inversion free
   - [ ] Friction energy
 
-- [ ] Fix sticky DBC Hessian transformation more (I think it's causing the fixed point to move around rn)
+- Bugs
+  - [ ] Fix sticky DBC Hessian transformation more (I think it's causing the fixed point to move around rn)
+  - [ ] Sometimes the engine will hit a minimum prematurely, resulting in a more sudden stop than is physically accurate. Lowering
+  step size helps with this but that isn't always viable (see buggy_scene.json)
 
-- [ ] Investigate the bug where the sim will freeze up and never return (I think it's prematurely reach a minimum somewhere and getting a search direction of zero): see *buggy_scene.json* 
+- Meshes and Materials
+  - [X] Be able to load gmsh .msh files that contain volumetric components
+  - [X] It should only draw external triangles and not internal supports
+  - [ ] Calculate vertex normals by first calculating all triangle normals and then averaging
+  - [ ] Somehow add texture mapping...
+  - [ ] Per-object material qualities (spring stiffness, point mass)
+  - [ ] Advanced materials w/ varying spring stiffness and point masses
 
-- [ ] Download MATLAB & Simulink w/ the TAMU free student license and mess around with the sims to see how accurate this piece of shit is in comparison
+- Shaders:
+  - [ ] Bphong
+  - [ ] Texture map
 
-- [ ] Improve Cube Construction:
-  - Should only draw the minimum number of external triangles and not draw any internal supports (might make it hard to tell if structure inverted but idgaf rn)
-  - Normals should be mapped directly outwards 
-  - Texture coordinates should be set for triangles
-  - Variable spring stiffness and point mass, setable via the input json
-
-- [ ] Sparse Optimizations
-  - Hessian is nearly always sparse so storing in CVR (or similar) format and using a sparse eigen solver 
-  - Eigen has a sparse matrix object which I need to investigate
-
-- [ ] Texture Map Shader
-
-- [ ] Frame Interpolation:
-  - Physics should run at a set rate different than renderer and the renderer should interpolate the positions AND normals
-  - "we can render sometime between the most current physics step and the step before that, meaning our rendering is actually slightly behind our simluation. As stated anecdotally in Fixed-Time-Step Implementation, this is both imperceptible to the user as well as common practice on all major games" - https://kirbysayshi.com/2013/09/24/interpolated-physics-rendering.html
-
-- [ ] Normal Movement:
-  - The physics sims needs to update the normals somehow. Not quite sure how to go about this right now... 
-  - Maybe it can go triangle by triangle and just assign the plane norm?
-  - This should be done after cube improvement so that we only need normal calculations for the outer triangles
-  - Because the vertex positions are stored once (element-wise, not array-wise) we could probably get smooth shading by
-  just average the the normals of all triangles touching that vertex (by iterating through the outer triangles).
-
-- [ ] BPhong Shading
-
-- [ ] Float -> Double (physics only not opengl):
-  - Because of interpolation we kind of have to copy everything anyway??
-  - OpenGL doesn't like doubles so it draws in floats but I want double precision in physics sims
-  - This means we can't use Eigen::Map but we'll have to see how much of an affect it has on performance
-
-- [ ] Animation saving & replaying
-  - Saving just outmost positions and normals to file 
-
-- [ ] Investigate time-dependent forces (e.g. simulating viscoelasticity where the speed of the deformation plays a role in the force that is applied back)
-
-# Notes:
-- ALWAYS CHECK CMAKELIST FOR DEBUG/RELEASE
-- Checkout OGC Paper from UofU
-- Applying Google C++ Stylesheet
-
-
-
-
+- Other:
+  - [ ] Frame Interpolation: 
+    - fixed but separate renderer & engine rates (former > latter) and interpolate engine calls:
+    - https://kirbysayshi.com/2013/09/24/interpolated-physics-rendering.html
+  - [ ] Normal Movement: 
+    - Normals needs to transform as the positions are transformed by the engine
+    - It'd be expensive but simply recalculating vertex norms by recalculating and reaveraging triangle norms
+  - [ ] Doulbe precision engine:
+    - OpenGL should stay using floats, but it'd be nice to have the option to use double precision in the physics half
+    - Could probably use c++ templates/generics since Matrix3Xf is just 'typedef Matrix< float, 3, Dynamic >' 
+    - Since we're already doing a copy from Engine to individual objects (for energy, interpolation, etc) it should be fine
+  - [ ] Evaluate accuracy of model against MATLAB's Simulink SDK:

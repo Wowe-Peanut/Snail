@@ -32,7 +32,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 		cerr << "WARNING | None of the constructed objects are set to be physicsObjects..." << endl;
 
 	} else {
-		 // Initialize the ensemble state of all objects
+		// Initialize the ensemble state of all objects
 		positions = Matrix3Xf::Zero(3, numPoints);
 		velocities = Matrix3Xf::Zero(3, numPoints); 
 		isFixedPoint = vector<bool>(numPoints, false);
@@ -57,17 +57,17 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 
 
 		//!REMOVE ME
-		// float maxHeight = positions.col(0).y();
-		// int bestidx = 0;
+		float maxHeight = positions.col(0).y();
+		int bestidx = 0;
 
-		// for (int i=1; i<numPoints; i++) {
-		// 	if (positions.col(i).y() > maxHeight) {
-		// 		bestidx = i;
-		// 		maxHeight = positions.col(i).y();
-		// 	}
-		// }
+		for (int i=1; i<numPoints; i++) {
+			if (positions.col(i).y() > maxHeight) {
+				bestidx = i;
+				maxHeight = positions.col(i).y();
+			}
+		}
 
-		isFixedPoint[247] = true;
+		isFixedPoint[bestidx] = true;
 		//!
 	}
 }
