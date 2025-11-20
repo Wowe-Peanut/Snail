@@ -10,11 +10,11 @@
 
     "objects": [
         {
-            "mesh": "models/sphere/sphere.msh",
+            "mesh": "models/cat/cat.msh",
             "is_physics_object": true,        
             "transformation": {
                 "translation":  [0, 1, 0],
-                "scale":        [1.5, 1.5, 1.5],
+                "scale":        [0.05, 0.05, 0.05],
                 "rotation":     [0, 0, 0]
             }
         },

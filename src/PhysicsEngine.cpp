@@ -55,19 +55,19 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 		initialPositions = positions;
 		initialVelocities = velocities;
 
-		
+
 		//!REMOVE ME
-		float maxHeight = positions.col(0).y();
-		int bestidx = 0;
+		// float maxHeight = positions.col(0).y();
+		// int bestidx = 0;
 
-		for (int i=1; i<numPoints; i++) {
-			if (positions.col(i).y() > maxHeight) {
-				bestidx = i;
-				maxHeight = positions.col(i).y();
-			}
-		}
+		// for (int i=1; i<numPoints; i++) {
+		// 	if (positions.col(i).y() > maxHeight) {
+		// 		bestidx = i;
+		// 		maxHeight = positions.col(i).y();
+		// 	}
+		// }
 
-		isFixedPoint[bestidx] = true;
+		isFixedPoint[247] = true;
 		//!
 	}
 }
