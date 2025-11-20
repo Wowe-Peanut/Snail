@@ -115,7 +115,10 @@ void Shape::loadObjFile(string filePath) {
 	}
 }
 void Shape::loadMeshFile(string filePath) {
+
+	// Physics sims require draw by element and I'm using .msh for volumetric physics meshes, ergo drawWithElements
 	drawWithElements = true;
+
 
 	ifstream f(filePath);
 	if (!f.is_open()) {
@@ -123,40 +126,102 @@ void Shape::loadMeshFile(string filePath) {
 		exit(1);
 	}
 
+	// Nodes are vertices in gmsh
 	string line;
 	while (getline(f, line)) {
-
-		// Nodes are vertices in gmsh and their locations are defined before their connections are
 		if (line.find("$Nodes") != string::npos) {
 
+			// Read in node metadata
 			int numBlocks, totalNodes, minTag, maxTag;
 			f >> numBlocks >> totalNodes >> minTag >> maxTag;
 
-			vector<vector<float>> nodePositions(totalNodes, vector<float>(3, 0));
+			// Initialize the position buffer
+			posBuf = vector<float>(totalNodes*3);
 		
 			// Iterate through each node block (gmsh likes to separate separate entities into separate blocks)
 			for (int block=0; block<numBlocks; block++) {
 				int entityDim, entityTag, parametric, numNodesInBlock;
 				f >> entityDim >> entityTag >> parametric >> numNodesInBlock;
 
-				// Read node positions
+				// Read node indices
 				vector<int> nodeIdxs(numNodesInBlock);
 				for (int node=0; node<numNodesInBlock; node++) {
 					f >> nodeIdxs[node];
 				}
-
+				
+				// Add node positions to position buffer, ordered by ID
 				for (int node=0; node<numNodesInBlock; node++) {
 					int nodeIdx = nodeIdxs[node] - 1;
-					f >> nodePositions[nodeIdx][0] >> nodePositions[nodeIdx][1] >> nodePositions[nodeIdx][2];  
+					f >> posBuf[nodeIdx*3] >> posBuf[nodeIdx*3 + 1] >> posBuf[nodeIdx*3 + 2];
 				}
 			}
-		}
-
-		// Elements connect nodes together into primitives
-		if (line.find("$Elements") != string::npos) {
-			
+			break;
 		}
 	}
+	
+	// Elements connect nodes together into primitives
+	while (getline(f, line)) {
+		if (line.find("$Elements") != string::npos) {
+			
+			int numBlocks, totalElem, minTag, maxTag;
+			f >> numBlocks >> totalElem >> minTag >> maxTag;
+
+			// Iterate through each element blocks
+			for (int block=0; block<numBlocks; block++) {
+				int entityDim, entityTag, parametric, numElemInBlock;
+				f >> entityDim >> entityTag >> parametric >> numElemInBlock;
+
+				
+				// Build in elements in this entity (e.g. triangles, tedrahedrals, etc...)
+				for (int element=0; element<numElemInBlock; element++) {
+					int elementID;
+					f >> elementID;
+
+					// Triangles (dim 2) have 3 nodes, Tetrahedra (dim 3) have 4 nodes
+					int nodesInElement = entityDim == 2 ? 3 : 4; 
+					vector<int> nodes(nodesInElement);
+					for (int node=0; node<nodesInElement; node++) { 
+						f >> nodes[node];
+						nodes[node]--; // make zero-indexed
+					}
+
+					// Insert triangles into indBuf, insert tetrahedra into edgelist
+					if (entityDim == 2) { 
+						indBuf.insert(indBuf.end(), nodes.begin(), nodes.end());	
+					} else if (entityDim == 3) { 
+						for (size_t n1=0; n1<nodes.size(); n1++) {
+							for (size_t n2=n1+1; n2<nodes.size(); n2++) {
+								
+								// Sort by index so it's easier to remove duplicates later
+								if (nodes[n1] < nodes[n2]) 	edgeList.push_back({nodes[n1], nodes[n2]});
+								else 						edgeList.push_back({nodes[n2], nodes[n1]});
+							}
+						}
+					}
+
+					
+				}
+				
+			}
+
+			break;
+		}
+	}
+
+	// Remove duplicate edges (gmsh tends to overdue it... 😿)
+	set<vector<int>> uniqueEdges(edgeList.begin(), edgeList.end());
+	edgeList = vector<vector<int>>(uniqueEdges.begin(), uniqueEdges.end());
+	
+
+	// Calculate resting edge lengths
+	for (size_t edgeIdx=0; edgeIdx<edgeList.size(); edgeIdx++) {
+		int vidx1 = edgeList[edgeIdx][0];
+		int vidx2 = edgeList[edgeIdx][1];
+		edgeRestLengthSquares.push_back(pow(posBuf[3*vidx1] - posBuf[3*vidx2], 2) + pow(posBuf[3*vidx1+1] - posBuf[3*vidx2+1], 2) + pow(posBuf[3*vidx1+2] - posBuf[3*vidx2+2], 2));
+	}
+
+	// TODO - normal buffer initialization
+	// TODO - texture buffer initialization
 
 	f.close();
 }

@@ -21,7 +21,7 @@ class Shape {
 		std::vector<unsigned int> indBuf;
 		unsigned indBufID;
 
-		std::vector<std::vector<unsigned int>> edgeList;
+		std::vector<std::vector<int>> edgeList;
 		std::vector<float> edgeRestLengthSquares;
 		
 		Shape(std::string filePath);

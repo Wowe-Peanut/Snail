@@ -37,11 +37,6 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 		velocities = Matrix3Xf::Zero(3, numPoints); 
 		isFixedPoint = vector<bool>(numPoints, false);
 
-		//! REMOVE ME
-		isFixedPoint[numPoints-1] = true;
-		isFixedPoint[numPoints-3] = true;
-		//!
-
 		numEdges = 0;
 		for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
 			auto obj = physicsObjects[objIdx];
@@ -59,6 +54,21 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 
 		initialPositions = positions;
 		initialVelocities = velocities;
+
+		
+		//!REMOVE ME
+		float maxHeight = positions.col(0).y();
+		int bestidx = 0;
+
+		for (int i=1; i<numPoints; i++) {
+			if (positions.col(i).y() > maxHeight) {
+				bestidx = i;
+				maxHeight = positions.col(i).y();
+			}
+		}
+
+		isFixedPoint[bestidx] = true;
+		//!
 	}
 }
 

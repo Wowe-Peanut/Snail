@@ -39,7 +39,7 @@ class PhysicsEngine {
         Eigen::Matrix3Xf initialVelocities;
         
         int numEdges;
-        std::vector<std::vector<unsigned int>> edgeList;
+        std::vector<std::vector<int>> edgeList;
         std::vector<float> edgeRestLengthSquares;
         
         // Helper

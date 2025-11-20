@@ -49,6 +49,8 @@
   - The physics sims needs to update the normals somehow. Not quite sure how to go about this right now... 
   - Maybe it can go triangle by triangle and just assign the plane norm?
   - This should be done after cube improvement so that we only need normal calculations for the outer triangles
+  - Because the vertex positions are stored once (element-wise, not array-wise) we could probably get smooth shading by
+  just average the the normals of all triangles touching that vertex (by iterating through the outer triangles).
 
 - [ ] BPhong Shading
 

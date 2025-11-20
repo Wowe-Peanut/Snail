@@ -98,9 +98,6 @@ int main(int argc, char **argv) {
 	string resourcePath = argv[1] + string("/");
 	string jsonPath = argv[2];
 
-	// simulate(resourcePath, jsonPath);
-
-	Shape testShape = Shape(resourcePath + jsonPath);
-
+	simulate(resourcePath, jsonPath);
 	return 0;
 }
