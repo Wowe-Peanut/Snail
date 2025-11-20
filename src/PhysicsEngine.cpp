@@ -139,10 +139,9 @@ Matrix3Xf PhysicsEngine::getSearchDirection(Matrix3Xf& xtilde, float h) {
 			}
         }
     }
-
  
 	// Sparse solver 
-	Eigen::SparseLU<SparseMatrix<float>> solver;
+	Eigen::SimplicialLDLT<SparseMatrix<float>> solver;
 	solver.compute(hess);
 
     if (solver.info() != Eigen::Success) {
