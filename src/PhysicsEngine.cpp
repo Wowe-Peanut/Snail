@@ -3,10 +3,11 @@
 
 #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 using json = nlohmann::json;
 using namespace std;
-using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf, Eigen::Matrix3f;
+using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf, Eigen::Matrix3f, Eigen::SparseMatrix;
 
 
 PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parameters) {
@@ -126,20 +127,38 @@ Matrix3Xf PhysicsEngine::getSearchDirection(Matrix3Xf& xtilde, float h) {
 		if (isFixedPoint[vidx]) {
 			grad.col(vidx) = Vector3f(0, 0, 0);
 		}
+
+		// TODO | Add sticky DBCs to hessian
 	}
 
 
-	// LDLT is Chomsky Decomposition which is fast at solving Ax = b systems when A is SPD (symmetric positive definite)
-	Eigen::LDLT<MatrixXf> solver;
-	solver.compute(hess);
-	if (solver.info() != Eigen::Success) {
-		cout << "Failed to decompose hessian" << endl;
-		return Matrix3Xf::Zero(3, numPoints);
-	}
+	SparseMatrix<float> sparseHessian = hess.sparseView();
 
-	// Solve for search direction, p = -H^-1 g
-	// Map is used to resize the grad matrix to a VectorXf without making a copy
+	Eigen::ConjugateGradient<SparseMatrix<float>> solver;
+	solver.compute(sparseHessian);
+
+    if (solver.info() != Eigen::Success) {
+        std::cerr << "Hessian Factorization failed!\n";
+        return Matrix3Xf::Zero(3, numPoints);
+    }
+
 	VectorXf p = solver.solve(-Eigen::Map<VectorXf>(grad.data(), 3*numPoints));
+
+	return Eigen::Map<Matrix3Xf>(p.data(), 3, numPoints);
+	
+
+
+	// // LDLT is Chomsky Decomposition which is fast at solving Ax = b systems when A is SPD (symmetric positive definite)
+	// Eigen::LDLT<MatrixXf> solver;
+	// solver.compute(hess);
+	// if (solver.info() != Eigen::Success) {
+	// 	cout << "Failed to decompose hessian" << endl;
+	// 	return Matrix3Xf::Zero(3, numPoints);
+	// }
+
+	// // Solve for search direction, p = -H^-1 g
+	// // Map is used to resize the grad matrix to a VectorXf without making a copy
+	// VectorXf p = solver.solve(-Eigen::Map<VectorXf>(grad.data(), 3*numPoints));
 
 	return Eigen::Map<Matrix3Xf>(p.data(), 3, numPoints);
 }
