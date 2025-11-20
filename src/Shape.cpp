@@ -15,6 +15,17 @@
 #include "tiny_obj_loader.h"
 
 using namespace std;
+using vec3 = glm::vec3;
+
+vec3 bufToVec(vector<float>& buffer, int idx) {
+	return vec3(buffer[idx*3], buffer[idx*3 + 1], buffer[idx*3 + 2]);
+}
+
+void vecToBuf(vector<float>& buffer, vec3& vec, int idx) {
+	buffer[idx*3] = vec[0];
+	buffer[idx*3 + 1] = vec[1];
+	buffer[idx*3 + 2] = vec[2];
+}
 
 Shape::Shape(string filePath): posBufID(0), norBufID(0), texBufID(0) {
 
@@ -135,8 +146,9 @@ void Shape::loadMeshFile(string filePath) {
 			int numBlocks, totalNodes, minTag, maxTag;
 			f >> numBlocks >> totalNodes >> minTag >> maxTag;
 
-			// Initialize the position buffer
+			// Initialize the opengl buffers
 			posBuf = vector<float>(totalNodes*3);
+			norBuf = vector<float>(totalNodes*3);
 		
 			// Iterate through each node block (gmsh likes to separate separate entities into separate blocks)
 			for (int block=0; block<numBlocks; block++) {
@@ -212,7 +224,6 @@ void Shape::loadMeshFile(string filePath) {
 	set<vector<int>> uniqueEdges(edgeList.begin(), edgeList.end());
 	edgeList = vector<vector<int>>(uniqueEdges.begin(), uniqueEdges.end());
 	
-
 	// Calculate resting edge lengths
 	for (size_t edgeIdx=0; edgeIdx<edgeList.size(); edgeIdx++) {
 		int vidx1 = edgeList[edgeIdx][0];
@@ -220,7 +231,8 @@ void Shape::loadMeshFile(string filePath) {
 		edgeRestLengthSquares.push_back(pow(posBuf[3*vidx1] - posBuf[3*vidx2], 2) + pow(posBuf[3*vidx1+1] - posBuf[3*vidx2+1], 2) + pow(posBuf[3*vidx1+2] - posBuf[3*vidx2+2], 2));
 	}
 
-	// TODO - normal buffer initialization
+	computeNormals();
+
 	// TODO - texture buffer initialization
 
 	f.close();
@@ -300,4 +312,30 @@ void Shape::drawArrays(const shared_ptr<Program> prog) const {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	GLSL::checkError(GET_FILE_LINE);
+}
+
+void Shape::computeNormals() {
+	int numPoints = posBuf.size()/3;
+
+	vector<vec3> normals(numPoints, vec3(0.0f));
+	vector<int> vertexEdgeCount(numPoints, 0);
+
+	for (int tri=0; tri< (int) indBuf.size()/3; tri++) {
+		vector<unsigned int> vidxs = {indBuf[tri*3], indBuf[tri*3+1], indBuf[tri*3+2]};
+
+		vec3 v1 = bufToVec(posBuf, vidxs[0]);
+		vec3 v2 = bufToVec(posBuf, vidxs[1]);
+		vec3 v3 = bufToVec(posBuf, vidxs[2]);		
+		vec3 normal = glm::normalize(glm::cross(v2-v1, v3-v1));
+
+		for (auto vidx: vidxs) {
+			normals[vidx] += normal;
+			vertexEdgeCount[vidx]++;
+		}
+	}
+
+	for (int vidx=0; vidx<numPoints; vidx++) {
+		vec3 normal = glm::normalize(normals[vidx] / (float) vertexEdgeCount[vidx]);
+		vecToBuf(norBuf, normal, vidx);
+	}
 }

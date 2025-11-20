@@ -45,7 +45,7 @@ class PhysicsEngine {
         
         // Helper
         void makePSD(Eigen::MatrixXf& hess);
-        void updateObjectPositions(); 
+        void updateObjects(); 
         Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde, float h);
 
         // Total energy

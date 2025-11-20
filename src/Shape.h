@@ -35,4 +35,5 @@ class Shape {
 		void drawArrays(const std::shared_ptr<Program> prog) const;		// Triangles defined by structure of 'posBuf'
 		void drawElements(const std::shared_ptr<Program> prog) const;	// Triangles defined by 'posBuf' + 'indBuf'
 
+		void computeNormals();
 };

@@ -112,7 +112,9 @@ void PhysicsEngine::implicitStep() {
 
 	// Update velocities with final positions
 	velocities = (positions - originalPositions) / h;
-    updateObjectPositions();
+
+	// Send new positions to each object and recompute all normals
+    updateObjects();
 }
 
 
@@ -168,20 +170,22 @@ void PhysicsEngine::makePSD(MatrixXf& hess) {
 	// Reconstruct matrix with new eigenvalues
 	hess = evecs * evals.asDiagonal() * evecs.transpose();
 }
-void PhysicsEngine::updateObjectPositions() {
+void PhysicsEngine::updateObjects() {
 	for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
 		auto obj = physicsObjects[objIdx];
         int offset = objectOffsets[objIdx];
 
 		auto submatrix = positions.middleCols(offset, obj->numPoints);
 		obj->shape->posBuf.assign(submatrix.data(), submatrix.data() + submatrix.size());
+
+		obj->shape->computeNormals();
 	}
 }
 void PhysicsEngine::reset() {
 	positions = initialPositions;
 	velocities = initialVelocities;
 
-	updateObjectPositions();
+	updateObjects();
 }
 
 

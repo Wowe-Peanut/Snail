@@ -7,11 +7,9 @@
 
 - QOL: 
   - [X] Make scene & simulation parameters setable from input file
-  - [ ] Add fixed points, velocity, and stretch initial condition parameters to json
   - [X] Add reset animation button
   - [X] Add single step button 
   - [X] Zoom in and out with camera
-  - [ ] Add light count, positions, and colors as JSON parameter
   - [ ] **Animation saving & replaying**
 
 - Optimizations
@@ -27,26 +25,29 @@
 - Bugs
   - [X] Fix sticky DBC Hessian transformation more (I think it's causing the fixed point to move around rn)
   - [ ] Sometimes the engine will hit a minimum prematurely, resulting in a more sudden stop than is physically accurate. Lowering
-  step size helps with this but that isn't always viable (see buggy_scene.json)
+  step size helps with this but that isn't always viable
 
 - Meshes and Materials
   - [X] Be able to load gmsh .msh files that contain volumetric components
   - [X] It should only draw external triangles and not internal supports
-  - [ ] The JSON starting transformation should be appled to the physics object positions at the start as well
-  - [ ] Calculate vertex normals by first calculating all triangle normals and then averaging
+  - [ ] Initial conditions setable in JSON (inc. fixed points, velocity, 
+  initial transformation (pre-spring init), stretch scaling (post spring init))
+  - [X] Calculate vertex normals by first calculating all triangle normals and then averaging
   - [ ] Somehow add texture mapping...
   - [ ] Per-object material qualities (spring stiffness, point mass)
   - [ ] Advanced materials w/ varying spring stiffness and point masses
 
 - Shaders:
-  - [ ] Bphong
+  - [X] Bphong
+  - [ ] Add light count, positions, and colors as JSON parameter
   - [ ] Texture map
 
 - Other:
+  - [ ] Slip DBCs
   - [ ] Frame Interpolation: 
     - fixed but separate renderer & engine rates (former > latter) and interpolate engine calls:
     - https://kirbysayshi.com/2013/09/24/interpolated-physics-rendering.html
-  - [ ] Normal Movement: 
+  - [X] Normal Movement: 
     - Normals needs to transform as the positions are transformed by the engine
     - It'd be expensive but simply recalculating vertex norms by recalculating and reaveraging triangle norms
   - [ ] Doulbe precision engine:
