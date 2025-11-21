@@ -59,16 +59,21 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 
 		//!REMOVE ME
 		float maxHeight = positions.col(0).y();
-		int bestidx = 0;
+		vector<int> bestidxs = {0};
 
 		for (int i=1; i<numPoints; i++) {
 			if (positions.col(i).y() > maxHeight) {
-				bestidx = i;
+				bestidxs.clear();
+				bestidxs.push_back(i);
 				maxHeight = positions.col(i).y();
+			} else if (positions.col(i).y() == maxHeight) {
+				bestidxs.push_back(i);
 			}
 		}
 
-		isFixedPoint[bestidx] = true;
+		for (int idx: bestidxs) {
+			isFixedPoint[idx] = true;
+		}
 		//!
 	}
 }

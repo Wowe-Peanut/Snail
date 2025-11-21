@@ -39,8 +39,9 @@
 
 - Shaders:
   - [X] Bphong
-  - [ ] Add light count, positions, and colors as JSON parameter
+  - [ ] Add light count, positions, and bphong materials as JSON parameter
   - [ ] Texture map
+
 
 - Other:
   - [ ] Slip DBCs
