@@ -4,7 +4,7 @@
         "tolerance": 0.1,
         "max_iterations": 10,
         "point_mass": 100,
-        "spring_stiffness": 10000,
+        "spring_stiffness": 15000,
         "gravity": -9.81
     },
 
@@ -13,7 +13,7 @@
             "mesh": "models/sphere/sphere.msh",
             "is_physics_object": true,        
             "transformation": {
-                "translation":  [0.5, 0.5, 0],
+                "translation":  [0.3, 0.5, 0],
                 "scale":        [1, 1, 1],
                 "rotation":     [0, 0, 0]
             }
@@ -23,7 +23,7 @@
             "mesh": "models/sphere/sphere.msh",
             "is_physics_object": true,        
             "transformation": {
-                "translation":  [-0.5, 0.5, 0],
+                "translation":  [-0.3, 0.5, 0],
                 "scale":        [1, 1, 1],
                 "rotation":     [0, 0, 0]
             }
