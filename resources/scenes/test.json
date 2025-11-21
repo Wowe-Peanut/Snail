@@ -4,16 +4,16 @@
         "tolerance": 0.01,
         "max_iterations": 10,
         "point_mass": 100,
-        "spring_stiffness": 1000000,
+        "spring_stiffness": 1000,
         "gravity": -9.81
     },
 
     "objects": [
         {
-            "mesh": "models/bunny/bunny.msh",
+            "mesh": "models/cube/cube.msh",
             "is_physics_object": true,        
             "transformation": {
-                "translation":  [0, 0, 0],
+                "translation":  [0, 1, 0],
                 "scale":        [1, 1, 1],
                 "rotation":     [0, 0, 0]
             }

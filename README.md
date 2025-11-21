@@ -1,3 +1,6 @@
+# Currently working on:
+- Ok, I can't run from it any longer. It was fine in python but now it's time to add contact to c++... 
+
 # TODO
 
 - Refactoring:
@@ -43,6 +46,7 @@
 - Shaders:
   - [X] Bphong
   - [ ] Texture Shader
+  - [ ] Add per-triangle shading (cubes look weird with smooth bphong)
 
 - Other:
   - [ ] Slip DBCs
