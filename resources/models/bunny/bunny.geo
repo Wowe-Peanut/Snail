@@ -1,4 +1,4 @@
-Merge "teapot.stl";
+Merge "bunny.stl";
 //+
 Surface Loop(1) = {1};
 //+

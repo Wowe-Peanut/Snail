@@ -27,21 +27,22 @@
   - [ ] Sometimes the engine will hit a minimum prematurely, resulting in a more sudden stop than is physically accurate. Lowering
   step size helps with this but that isn't always viable
 
+- JSON Parser
+  - [ ] Initial mesh conditions: fixed points, velocity, pre, post-init squishing
+  - [ ] Per object & global/default Bphong material parameters
+  - [ ] Bphong lights
+  - [ ] Per object spring stiffness and pointmass
+
 - Meshes and Materials
   - [X] Be able to load gmsh .msh files that contain volumetric components
   - [X] It should only draw external triangles and not internal supports
-  - [ ] Initial conditions setable in JSON (inc. fixed points, velocity, 
-  initial transformation (pre-spring init), stretch scaling (post spring init))
   - [X] Calculate vertex normals by first calculating all triangle normals and then averaging
   - [ ] Somehow add texture mapping...
-  - [ ] Per-object material qualities (spring stiffness, point mass)
   - [ ] Advanced materials w/ varying spring stiffness and point masses
 
 - Shaders:
   - [X] Bphong
-  - [ ] Add light count, positions, and bphong materials as JSON parameter
-  - [ ] Texture map
-
+  - [ ] Texture Shader
 
 - Other:
   - [ ] Slip DBCs
