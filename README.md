@@ -31,6 +31,8 @@
   - [X] Fix sticky DBC Hessian transformation more (I think it's causing the fixed point to move around rn)
   - [ ] Sometimes the engine will hit a minimum prematurely, resulting in a more sudden stop than is physically accurate. Lowering
   step size helps with this but that isn't always viable
+  - [ ] Take another look at the Projected Newton loop, in the TB it doesn't perform a single integration once the model comes
+  to rest (p below tolerance) but I think I'm doing a single iteration each time (I think it's left over from testing)
 
 - JSON Parser
   - [ ] Initial mesh conditions: fixed points, velocity, pre, post-init squishing
