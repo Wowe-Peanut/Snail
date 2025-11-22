@@ -46,24 +46,24 @@ class PhysicsEngine {
         // Helper
         void makePSD(Eigen::MatrixXf& hess);
         void updateObjects(); 
-        Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde, float h);
+        Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde);
 
         // Total energy
-        float IPValue(Eigen::Matrix3Xf& xtilde, float h);
-        Eigen::Matrix3Xf IPGradient(Eigen::Matrix3Xf& xtilde, float h);
-        Eigen::SparseMatrix<float> IPHessian(Eigen::Matrix3Xf& xtilde, float h);
+        float IPValue(Eigen::Matrix3Xf& xtilde);
+        Eigen::Matrix3Xf IPGradient(Eigen::Matrix3Xf& xtilde);
+        Eigen::SparseMatrix<float> IPHessian(Eigen::Matrix3Xf& xtilde);
 
         // Inertia
-        float InertiaValue(Eigen::Matrix3Xf& xtilde, float h);
-        Eigen::Matrix3Xf InertiaGradient(Eigen::Matrix3Xf& xtilde, float h);
-        Eigen::SparseMatrix<float> InertiaHessian(Eigen::Matrix3Xf& xtilde, float h);
+        float InertiaValue(Eigen::Matrix3Xf& xtilde);
+        Eigen::Matrix3Xf InertiaGradient(Eigen::Matrix3Xf& xtilde);
+        Eigen::SparseMatrix<float> InertiaHessian(Eigen::Matrix3Xf& xtilde);
 
         // Spring
-        float MassSpringValue(float h);
-        Eigen::Matrix3Xf MassSpringGradient(float h);
-        Eigen::SparseMatrix<float> MassSpringHessian(float h);
+        float MassSpringValue();
+        Eigen::Matrix3Xf MassSpringGradient();
+        Eigen::SparseMatrix<float> MassSpringHessian();
 
         // Gravity
-        float GravityValue(float h);
-        Eigen::Matrix3Xf GravityGradient(float h);
+        float GravityValue();
+        Eigen::Matrix3Xf GravityGradient();
 };

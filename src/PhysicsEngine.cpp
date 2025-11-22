@@ -90,8 +90,8 @@ void PhysicsEngine::implicitStep() {
 	Matrix3Xf predictedPositions = positions + h*velocities;
 
 	// Calculate initial Incremental Potential value and search direction 
-	float IP = IPValue(predictedPositions, h);
-	Matrix3Xf searchDirection = getSearchDirection(predictedPositions, h);
+	float IP = IPValue(predictedPositions);
+	Matrix3Xf searchDirection = getSearchDirection(predictedPositions);
 
 	// Projected Newton Loop
 	for (int newtoniter=0; newtoniter<maxiter; newtoniter++) {
@@ -99,19 +99,19 @@ void PhysicsEngine::implicitStep() {
 		float alpha = 1;
 		positions = originalPositions + alpha*searchDirection;
 
-		float newIP = IPValue(predictedPositions, h);
+		float newIP = IPValue(predictedPositions);
 
 		for (int lineiter=0; lineiter<maxiter; lineiter++) {
 			if (newIP < IP) break;
 
 			alpha /= 2;
 			positions = originalPositions + alpha*searchDirection;
-			newIP = IPValue(predictedPositions, h);
+			newIP = IPValue(predictedPositions);
 		}
 		
 		// Update IP & calculate next search direction
 		IP = newIP;
-		searchDirection = getSearchDirection(predictedPositions, h);
+		searchDirection = getSearchDirection(predictedPositions);
 		if (searchDirection.cwiseAbs().maxCoeff() < tol) break; // infinity norm early convergence condition
 	}
 
@@ -125,9 +125,9 @@ void PhysicsEngine::implicitStep() {
 
 
 // Helper
-Matrix3Xf PhysicsEngine::getSearchDirection(Matrix3Xf& xtilde, float h) {
-	SparseMatrix<float> hess = IPHessian(xtilde, h);
-	Matrix3Xf grad = IPGradient(xtilde, h);
+Matrix3Xf PhysicsEngine::getSearchDirection(Matrix3Xf& xtilde) {
+	SparseMatrix<float> hess = IPHessian(xtilde);
+	Matrix3Xf grad = IPGradient(xtilde);
 
 	// Gradient sticky DBCs
 	for (int vidx=0; vidx<numPoints; vidx++) {
@@ -196,20 +196,20 @@ void PhysicsEngine::reset() {
 
 
 // Incremental Potential Energy
-float PhysicsEngine::IPValue(Matrix3Xf& xtilde, float h) {
-	return InertiaValue(xtilde, h) + h*h*(MassSpringValue(h) + GravityValue(h));
+float PhysicsEngine::IPValue(Matrix3Xf& xtilde) {
+	return InertiaValue(xtilde) + h*h*(MassSpringValue() + GravityValue());
 }
-Matrix3Xf PhysicsEngine::IPGradient(Matrix3Xf& xtilde, float h) {
-	return InertiaGradient(xtilde, h) + h*h*(MassSpringGradient(h) + GravityGradient(h));
+Matrix3Xf PhysicsEngine::IPGradient(Matrix3Xf& xtilde) {
+	return InertiaGradient(xtilde) + h*h*(MassSpringGradient() + GravityGradient());
 }
-SparseMatrix<float> PhysicsEngine::IPHessian(Matrix3Xf& xtilde, float h) {
-	return InertiaHessian(xtilde, h) + h*h*(MassSpringHessian(h));
+SparseMatrix<float> PhysicsEngine::IPHessian(Matrix3Xf& xtilde) {
+	return InertiaHessian(xtilde) + h*h*(MassSpringHessian());
 }
 
 
 
 // Inertia Energy 
-float PhysicsEngine::InertiaValue(Matrix3Xf& xtilde, float h) {
+float PhysicsEngine::InertiaValue(Matrix3Xf& xtilde) {
 	float sum = 0;
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		Vector3f diff = positions.col(vidx) - xtilde.col(vidx);
@@ -218,10 +218,10 @@ float PhysicsEngine::InertiaValue(Matrix3Xf& xtilde, float h) {
 
 	return pointMass * sum / 2;
 }
-Matrix3Xf PhysicsEngine::InertiaGradient(Matrix3Xf& xtilde, float h) {
+Matrix3Xf PhysicsEngine::InertiaGradient(Matrix3Xf& xtilde) {
 	return pointMass * (positions - xtilde);
 }
-SparseMatrix<float> PhysicsEngine::InertiaHessian(Matrix3Xf& xtilde, float h) {
+SparseMatrix<float> PhysicsEngine::InertiaHessian(Matrix3Xf& xtilde) {
 
 	// From eigen docs: "The cost of a single purely random insertion into a SparseMatrix is O(nnz), 
 	// where nnz is the current number of non-zero coefficients."
@@ -242,7 +242,7 @@ SparseMatrix<float> PhysicsEngine::InertiaHessian(Matrix3Xf& xtilde, float h) {
 
 
 // Mass Spring Energy 
-float PhysicsEngine::MassSpringValue(float h) {
+float PhysicsEngine::MassSpringValue() {
 	float sum = 0;
 	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
 		auto edge = edgeList[edgeIdx];
@@ -253,7 +253,7 @@ float PhysicsEngine::MassSpringValue(float h) {
 	}
 	return sum * springStiffness / 2;
 }
-Matrix3Xf PhysicsEngine::MassSpringGradient(float h) {
+Matrix3Xf PhysicsEngine::MassSpringGradient() {
 	Matrix3Xf grad = MatrixXf::Zero(3, numPoints);
 
 	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
@@ -268,7 +268,7 @@ Matrix3Xf PhysicsEngine::MassSpringGradient(float h) {
 
 	return grad;
 }
-SparseMatrix<float> PhysicsEngine::MassSpringHessian(float h) {
+SparseMatrix<float> PhysicsEngine::MassSpringHessian() {
 
 	int dof = 3*numPoints;
 	vector<Triplet<float>> triplets(dof);
@@ -318,7 +318,7 @@ SparseMatrix<float> PhysicsEngine::MassSpringHessian(float h) {
 
 
 // Gravity Energy 
-float PhysicsEngine::GravityValue(float h) {
+float PhysicsEngine::GravityValue() {
 	float sum = 0;
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		sum += gravity.dot(positions.col(vidx));
@@ -326,7 +326,7 @@ float PhysicsEngine::GravityValue(float h) {
 
 	return -sum * pointMass;
 }
-Matrix3Xf PhysicsEngine::GravityGradient(float h) {
+Matrix3Xf PhysicsEngine::GravityGradient() {
 	Matrix3Xf grad = Matrix3Xf::Zero(3, numPoints);
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		grad.col(vidx) = -pointMass * gravity;
@@ -334,8 +334,4 @@ Matrix3Xf PhysicsEngine::GravityGradient(float h) {
 
 	return grad;
 }
-
-
-
-
 

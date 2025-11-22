@@ -17,6 +17,8 @@
 
 - Optimizations
   - [X] Sparse Hessian Solver
+  - [ ] Multithreading (CUDA is too fucking scary)
+  - [ ] GPU Optimizations
 
 - IPC:
   - [ ] Fixed boundary condition
