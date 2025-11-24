@@ -10,6 +10,7 @@
 
 
 class PhysicsEngine {
+    
     public:
         PhysicsEngine(std::vector<std::shared_ptr<Object>>& objectList, nlohmann::json parameters);
         void reset();
@@ -28,21 +29,28 @@ class PhysicsEngine {
         Eigen::Vector3f gravity;
 
         std::vector<std::shared_ptr<Object>> physicsObjects; 
-        std::vector<int> objectOffsets; // starting index of each physicsObject's point positions in 'positions' & 'velocities'
-
-        // Combined properties of all objects
+        
+        // Combined properties of all objects & their offsets in the cumulative vectors
         int numPoints;
+        std::vector<int> objectOffsets; 
         Eigen::Matrix3Xf positions;
         Eigen::Matrix3Xf velocities;
-        std::vector<bool> isFixedPoint;
 
+        // Used to reset sim
         Eigen::Matrix3Xf initialPositions;
         Eigen::Matrix3Xf initialVelocities;
         
+        // Spring Edges
         int numEdges;
         std::vector<std::vector<int>> edgeList;
         std::vector<float> edgeRestLengthSquares;
         
+        // Constraints
+        std::vector<bool> isFixedPoint;
+        std::vector<int> obstacleContactPoints;
+
+
+
         // Helper
         void makePSD(Eigen::MatrixXf& hess);
         void updateObjects(); 

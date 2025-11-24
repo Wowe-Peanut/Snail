@@ -231,6 +231,7 @@ void Shape::loadMeshFile(string filePath) {
 		edgeRestLengthSquares.push_back(pow(posBuf[3*vidx1] - posBuf[3*vidx2], 2) + pow(posBuf[3*vidx1+1] - posBuf[3*vidx2+1], 2) + pow(posBuf[3*vidx1+2] - posBuf[3*vidx2+2], 2));
 	}
 
+	// Calculate initial vertex normals
 	computeNormals();
 
 	// TODO - texture buffer initialization

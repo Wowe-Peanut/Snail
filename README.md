@@ -7,6 +7,7 @@
   - [X] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
   - [X] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
   - [ ] Get rid of compiler warnings...
+  - [ ] Read into ECSs: https://www.david-colson.com/2020/02/09/making-a-simple-ecs.html
 
 - QOL: 
   - [X] Make scene & simulation parameters setable from input file
