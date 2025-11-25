@@ -16,12 +16,71 @@ I think the Object's 'isPhysicsObject' member is the perfect example now that I'
 be adding a new fucking boolean for everything. *So I'm going back to my OOP roots* (Mr. B. would be proud). I think this 
 will also allow me to separate the Renderer and Physics engine even more.
 
+**New File Structure**
+
+/resources
+  /models
+  /scenes
+  /shaders
+
+/extern (external shit)
+  json.hpp
+  stb_image_write.h
+  tiny_obj_loader.h
+
+/src
+  main.cpp
+  /Physics
+    PhysicsEngine.cpp
+    PhysicsEngine.h
+  /Rendering
+    Renderer.cpp
+    Renderer.h
+  /Util
+    /Camera
+      Camera.cpp
+      Camera.h
+    etc. for GLSL, MatrixStack, Object, & Shape
+
+/build
+.gitignore
+README.md
+CMakeLists.txt
+
+
 **New Hierarchy**
 
-Object:
-  - Always has rendering functionality
+Mesh (previously 'Shape'):
+  - posBuf, norBuf, texBuf, indBuf, drawWithElements
+  - draw(), load(), init()
 
-  PhysicsObject
+  VolumetricMesh
+    - Edge[], Triangle[], Tetrahedron[]
+
+  SurfaceMesh
+    - Edge[], Triangle[]
+
+
+Object:
+  - Shape, shaderProg, numPoints, numEdges
+  - Object(), draw()
+
+  PhysicsObject (dynamic objects, volumetric mesh)
+    - 
+
+  Obstacle (static objects, requires implementation of a SDF) 
+    MeshObstacle
+    SphereObstacle
+    PlaneObstacle
+
+struct Edge
+  - vidx1, vidx2, restingLength
+
+struct Triangle
+  - vidx1, vidx2, vidx3
+
+struct Tetrahedron
+  - vidx1, vidx2, vidx3, vidx4
 
 
 In addition to the new structure for Objects that I want, the broad phase shit gives me an opportunity to separate objects. 
@@ -55,8 +114,6 @@ small amounts of objects.
     - Obstacle Islands --> don't need processing, *should be skipped*
 
 3) Dispath jobs to threads
-
-
 
 
 # TODO
