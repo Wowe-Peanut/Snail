@@ -26,7 +26,7 @@ class Object {
 		glm::vec3 ka = glm::vec3(0.2, 0.2, 0.2);
 		glm::vec3 kd = glm::vec3(0.8, 0.7, 0.7);
 		glm::vec3 ks = glm::vec3(1.0, 0.9, 0.8);
-		float s = 200;		
+		float s = 200;
 
 		bool physicsObject;	
 		int numPoints;

@@ -17,7 +17,6 @@ class PhysicsEngine {
         void implicitStep();
         void symplecticStep();
 
-        
     private:
 
         // Simulation parameters
