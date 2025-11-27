@@ -14,11 +14,13 @@
 class Object {
 	public:	
 		
+		glm::vec3 renderTranslation;			
+		glm::vec3 renderRotation;			
+		glm::vec3 renderScale;	
+
 		std::shared_ptr<StaticMesh> mesh;
 
-		glm::vec3 translation;			
-		glm::vec3 rotation;			
-		glm::vec3 scale;		
+			
 
 		glm::vec3 ka = glm::vec3(0.2, 0.2, 0.2);
 		glm::vec3 kd = glm::vec3(0.8, 0.7, 0.7);
@@ -26,9 +28,11 @@ class Object {
 		float s = 200;
 
 		bool physicsObject;	
-		int numEdges;
 
 		Object(std::string meshpath, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject);
 		void draw(std::shared_ptr<MatrixStack> MV, std::shared_ptr<Program> prog);
 };
+
+class 
+
 
