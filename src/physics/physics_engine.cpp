@@ -1,7 +1,7 @@
-#include "PhysicsEngine.h"
-#include <iostream>
 
-// #define EIGEN_DONT_ALIGN_STATICALLY
+#include "physics_engine.h"
+
+#include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 

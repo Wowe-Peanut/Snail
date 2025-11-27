@@ -1,18 +1,15 @@
-#include "Object.h"
-#include "Shape.h"
-#include "MatrixStack.h"
-#include <algorithm>
+
+#include "object.h"
+#include "shape.h"
+#include "matrix_stack.h"
+#include "program.h"
+
 #include <iostream>
 #include <vector>
 #include <memory>
-
-#include "GLSL.h"
-#include "Program.h"
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-	
 #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Dense>
 

@@ -1,16 +1,12 @@
-#pragma  once
-#ifndef CAMERA_H
-#define CAMERA_H
+#pragma once
+
+#include "matrix_stack.h"
 
 #include <memory>
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
-class MatrixStack;
-
-class Camera
-{
+class Camera {
 public:
 	enum {
 		ROTATE = 0,
@@ -44,5 +40,3 @@ private:
 	float tfactor;
 	float sfactor;
 };
-
-#endif

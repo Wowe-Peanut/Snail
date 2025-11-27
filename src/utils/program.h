@@ -1,18 +1,11 @@
-#pragma  once
-#ifndef PROGRAM_H
-#define PROGRAM_H
+#pragma once
 
 #include <map>
 #include <string>
-
 #define GLEW_STATIC
 #include <GL/glew.h>
 
-/**
- * An OpenGL Program (vertex and fragment shaders)
- */
-class Program
-{
+class Program {
 public:
 	Program();
 	virtual ~Program();
@@ -40,5 +33,3 @@ private:
 	std::map<std::string,GLint> uniforms;
 	bool verbose;
 };
-
-#endif

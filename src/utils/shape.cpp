@@ -1,18 +1,20 @@
-#include "Shape.h"
+
+#include "shape.h"
+#include "glsl.h"
+#include "program.h"
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
+
 #include <filesystem>
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <set>
 #include <fstream>
-
-#include "GLSL.h"
-#include "Program.h"
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
+
 
 using namespace std;
 using vec3 = glm::vec3;

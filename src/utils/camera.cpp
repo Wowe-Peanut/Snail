@@ -1,9 +1,11 @@
+
+#include "camera.h"
+#include "matrix_stack.h"
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 #define _USE_MATH_DEFINES
 #include <cmath> 
-#include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
-#include "Camera.h"
-#include "MatrixStack.h"
 
 Camera::Camera() :
 	aspect(1.0f),
@@ -18,12 +20,9 @@ Camera::Camera() :
 {
 }
 
-Camera::~Camera()
-{
-}
+Camera::~Camera() {}
 
-void Camera::mouseClicked(float x, float y, bool shift, bool ctrl, bool alt)
-{
+void Camera::mouseClicked(float x, float y, bool shift, bool ctrl, bool alt) {
 	mousePrev.x = x;
 	mousePrev.y = y;
 	if(shift) {
@@ -35,8 +34,7 @@ void Camera::mouseClicked(float x, float y, bool shift, bool ctrl, bool alt)
 	}
 }
 
-void Camera::mouseMoved(float x, float y)
-{
+void Camera::mouseMoved(float x, float y) {
 	glm::vec2 mouseCurr(x, y);
 	glm::vec2 dv = mouseCurr - mousePrev;
 	switch(state) {
@@ -54,14 +52,12 @@ void Camera::mouseMoved(float x, float y)
 	mousePrev = mouseCurr;
 }
 
-void Camera::applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const
-{
+void Camera::applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const {
 	// Modify provided MatrixStack
 	P->multMatrix(glm::perspective(fovy, aspect, znear, zfar));
 }
 
-void Camera::applyViewMatrix(std::shared_ptr<MatrixStack> MV) const
-{
+void Camera::applyViewMatrix(std::shared_ptr<MatrixStack> MV) const {
 	MV->translate(translations);
 	MV->rotate(rotations.y, glm::vec3(1.0f, 0.0f, 0.0f));
 	MV->rotate(rotations.x, glm::vec3(0.0f, 1.0f, 0.0f));

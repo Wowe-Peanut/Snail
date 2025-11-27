@@ -1,9 +1,9 @@
-#include "MatrixStack.h"
+
+#include "matrix_stack.h"
 
 #include <stdio.h>
 #include <cassert>
 #include <vector>
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

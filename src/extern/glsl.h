@@ -5,8 +5,6 @@
 //
 
 #pragma once
-#ifndef GLSL_H
-#define GLSL_H
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -37,4 +35,3 @@ namespace GLSL {
 	char *textFileRead(const char *filename);
 }
 
-#endif

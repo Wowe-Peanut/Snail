@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Object.h"
-#include "Shape.h"
+#include "object.h"
+#include "shape.h"
 #include "json.hpp"
 
-// #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 

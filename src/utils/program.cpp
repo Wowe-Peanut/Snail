@@ -1,9 +1,8 @@
-#include "Program.h"
+
+#include "program.h"
+#include "glsl.h"
 
 #include <iostream>
-#include <cassert>
-
-#include "GLSL.h"
 
 using namespace std;
 

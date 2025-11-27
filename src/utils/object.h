@@ -1,19 +1,16 @@
 #pragma once
 
-#include "Shape.h"
-#include "MatrixStack.h"
-#include "Program.h"
+#include "shape.h"
+#include "matrix_stack.h"
+#include "program.h"
 
 #include <string>
 #include <vector>
 #include <memory>
-#include <cfloat>
-#include <random>
-
+#include <glm/glm.hpp> 
 #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Dense>
 
-#include <glm/glm.hpp> 
 
 class Object {
 	public:	

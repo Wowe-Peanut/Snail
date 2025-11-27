@@ -1,12 +1,11 @@
-#include <iostream>
 
-#include "Renderer.h"
-#include "PhysicsEngine.h"
-#include "Object.h"
-#include "Shape.h"
+#include "render_engine.h"
+#include "physics_engine.h"
+#include "object.h"
+#include "json.hpp"
 
 #include <fstream>
-#include "json.hpp"
+#include <iostream>
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>

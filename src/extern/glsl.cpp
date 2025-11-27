@@ -4,7 +4,7 @@
 //    Modified by sueda 10/15/15.
 //
 
-#include "GLSL.h"
+#include "glsl.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <cassert>

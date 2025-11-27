@@ -1,27 +1,24 @@
 #pragma once
-#include <iostream>
 
+#include "camera.h"
+#include "matrix_stack.h"
+#include "program.h"
+#include "shape.h"
+#include "object.h"
+#include "glsl.h"
+
+#include <iostream>
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "Camera.h"
-#include "GLSL.h"
-#include "MatrixStack.h"
-#include "Program.h"
-#include "Shape.h"
-#include "Object.h"
 
 float constexpr 	DEFAULT_WIDTH = 800;
 float constexpr 	DEFAULT_HEIGHT = 600;
 int constexpr	 	MAX_LIGHTS = 10;
 float constexpr		ZOOM_SPEED = 0.5;
-
-
 
 class Renderer {
 	public:

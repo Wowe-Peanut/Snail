@@ -1,13 +1,10 @@
 #pragma once
-#ifndef MATRIXSTACK_H
-#define MATRIXSTACK_H
 
 #include <stack>
 #include <memory>
 #include <glm/fwd.hpp>
 
-class MatrixStack
-{
+class MatrixStack {
 public:
 	MatrixStack();
 	virtual ~MatrixStack();
@@ -47,4 +44,3 @@ private:
 	
 };
 
-#endif
