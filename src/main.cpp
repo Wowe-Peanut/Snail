@@ -60,7 +60,7 @@ void simulate(string resourcePath, string jsonPath) {
 	json data = openjson(resourcePath + jsonPath);
 	vector<shared_ptr<Object>> objects = parseObjects(resourcePath, data["objects"]);
 
-	Renderer renderer(objects, resourcePath);
+	RenderEngine renderer(objects, resourcePath);
 	PhysicsEngine engine(objects, data["parameters"]);
 	
 	while (!glfwWindowShouldClose(renderer.window)) {

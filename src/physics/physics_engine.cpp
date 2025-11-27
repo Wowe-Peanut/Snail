@@ -11,71 +11,71 @@ using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf, Eigen
 
 
 PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parameters) {
-    // Read parameters
-    h                   = parameters["delta_time"];
-    tol                 = parameters["tolerance"];
-    maxiter             = parameters["max_iterations"];
-    springStiffness     = parameters["spring_stiffness"];
-    pointMass           = parameters["point_mass"];
-    gravity             = Vector3f(0, parameters["gravity"], 0);
+    // // Read parameters
+    // h                   = parameters["delta_time"];
+    // tol                 = parameters["tolerance"];
+    // maxiter             = parameters["max_iterations"];
+    // springStiffness     = parameters["spring_stiffness"];
+    // pointMass           = parameters["point_mass"];
+    // gravity             = Vector3f(0, parameters["gravity"], 0);
 
-    // A running total used to calculate object indices (3*numpoints)
-    numPoints = 0;
-    for (auto obj: objectList) {
-        if (obj->physicsObject) {
-            physicsObjects.push_back(obj);
-            objectOffsets.push_back(numPoints);
-            numPoints += obj->numPoints;
-        }
-    }
+    // // A running total used to calculate object indices (3*numpoints)
+    // numPoints = 0;
+    // for (auto obj: objectList) {
+    //     if (obj->physicsObject) {
+    //         physicsObjects.push_back(obj);
+    //         objectOffsets.push_back(numPoints);
+    //         numPoints += obj->mesh->numPoints;
+    //     }
+    // }
 
-	if (physicsObjects.empty()) {
-		cerr << "WARNING | None of the constructed objects are set to be physicsObjects..." << endl;
+	// if (physicsObjects.empty()) {
+	// 	cerr << "WARNING | None of the constructed objects are set to be physicsObjects..." << endl;
 
-	} else {
-		// Initialize the ensemble state of all objects
-		positions = Matrix3Xf::Zero(3, numPoints);
-		velocities = Matrix3Xf::Zero(3, numPoints); 
-		isFixedPoint = vector<bool>(numPoints, false);
+	// } else {
+	// 	// Initialize the ensemble state of all objects
+	// 	positions = Matrix3Xf::Zero(3, numPoints);
+	// 	velocities = Matrix3Xf::Zero(3, numPoints); 
+	// 	isFixedPoint = vector<bool>(numPoints, false);
 
-		numEdges = 0;
-		for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
-			auto obj = physicsObjects[objIdx];
-			int offset = objectOffsets[objIdx];
+	// 	numEdges = 0;
+	// 	for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
+	// 		auto obj = physicsObjects[objIdx];
+	// 		int offset = objectOffsets[objIdx];
 
-			positions.middleCols(offset, obj->numPoints) = Eigen::Map<Matrix3Xf>(obj->shape->posBuf.data(), 3, obj->numPoints);
+	// 		positions.middleCols(offset, obj->mesh->numPoints) = Eigen::Map<Matrix3Xf>(obj->mesh->triPosBuf.data(), 3, obj->mesh->numPoints);
 			
-			for (auto edge: obj->shape->edgeList) {
-				edgeList.push_back({offset+edge[0], offset+edge[1]});
-			}
+	// 		for (Edge& edge: obj->mesh->edges) {
+	// 			edgeList.push_back({offset+edge.v1, offset+edge.v1});
+	// 		}
 
-			numEdges += obj->shape->edgeList.size();
-			edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->edgeRestLengthSquares.begin(), obj->shape->edgeRestLengthSquares.end());
-		}
+	// 		numEdges += obj->shape->edgeList.size();
+	// 		edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->edgeRestLengthSquares.begin(), obj->shape->edgeRestLengthSquares.end());
+	// 	}
 
-		initialPositions = positions;
-		initialVelocities = velocities;
+	// 	initialPositions = positions;
+	// 	initialVelocities = velocities;
 
 
-		//!REMOVE ME
-		float maxHeight = positions.col(0).y();
-		vector<int> bestidxs = {0};
+	// 	//!REMOVE ME
+	// 	float maxHeight = positions.col(0).y();
+	// 	vector<int> bestidxs = {0};
 
-		for (int i=1; i<numPoints; i++) {
-			if (positions.col(i).y() > maxHeight) {
-				bestidxs.clear();
-				bestidxs.push_back(i);
-				maxHeight = positions.col(i).y();
-			} else if (positions.col(i).y() == maxHeight) {
-				bestidxs.push_back(i);
-			}
-		}
+	// 	for (int i=1; i<numPoints; i++) {
+	// 		if (positions.col(i).y() > maxHeight) {
+	// 			bestidxs.clear();
+	// 			bestidxs.push_back(i);
+	// 			maxHeight = positions.col(i).y();
+	// 		} else if (positions.col(i).y() == maxHeight) {
+	// 			bestidxs.push_back(i);
+	// 		}
+	// 	}
 
-		for (int idx: bestidxs) {
-			isFixedPoint[idx] = true;
-		}
-		//!
-	}
+	// 	for (int idx: bestidxs) {
+	// 		isFixedPoint[idx] = true;
+	// 	}
+	// 	//!
+	// }
 }
 
 
@@ -180,10 +180,11 @@ void PhysicsEngine::updateObjects() {
 		auto obj = physicsObjects[objIdx];
         int offset = objectOffsets[objIdx];
 
-		auto submatrix = positions.middleCols(offset, obj->numPoints);
-		obj->shape->posBuf.assign(submatrix.data(), submatrix.data() + submatrix.size());
+		auto submatrix = positions.middleCols(offset, obj->mesh->numPoints);
+		obj->mesh->triPosBuf.assign(submatrix.data(), submatrix.data() + submatrix.size());
 
-		obj->shape->computeNormals();
+		//! UNCOMMENT ME
+		// obj->mesh->computeNormals();
 	}
 }
 void PhysicsEngine::reset() {

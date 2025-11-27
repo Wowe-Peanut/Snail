@@ -3,7 +3,7 @@
 #include "camera.h"
 #include "matrix_stack.h"
 #include "program.h"
-#include "shape.h"
+#include "mesh.h"
 #include "object.h"
 #include "glsl.h"
 
@@ -20,13 +20,13 @@ float constexpr 	DEFAULT_HEIGHT = 600;
 int constexpr	 	MAX_LIGHTS = 10;
 float constexpr		ZOOM_SPEED = 0.5;
 
-class Renderer {
+class RenderEngine {
 	public:
 		GLFWwindow* window;
 
-		Renderer(std::vector<std::shared_ptr<Object>>& objectList, std::string resourceDirectory);
+		RenderEngine(std::vector<std::shared_ptr<Object>>& objectList, std::string resourceDirectory);
 		void render();
-		void initGraphics();
+		void initGraphics();	
 		void initScene();
 
 		// GLFW callback functions

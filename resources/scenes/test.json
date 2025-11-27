@@ -10,7 +10,7 @@
 
     "objects": [
         {
-            "mesh": "models/cube/cube.msh",
+            "mesh": "models/cube/cube.obj",
             "is_physics_object": true,        
             "transformation": {
                 "translation":  [0, 1, 0],

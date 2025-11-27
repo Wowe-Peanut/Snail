@@ -1,7 +1,7 @@
 #pragma once
 
 #include "object.h"
-#include "shape.h"
+#include "mesh.h"
 #include "json.hpp"
 
 #include <Eigen/Dense>

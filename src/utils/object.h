@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shape.h"
+#include "mesh.h"
 #include "matrix_stack.h"
 #include "program.h"
 
@@ -11,11 +11,11 @@
 #define EIGEN_DONT_ALIGN_STATICALLY
 #include <Eigen/Dense>
 
-
 class Object {
 	public:	
 		
-		std::shared_ptr<Shape> shape;
+		std::shared_ptr<StaticMesh> mesh;
+
 		glm::vec3 translation;			
 		glm::vec3 rotation;			
 		glm::vec3 scale;		
@@ -26,7 +26,6 @@ class Object {
 		float s = 200;
 
 		bool physicsObject;	
-		int numPoints;
 		int numEdges;
 
 		Object(std::string meshpath, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject);

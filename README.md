@@ -62,7 +62,7 @@ Mesh (previously 'Shape'):
 
 
 Object:
-  - Shape, shaderProg, numPoints, numEdges
+  - Shape, shaderProg, numPoints, numEdges, boundingBox
   - Object(), draw()
 
   PhysicsObject (dynamic objects, volumetric mesh)
@@ -135,6 +135,7 @@ small amounts of objects.
   - [X] Sparse Hessian Solver
   - [ ] Multithreading (CUDA is too fucking scary)
   - [ ] GPU Optimizations
+  - [ ] Broad/Narrow phase
 
 - IPC:
   - [ ] Fixed boundary condition

@@ -7,12 +7,12 @@ using namespace std;
 using vec3 = glm::vec3;
 using vec4 = glm::vec4;
 
-Renderer::Renderer(vector<shared_ptr<Object>>& objectList, string resourceDirectory): objects(objectList), resourceDir(resourceDirectory) {
+RenderEngine::RenderEngine(vector<shared_ptr<Object>>& objectList, string resourceDirectory): objects(objectList), resourceDir(resourceDirectory) {
 	initGraphics();
 	initScene();
 }
 
-void Renderer::render() {
+void RenderEngine::render() {
 	// Clear color & depth buffers, enable depth test, and set viewport size
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
@@ -51,7 +51,7 @@ void Renderer::render() {
 	GLSL::checkError(GET_FILE_LINE);
 }
 
-void Renderer::initGraphics() {
+void RenderEngine::initGraphics() {
 
 	// Set error callback.
 	glfwSetErrorCallback(errorCallback);
@@ -95,11 +95,11 @@ void Renderer::initGraphics() {
 
 	// Initial all the object shapes now that the OpenGL context is created
 	for (auto obj: objects) {
-		obj->shape->init();
+		obj->mesh->init();
 	}
 }
 
-void Renderer::initScene() {
+void RenderEngine::initScene() {
 
 	// Initialize time.
 	glfwSetTime(0.0); 			
@@ -134,18 +134,18 @@ void Renderer::initScene() {
 	GLSL::checkError(GET_FILE_LINE);
 }
 
-void Renderer::errorCallback(int error, const char *description) {
+void RenderEngine::errorCallback(int error, const char *description) {
 	cerr << description << endl;
 }
 
-void Renderer::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void RenderEngine::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 }
 
-void Renderer::mouseCallback(GLFWwindow* window, int button, int action, int mods) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+void RenderEngine::mouseCallback(GLFWwindow* window, int button, int action, int mods) {
+	RenderEngine* renderer = static_cast<RenderEngine*>(glfwGetWindowUserPointer(window));
 
 	// Get the current mouse position.
 	double xmouse, ymouse;
@@ -161,8 +161,8 @@ void Renderer::mouseCallback(GLFWwindow* window, int button, int action, int mod
 	}
 }
 
-void Renderer::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+void RenderEngine::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+	RenderEngine* renderer = static_cast<RenderEngine*>(glfwGetWindowUserPointer(window));
 	
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if(state == GLFW_PRESS) {
@@ -170,8 +170,8 @@ void Renderer::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 
-void Renderer::charCallback(GLFWwindow* window, unsigned int key) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+void RenderEngine::charCallback(GLFWwindow* window, unsigned int key) {
+	RenderEngine* renderer = static_cast<RenderEngine*>(glfwGetWindowUserPointer(window));
 	
 	switch (key) {
 		case 'x':
@@ -210,23 +210,21 @@ void Renderer::charCallback(GLFWwindow* window, unsigned int key) {
 	}
 }
 
-void Renderer::resizeCallback(GLFWwindow* window, int width, int height) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+void RenderEngine::resizeCallback(GLFWwindow* window, int width, int height) {
+	RenderEngine* renderer = static_cast<RenderEngine*>(glfwGetWindowUserPointer(window));
 
 	renderer->viewportWidth = width;
 	renderer->viewportHeight = height;
 	glViewport(0, 0, width, height);
 }
 
-void Renderer::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+void RenderEngine::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+	RenderEngine* renderer = static_cast<RenderEngine*>(glfwGetWindowUserPointer(window));
 
 	renderer->camera->zoom(yoffset*ZOOM_SPEED);
 }
 
-
-
-shared_ptr<Program> Renderer::makeProg(string name, vector<string> attributeNames, vector<string> uniformNames) {
+shared_ptr<Program> RenderEngine::makeProg(string name, vector<string> attributeNames, vector<string> uniformNames) {
 	auto prog = make_shared<Program>();
 	prog->setShaderNames(resourceDir + "shaders/" + name + "_vert.glsl", resourceDir + "shaders/" + name + "_frag.glsl");
 	prog->setVerbose(true);

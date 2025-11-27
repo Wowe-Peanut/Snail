@@ -1,6 +1,6 @@
 
 #include "object.h"
-#include "shape.h"
+#include "mesh.h"
 #include "matrix_stack.h"
 #include "program.h"
 
@@ -16,14 +16,7 @@
 using namespace std;
 
 Object::Object(string meshpath, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject): 
-translation(trans), rotation(rot), scale(scale), physicsObject(physicsObject) {
-	shape = make_shared<Shape>(meshpath);
-	numPoints = shape->posBuf.size()/3;
-	numEdges = shape->edgeList.size();
-
-	// Physics objects should ALWAYS be drawn by element vectors b/c the vertex positions are always changing
-	assert(physicsObject ? shape->drawWithElements : true);
-}
+mesh(make_shared<StaticMesh>(meshpath)), translation(trans), rotation(rot), scale(scale), physicsObject(physicsObject) {}
 
 void Object::draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog) {
 	
@@ -44,6 +37,6 @@ void Object::draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog) {
 	glUniform1f(prog->getUniform("s"), s);
 	
 	// Draw the model
-	shape->draw(prog);
+	mesh->draw(prog);
 	MV->popMatrix();
 }
