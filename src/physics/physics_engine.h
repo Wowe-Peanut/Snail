@@ -40,14 +40,11 @@ class PhysicsEngine {
         
         // Spring Edges
         int numEdges;
-        std::vector<std::vector<int>> edgeList;
-        std::vector<float> edgeRestLengthSquares;
+        std::vector<Edge> edges;
         
         // Constraints
         std::vector<bool> isFixedPoint;
         std::vector<int> obstacleContactPoints;
-
-
 
         // Helper
         void makePSD(Eigen::MatrixXf& hess);

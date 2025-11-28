@@ -1,6 +1,7 @@
 #pragma once
 
 #include "program.h"
+#include "object.h"
 
 #include <string>
 #include <vector>
@@ -42,43 +43,33 @@ class Mesh {
 		unsigned triTexBufID;
 		unsigned triIndBufID;
 
-		int numPoints;
-		
-		// Main
-		Mesh();
-		void init(GLenum glBufferType);
-		virtual void draw(const std::shared_ptr<Program> prog) = 0;	
-
-		// Helper
-		template <typename T>
-		void initBuffer(GLenum glBufferType, std::vector<T>& buffer, unsigned& bufferID);
-};
-
-// .msh files, draws with element
-class DynamicMesh : public Mesh {
-	public:
-		// Surface = 2 dim, Volume = 3 dim
-		int dim; 
+		// Geometric primitives
 		std::vector<Edge> edges;
 		std::vector<Triangle> triangles;
 		std::vector<Tetrahedron> tetrahedron;
 
-		DynamicMesh(int dimension, std::string mshFilePath);
+		// Properties
+		int numPoints;			// Number of vertices (internal AND external)
+		bool isStatic;			// Determines GL_STREAM_DRAW or GL_STATIC_DRAW
+		bool useIndBuf;			// Yes: drawElements, No: drawArrays
 
-		void loadMeshFile(std::string mshFilePath);
-		void draw(const std::shared_ptr<Program> prog);
-		void computeNormals();
+		template <typename T>
+		void initBuffer(GLenum glBufferType, std::vector<T>& buffer, unsigned& bufferID);
+		Mesh(std::string filePath, bool isStatic);
 		void init();
-		void updateBuffer(const std::shared_ptr<Program> prog, std::string attribName, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);
+
+
+		template <typename T>
+		void updateBuffer(const std::shared_ptr<Program> prog, std::string attribName, std::vector<T>& buffer, unsigned bufferID, int valuesPerVertex);
+		void draw(const std::shared_ptr<Program> prog);	
+		void drawElements(const std::shared_ptr<Program> prog);
+		void drawArrays(const std::shared_ptr<Program> prog);
+
+
+		void loadMshFile(std::string mshFilePath);
+		void loadObjFile(std::string objFilePath);
+		void computeNormals(); 
+		void transform(Transform transform);
 };
 
-
-// .obj files, no primitives, draws with arrays
-class StaticMesh: public Mesh {
-	public:
-		StaticMesh(std::string objFilePath);
-
-		void loadObjFile(std::string objFilePath);	
-		void draw(const std::shared_ptr<Program> prog);
-		void init();
-};
+ 

@@ -1,4 +1,6 @@
 
+#define GLM_FORCE_RADIANS
+
 #include "render_engine.h"
 #include "physics_engine.h"
 #include "object.h"
@@ -6,8 +8,6 @@
 
 #include <fstream>
 #include <iostream>
-
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
 using json = nlohmann::json;
@@ -39,17 +39,34 @@ json openjson(string path) {
 }
 
 vector<shared_ptr<Object>> parseObjects(string resourcePath, json objectListJson) {
+
 	vector<shared_ptr<Object>> objects;
 
-	for (auto obj: objectListJson) {
-		string meshpath = obj["mesh"];
-		json transform = obj["transformation"];
-		vec3 translation = jsontovec3(transform["translation"]);
-		vec3 scale = jsontovec3(transform["scale"]);
-		vec3 rotation = jsontovec3(transform["rotation"]);
-		bool isPhysicsObject = obj["is_physics_object"];
+
+	for (auto objjson: objectListJson) {
+
+		// Read JSON sections
+		string meshpath = objjson["mesh"];
+		json tfjson = objjson["transform"];
+		json matjson = objjson["material"];
+		bool isPhysical = objjson["is_physical"];
+		bool isStatic = objjson["is_static"];
 		
-		objects.push_back(make_shared<Object>(resourcePath + meshpath, translation, rotation, scale, isPhysicsObject));
+		// Construct object parameters
+		Transform transform = {jsontovec3(tfjson["translation"]), jsontovec3(tfjson["scale"]), jsontovec3(tfjson["rotation"])};
+		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshpath, isStatic);
+		shared_ptr<Material> mat = make_shared<BPhongMaterial>(jsontovec3(matjson["ka"]), jsontovec3(matjson["kd"]), jsontovec3(matjson["ks"]), matjson["s"]);
+
+
+		// Physics-based objects apply transform directly to mesh (e.g. to squish springs)
+		if (isPhysical) {
+			mesh->transform(transform);
+			objects.push_back(make_shared<Object>(mesh, mat, true));
+
+		// Non physics-based objects apply transform on GPU 
+		} else {
+			objects.push_back(make_shared<Object>(mesh, mat, transform, false));
+		}
 	}
 	
 	return objects;

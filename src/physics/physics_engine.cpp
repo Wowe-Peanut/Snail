@@ -11,71 +11,70 @@ using Eigen::Vector3f, Eigen::Matrix3Xf, Eigen::VectorXf, Eigen::MatrixXf, Eigen
 
 
 PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parameters) {
-    // // Read parameters
-    // h                   = parameters["delta_time"];
-    // tol                 = parameters["tolerance"];
-    // maxiter             = parameters["max_iterations"];
-    // springStiffness     = parameters["spring_stiffness"];
-    // pointMass           = parameters["point_mass"];
-    // gravity             = Vector3f(0, parameters["gravity"], 0);
+    // Read parameters
+    h                   = parameters["delta_time"];
+    tol                 = parameters["tolerance"];
+    maxiter             = parameters["max_iterations"];
+    springStiffness     = parameters["spring_stiffness"];
+    pointMass           = parameters["point_mass"];
+    gravity             = Vector3f(0, parameters["gravity"], 0);
 
-    // // A running total used to calculate object indices (3*numpoints)
-    // numPoints = 0;
-    // for (auto obj: objectList) {
-    //     if (obj->physicsObject) {
-    //         physicsObjects.push_back(obj);
-    //         objectOffsets.push_back(numPoints);
-    //         numPoints += obj->mesh->numPoints;
-    //     }
-    // }
+    // A running total used to calculate object indices (3*numpoints)
+    numPoints = 0;
+    for (auto obj: objectList) {
+        if (obj->isPhysical) {
+            physicsObjects.push_back(obj);
+            objectOffsets.push_back(numPoints);
+            numPoints += obj->mesh->numPoints;
+        }
+    }
 
-	// if (physicsObjects.empty()) {
-	// 	cerr << "WARNING | None of the constructed objects are set to be physicsObjects..." << endl;
+	if (physicsObjects.empty()) {
+		cerr << "WARNING | None of the constructed objects are set to be physicsObjects..." << endl;
 
-	// } else {
-	// 	// Initialize the ensemble state of all objects
-	// 	positions = Matrix3Xf::Zero(3, numPoints);
-	// 	velocities = Matrix3Xf::Zero(3, numPoints); 
-	// 	isFixedPoint = vector<bool>(numPoints, false);
+	} else {
+		// Initialize the ensemble state of all objects
+		positions = Matrix3Xf::Zero(3, numPoints);
+		velocities = Matrix3Xf::Zero(3, numPoints); 
+		isFixedPoint = vector<bool>(numPoints, false);
 
-	// 	numEdges = 0;
-	// 	for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
-	// 		auto obj = physicsObjects[objIdx];
-	// 		int offset = objectOffsets[objIdx];
+		numEdges = 0;
+		for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
+			auto obj = physicsObjects[objIdx];
+			int offset = objectOffsets[objIdx];
 
-	// 		positions.middleCols(offset, obj->mesh->numPoints) = Eigen::Map<Matrix3Xf>(obj->mesh->triPosBuf.data(), 3, obj->mesh->numPoints);
+			positions.middleCols(offset, obj->mesh->numPoints) = Eigen::Map<Matrix3Xf>(obj->mesh->triPosBuf.data(), 3, obj->mesh->numPoints);
 			
-	// 		for (Edge& edge: obj->mesh->edges) {
-	// 			edgeList.push_back({offset+edge.v1, offset+edge.v1});
-	// 		}
+			for (Edge& edge: obj->mesh->edges) {
+				edges.push_back({offset+edge.v1, offset+edge.v1});
+			}
 
-	// 		numEdges += obj->shape->edgeList.size();
-	// 		edgeRestLengthSquares.insert(edgeRestLengthSquares.end(), obj->shape->edgeRestLengthSquares.begin(), obj->shape->edgeRestLengthSquares.end());
-	// 	}
+			numEdges += obj->mesh->edges.size();
+		}
 
-	// 	initialPositions = positions;
-	// 	initialVelocities = velocities;
+		initialPositions = positions;
+		initialVelocities = velocities;
 
 
-	// 	//!REMOVE ME
-	// 	float maxHeight = positions.col(0).y();
-	// 	vector<int> bestidxs = {0};
+		//!REMOVE ME
+		float maxHeight = positions.col(0).y();
+		vector<int> bestidxs = {0};
 
-	// 	for (int i=1; i<numPoints; i++) {
-	// 		if (positions.col(i).y() > maxHeight) {
-	// 			bestidxs.clear();
-	// 			bestidxs.push_back(i);
-	// 			maxHeight = positions.col(i).y();
-	// 		} else if (positions.col(i).y() == maxHeight) {
-	// 			bestidxs.push_back(i);
-	// 		}
-	// 	}
+		for (int i=1; i<numPoints; i++) {
+			if (positions.col(i).y() > maxHeight) {
+				bestidxs.clear();
+				bestidxs.push_back(i);
+				maxHeight = positions.col(i).y();
+			} else if (positions.col(i).y() == maxHeight) {
+				bestidxs.push_back(i);
+			}
+		}
 
-	// 	for (int idx: bestidxs) {
-	// 		isFixedPoint[idx] = true;
-	// 	}
-	// 	//!
-	// }
+		for (int idx: bestidxs) {
+			isFixedPoint[idx] = true;
+		}
+		//!
+	}
 }
 
 
@@ -183,8 +182,7 @@ void PhysicsEngine::updateObjects() {
 		auto submatrix = positions.middleCols(offset, obj->mesh->numPoints);
 		obj->mesh->triPosBuf.assign(submatrix.data(), submatrix.data() + submatrix.size());
 
-		//! UNCOMMENT ME
-		// obj->mesh->computeNormals();
+		obj->mesh->computeNormals();
 	}
 }
 void PhysicsEngine::reset() {
@@ -245,26 +243,21 @@ SparseMatrix<float> PhysicsEngine::InertiaHessian(Matrix3Xf& xtilde) {
 // Mass Spring Energy 
 float PhysicsEngine::MassSpringValue() {
 	float sum = 0;
-	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
-		auto edge = edgeList[edgeIdx];
-		Vector3f diff = positions.col(edge[0]) - positions.col(edge[1]);
-		float l2 = edgeRestLengthSquares[edgeIdx];
-
-		sum += l2 * pow(diff.dot(diff) / l2 - 1, 2);
+	for (Edge& edge: edges) {
+		Vector3f diff = positions.col(edge.v1) - positions.col(edge.v2);
+		sum += edge.l2 * pow(diff.dot(diff) / edge.l2 - 1, 2);
 	}
 	return sum * springStiffness / 2;
 }
 Matrix3Xf PhysicsEngine::MassSpringGradient() {
 	Matrix3Xf grad = MatrixXf::Zero(3, numPoints);
 
-	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
-		auto edge = edgeList[edgeIdx];
-		Vector3f diff = positions.col(edge[0]) - positions.col(edge[1]);
-		float l2 = edgeRestLengthSquares[edgeIdx];
+	for (Edge& edge: edges) {
+		Vector3f diff = positions.col(edge.v1) - positions.col(edge.v2);
+		Vector3f edgeGrad = 2 * springStiffness * (diff.dot(diff) / edge.l2 - 1) * diff;
 
-		Vector3f edgeGrad = 2 * springStiffness * (diff.dot(diff) / l2 - 1) * diff;
-		grad.col(edge[0]) += edgeGrad;
-		grad.col(edge[1]) -= edgeGrad;
+		grad.col(edge.v1) += edgeGrad;
+		grad.col(edge.v2) -= edgeGrad;
 	}
 
 	return grad;
@@ -273,15 +266,13 @@ SparseMatrix<float> PhysicsEngine::MassSpringHessian() {
 
 	int dof = 3*numPoints;
 	vector<Triplet<float>> triplets(dof);
-	triplets.reserve(9*edgeList.size()); // 2 vertices per edge, each with 3 dofs = 3^2 = 9 second derivatives
+	triplets.reserve(9*edges.size()); // 2 vertices per edge, each with 3 dofs = 3^2 = 9 second derivatives
 
-	for (int edgeIdx=0; edgeIdx<numEdges; edgeIdx++) {
-		auto edge = edgeList[edgeIdx];
-		Vector3f diff = positions.col(edge[0]) - positions.col(edge[1]);
-		float l2 = edgeRestLengthSquares[edgeIdx];
+	for (Edge& edge: edges) {
+		Vector3f diff = positions.col(edge.v1) - positions.col(edge.v2);
 
 		// Hessian for the energy of single edge, 3x3 for each DIFFERENCE in the two vertices
-		Matrix3f diffHess = 2 * springStiffness / l2 * (2 * diff * diff.transpose() + (diff.dot(diff) - l2) * Matrix3f::Identity());
+		Matrix3f diffHess = 2 * springStiffness / edge.l2 * (2 * diff * diff.transpose() + (diff.dot(diff) - edge.l2) * Matrix3f::Identity());
 
 		// Essemble 6x6 hessian for the 6 DOFs on the two vertices of the edge. diffHess is symmetric, so 
 		// this block matrix will also be symmetric so we can use a SelfAdjointEigenSolver to make PSD
@@ -296,8 +287,8 @@ SparseMatrix<float> PhysicsEngine::MassSpringHessian() {
 		for (int blockRow=0; blockRow<=1; blockRow++) {
 			for (int blockCol=0; blockCol<=1; blockCol++) {
 
-				int startRow = 3*edge[blockRow];
-				int startCol = 3*edge[blockCol];
+				int startRow = (blockRow == 0 ? 3*edge.v1 : 3*edge.v2);
+				int startCol = (blockCol == 0 ? 3*edge.v1 : 3*edge.v2);
 
 				for (int row=0; row<3; row++) {
 					for (int col=0; col<3 ;col++) {

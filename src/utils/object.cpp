@@ -3,40 +3,38 @@
 #include "mesh.h"
 #include "matrix_stack.h"
 #include "program.h"
+#include "material.h"
 
 #include <iostream>
-#include <vector>
 #include <memory>
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#define EIGEN_DONT_ALIGN_STATICALLY
-#include <Eigen/Dense>
 
 using namespace std;
 
-Object::Object(string meshpath, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject): 
-mesh(make_shared<StaticMesh>(meshpath)), translation(trans), rotation(rot), scale(scale), physicsObject(physicsObject) {}
+Object::Object(shared_ptr<Mesh> mesh, shared_ptr<Material> material, Transform renderTransform, bool isPhysical): 
+mesh(mesh), material(material), renderTransform(renderTransform), isPhysical(isPhysical) {}
+
+Object::Object(shared_ptr<Mesh> mesh, shared_ptr<Material> material, bool isPhysical): 
+mesh(mesh), material(material), isPhysical(isPhysical) {
+	renderTransform = {glm::vec3(0), glm::vec3(0), glm::vec3(1)};
+}
 
 void Object::draw(shared_ptr<MatrixStack> MV, shared_ptr<Program> prog) {
 	
 	// Apply base transformations 
 	MV->pushMatrix();
-	MV->translate(translation);
-	MV->rotate(rotation.x, 1, 0, 0);
-	MV->rotate(rotation.y, 0, 1, 0);
-	MV->rotate(rotation.z, 0, 0, 1);
-	MV->scale(scale);
+	MV->translate(renderTransform.translation);
+	MV->rotate(renderTransform.rotation.x, 1, 0, 0);
+	MV->rotate(renderTransform.rotation.y, 0, 1, 0);
+	MV->rotate(renderTransform.rotation.z, 0, 0, 1);
+	MV->scale(renderTransform.scale);
 
-	// Send properties to GPU
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 	glUniformMatrix4fv(prog->getUniform("MVIT"), 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MV->topMatrix()))));
-	glUniform3fv(prog->getUniform("ka"), 1, glm::value_ptr(ka));
-	glUniform3fv(prog->getUniform("kd"), 1, glm::value_ptr(kd));
-	glUniform3fv(prog->getUniform("ks"), 1, glm::value_ptr(ks)); 
-	glUniform1f(prog->getUniform("s"), s);
+	material->loadUniforms(prog);
 	
-	// Draw the model
 	mesh->draw(prog);
 	MV->popMatrix();
 }

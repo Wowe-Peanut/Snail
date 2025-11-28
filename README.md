@@ -82,6 +82,7 @@ struct Triangle
 struct Tetrahedron
   - vidx1, vidx2, vidx3, vidx4
 
+...Object doesn't need to know if it's physical but shape needs to know if it's static 
 
 In addition to the new structure for Objects that I want, the broad phase shit gives me an opportunity to separate objects. 
 The original reason I kept all the positions in a single array was b/c I was thinking about how the Hessian will rely on multiple
@@ -168,6 +169,10 @@ small amounts of objects.
   - [X] Bphong
   - [ ] Texture Shader
   - [ ] Add per-triangle shading (cubes look weird with smooth bphong)
+  - [ ] Make Program a virtual class and add subclasses like BPhong program that handle the lights and sending them to the GPU
+  (these subtypes should also handle setting the attributes and what not). Then, the shader of choice should be settable from
+  the JSON file and all objects with the same set shader type should be grouped together (for each prog, bind, draw all, unbind).
+  This should probably be handled just by the renderer (keep that shit out of main i think)
 
 - Other:
   - [ ] Slip DBCs

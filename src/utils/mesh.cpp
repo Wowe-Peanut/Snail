@@ -1,8 +1,12 @@
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#define GLM_FORCE_RADIANS
+
 #include "mesh.h"
 #include "glsl.h"
 #include "program.h"
-#define TINYOBJLOADER_IMPLEMENTATION
+#include "object.h"
+#include "matrix_stack.h"
 #include "tiny_obj_loader.h"
 
 #include <filesystem>
@@ -11,13 +15,13 @@
 #include <memory>
 #include <set>
 #include <fstream>
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
 using namespace std;
 using vec3 = glm::vec3;
 
-// External helpers
+// Helpers
+// ------------------------------------------------------------------------------------
 vec3 bufToVec(vector<float>& buffer, int idx) {
 	return vec3(buffer[idx*3], buffer[idx*3 + 1], buffer[idx*3 + 2]);
 }
@@ -34,16 +38,36 @@ string getExtension(string path) {
 }
 
 
-// Parent Mesh
-// -----------------------------------------------------------------------------
-Mesh::Mesh(): triPosBufID(0), triNorBufID(0), triTexBufID(0) {}
 
-void Mesh::init(GLenum glBufferType) {
+// Initialization
+// ------------------------------------------------------------------------------------
+Mesh::Mesh(string filePath, bool isStatic): triPosBufID(0), triNorBufID(0), triTexBufID(0), triIndBufID(0), isStatic(isStatic) {
+	string extension = getExtension(filePath);
 
-	// Initialize position/normal buffers with 'bufferType' in [GL_STATIC_DRAW, GL_STREAM_DRAW]
-	// and texture/index buffers with GL_STATIC_DRAW
-	initBuffer(glBufferType, triPosBuf, triPosBufID);
-	initBuffer(glBufferType, triNorBuf, triNorBufID);
+	if (extension == ".msh") {
+		useIndBuf = true;
+		loadMshFile(filePath);
+		
+
+	} else if (extension == ".obj") {
+		useIndBuf = false;
+		loadObjFile(filePath);
+		
+		
+		if (!isStatic) {
+			cerr << ".obj cannot be dynamic b/c they use 'drawArrays()' to render" << endl;
+			exit(1);
+		}
+
+	} else {
+		cerr << "'" << extension << "' is not a supported mesh file type (.msh, .obj)" << endl;
+		exit(1);
+	} 	
+}
+
+void Mesh::init() {
+	initBuffer(isStatic ? GL_STATIC_DRAW : GL_STREAM_DRAW, triPosBuf, triPosBufID);
+	initBuffer(isStatic ? GL_STATIC_DRAW : GL_STREAM_DRAW, triNorBuf, triNorBufID);
 	initBuffer(GL_STATIC_DRAW, triIndBuf, triTexBufID);
 	initBuffer(GL_STATIC_DRAW, triIndBuf, triIndBufID);
 
@@ -65,20 +89,9 @@ void Mesh::initBuffer(GLenum glBufferType, vector<T>& buffer, unsigned& bufferID
 
 
 
-// Dynamic Mesh
-// -----------------------------------------------------------------------------
-DynamicMesh::DynamicMesh(int dimension, string mshFilePath): dim(dimension) {
-
-	string extension = getExtension(mshFilePath);
-	if (extension != ".msh") {
-		cerr << "DynamicMesh expected '.msh', got '" << extension << "'. Check mesh file type silly!" << endl;
-		exit(1);
-	}
-
-	loadMeshFile(mshFilePath);
-}
-
-void DynamicMesh::loadMeshFile(string mshFilePath) {
+// Construction
+// ------------------------------------------------------------------------------------
+void Mesh::loadMshFile(string mshFilePath) {
 
 	ifstream f(mshFilePath);
 	if (!f.is_open()) {
@@ -194,95 +207,14 @@ void DynamicMesh::loadMeshFile(string mshFilePath) {
 	f.close();
 }
 
-void DynamicMesh::init() {
-	Mesh::init(GL_STREAM_DRAW);
-}
-
-void DynamicMesh::draw(const shared_ptr<Program> prog) {
-
-	// Update the three dynamic buffers
-	updateBuffer(prog, "aPos", triPosBuf, triPosBufID, 3);
-	updateBuffer(prog, "aNor", triNorBuf, triNorBufID, 3);
-	updateBuffer(prog, "aTex", triTexBuf, triTexBufID, 2);
-
-	// Draw triangles
-    glBindBuffer(GL_ARRAY_BUFFER, triTexBufID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triIndBufID);
-    glDrawElements(GL_TRIANGLES, triIndBuf.size(), GL_UNSIGNED_INT, (void *)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	GLSL::checkError(GET_FILE_LINE);
-}
-
-void DynamicMesh::updateBuffer(const shared_ptr<Program> prog, string attribName, vector<float>& buffer, unsigned bufferID, int valuesPerVertex) {
-	int attribID = prog->getAttribute(attribName);
-	if (attribID != -1 && bufferID != -1) {
-
-		// Enable & bind
-		glEnableVertexAttribArray(attribID);
-		glBindBuffer(GL_ARRAY_BUFFER, bufferID);
-
-		// Uses glBufferSubData instead of persistent map (for now) to avoid having to deal with CPU-GPU synchronization 
-		glBufferSubData(GL_ARRAY_BUFFER, 0, triNorBuf.size()*sizeof(float), &triNorBuf[0]);
-
-		// Disable & unbind
-		glDisableVertexAttribArray(attribID);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-}
-
-void DynamicMesh::computeNormals() {
-	int numPoints = triPosBuf.size()/3;
-
-	vector<vec3> normals;
-	vector<int> vertexDegrees(numPoints, 0);
-
-	// Calculate triangle norms
-	for (Triangle& tri: triangles) {
-		vec3 v1 = bufToVec(triPosBuf, tri.v1);
-		vec3 v2 = bufToVec(triPosBuf, tri.v2);
-		vec3 v3 = bufToVec(triPosBuf, tri.v3);	
-
-		vec3 triNormal = glm::normalize(glm::cross(v2-v1, v3-v1));
-
-		for (int vidx: {tri.v1, tri.v2, tri.v3}) {
-			normals[vidx] += triNormal;
-			vertexDegrees[vidx]++;
-		}
-	}
-
-	// Vertex normals calculated as average the triangle norms of all triangles it participates in
-	for (int vidx=0; vidx<numPoints; vidx++) {
-		vec3 normal = glm::normalize(normals[vidx] / (float) vertexDegrees[vidx]);
-		vecToBuf(triNorBuf, normal, vidx);
-	}
-}
-
-
-
-// Static Mesh
-// -----------------------------------------------------------------------------
-
-StaticMesh::StaticMesh(string objFilePath) {
-
-	string extension = getExtension(objFilePath);
-	if (extension != ".obj") {
-		cerr << "StaticMesh expected '.obj', got '" << extension << "'. Check mesh file type silly!" << endl;
-		exit(1);
-	}
-
-	loadObjFile(objFilePath);
-}
-
-void StaticMesh::loadObjFile(string filePath) {
+void Mesh::loadObjFile(string objFilePath) {
 
 	// Load geometry
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	string warnStr, errStr;
-	bool rc = tinyobj::LoadObj(&attrib, &shapes, &materials, &warnStr, &errStr, filePath.c_str());
+	bool rc = tinyobj::LoadObj(&attrib, &shapes, &materials, &warnStr, &errStr, objFilePath.c_str());
 	if(!rc) {
 		cerr << errStr << endl;
 	} else {
@@ -326,11 +258,101 @@ void StaticMesh::loadObjFile(string filePath) {
 	numPoints = triPosBuf.size()/3;
 }
 
-void StaticMesh::init() {
-	Mesh::init(GL_STATIC_DRAW);
+void Mesh::computeNormals() {
+	if (!useIndBuf) {
+		cerr << "computeNormals is intended for meshes that use drawElements (.msh) not drawElements (.obj)" << endl;
+		exit(1);
+	}
+
+	vector<vec3> normals(numPoints, vec3(0.0f));
+	vector<int> vertexDegrees(numPoints, 0);
+
+	// Calculate triangle norms
+	for (Triangle& tri: triangles) {
+		vec3 v1 = bufToVec(triPosBuf, tri.v1);
+		vec3 v2 = bufToVec(triPosBuf, tri.v2);
+		vec3 v3 = bufToVec(triPosBuf, tri.v3);	
+
+		vec3 triNormal = glm::normalize(glm::cross(v2-v1, v3-v1));
+
+		for (int vidx: {tri.v1, tri.v2, tri.v3}) {
+			normals[vidx] += triNormal;
+			vertexDegrees[vidx]++;
+		}
+	}
+
+	// Vertex normals calculated as average the triangle norms of all triangles it participates in
+	for (int vidx=0; vidx<numPoints; vidx++) {
+		vec3 normal = glm::normalize(normals[vidx] / (float) vertexDegrees[vidx]);
+		vecToBuf(triNorBuf, normal, vidx);
+	}
 }
 
-void StaticMesh::draw(const shared_ptr<Program> prog) {
+void Mesh::transform(Transform transform) {
+
+	// Construct 4x4 transform matrix
+	MatrixStack ms;
+	ms.loadIdentity();
+	ms.translate(transform.translation);
+	ms.rotate(transform.rotation.x, 1, 0, 0);
+	ms.rotate(transform.rotation.y, 0, 1, 0);
+	ms.rotate(transform.rotation.z, 0, 0, 1);
+	ms.scale(transform.scale);
+	glm::mat4 tf = ms.topMatrix();
+
+	// Apply to each vertex
+	for (int vidx=0; vidx<numPoints; vidx++) {
+		glm::vec3 pos = glm::vec3(tf * glm::vec4(bufToVec(triPosBuf, vidx), 1));
+		vecToBuf(triPosBuf, pos, vidx);
+	}
+
+	// Recompute normal directions
+	computeNormals();
+}
+
+// Drawing
+// ------------------------------------------------------------------------------------
+template <typename T>
+void Mesh::updateBuffer(const shared_ptr<Program> prog, string attribName, vector<T>& buffer, unsigned bufferID, int valuesPerVertex) {
+	int attribID = prog->getAttribute(attribName);
+	if (attribID != -1 && bufferID != -1) {
+
+		// Enable & bind
+		glEnableVertexAttribArray(attribID);
+		glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+
+		// Uses glBufferSubData instead of persistent map (for now) to avoid having to deal with CPU-GPU synchronization 
+		glBufferSubData(GL_ARRAY_BUFFER, 0, triNorBuf.size()*sizeof(T), &triNorBuf[0]);
+
+		// Disable & unbind
+		glDisableVertexAttribArray(attribID);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+}
+
+void Mesh::draw(const shared_ptr<Program> prog) {
+	if (useIndBuf)	drawElements(prog);
+	else			drawArrays(prog);
+}
+
+void Mesh::drawElements(const shared_ptr<Program> prog) {
+
+	// Update the three dynamic buffers
+	updateBuffer(prog, "aPos", triPosBuf, triPosBufID, 3);
+	updateBuffer(prog, "aNor", triNorBuf, triNorBufID, 3);
+	updateBuffer(prog, "aTex", triTexBuf, triTexBufID, 2);
+
+	// Draw triangles
+    glBindBuffer(GL_ARRAY_BUFFER, triTexBufID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triIndBufID);
+    glDrawElements(GL_TRIANGLES, triIndBuf.size(), GL_UNSIGNED_INT, (void *)0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	GLSL::checkError(GET_FILE_LINE);
+}
+
+void Mesh::drawArrays(const shared_ptr<Program> prog) {
 	
 	// Bind position buffer
 	int h_pos = prog->getAttribute("aPos");
@@ -370,4 +392,3 @@ void StaticMesh::draw(const shared_ptr<Program> prog) {
 	
 	GLSL::checkError(GET_FILE_LINE);
 }
-

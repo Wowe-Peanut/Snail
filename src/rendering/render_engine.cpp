@@ -33,14 +33,12 @@ void RenderEngine::render() {
 		transformedLightPositions[li] = MV->topMatrix() * vec4(lightPositions[li], 1);
 	}
 
-
 	// Send uniforms to GPU
 	glUniformMatrix4fv(bphongProg->getUniform("MV"), 1, GL_FALSE, value_ptr(MV->topMatrix()));
 	glUniformMatrix4fv(bphongProg->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 	glUniform1i(bphongProg->getUniform("lightCount"), lightCount); 
 	glUniform3fv(bphongProg->getUniform("lightPositions"), lightCount, value_ptr(transformedLightPositions[0]));
 	glUniform3fv(bphongProg->getUniform("lightColors"), lightCount, value_ptr(lightColors[0]));
-	
 	
 	for (auto obj: objects) {
 		obj->draw(MV, bphongProg);

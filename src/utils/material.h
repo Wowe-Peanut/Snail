@@ -12,10 +12,12 @@ class Material {
 };
 
 class BPhongMaterial : public Material {
-	glm::vec3 ka;
-	glm::vec3 kd;
-	glm::vec3 ks;
-	float s;
+	public:
+		glm::vec3 ka;
+		glm::vec3 kd;
+		glm::vec3 ks;
+		float s;
 
-	void loadUniforms(std::shared_ptr<Program> prog);
+		BPhongMaterial(glm::vec3 ka, glm::vec3 kd, glm::vec3 ks, float s);
+		void loadUniforms(std::shared_ptr<Program> prog);
 };

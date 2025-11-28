@@ -1,38 +1,37 @@
 #pragma once
 
-#include "mesh.h"
 #include "matrix_stack.h"
 #include "program.h"
+#include "material.h"
 
 #include <string>
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp> 
-#define EIGEN_DONT_ALIGN_STATICALLY
-#include <Eigen/Dense>
+
+class Mesh;
+
+struct Transform {
+	glm::vec3 translation;
+	glm::vec3 rotation;
+	glm::vec3 scale;
+};
 
 class Object {
 	public:	
 		
-		glm::vec3 renderTranslation;			
-		glm::vec3 renderRotation;			
-		glm::vec3 renderScale;	
+		std::shared_ptr<Mesh> mesh;
+		std::shared_ptr<Material> material;
+		Transform renderTransform;
+		bool isPhysical;
 
-		std::shared_ptr<StaticMesh> mesh;
-
-			
-
-		glm::vec3 ka = glm::vec3(0.2, 0.2, 0.2);
-		glm::vec3 kd = glm::vec3(0.8, 0.7, 0.7);
-		glm::vec3 ks = glm::vec3(1.0, 0.9, 0.8);
-		float s = 200;
-
-		bool physicsObject;	
-
-		Object(std::string meshpath, glm::vec3 trans, glm::vec3 rot, glm::vec3 scale, bool physicsObject);
+		// renderTransform is mainly intended for non-physical objects as it is applied by GPU to triangles
+		// the default is a identity transform and the json transform is instead applied directly to mesh
+		// so as to be reflected in the physics simulation
+		Object(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material>, Transform renderTransform, bool isPhysical);
+		Object(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material>, bool isPhysical);
 		void draw(std::shared_ptr<MatrixStack> MV, std::shared_ptr<Program> prog);
 };
 
-class 
 
 
