@@ -8,7 +8,12 @@
 #include <memory>
 
 
-// Geometric Primitives: 2,3,4 vertex indices & resting qualities
+struct Transform {
+	glm::vec3 translation;
+	glm::vec3 rotation;
+	glm::vec3 scale;
+};
+
 struct Edge {
 	int v1, v2;
 	float l2;
@@ -27,7 +32,7 @@ struct Tetrahedron {
 	int v1, v2, v3, v4;
 };
 
-
+ 
 class Mesh {
 	public:
 
@@ -51,23 +56,16 @@ class Mesh {
 		// Properties
 		int numPoints;			// Number of vertices (internal AND external)
 		bool isStatic;			// Determines GL_STREAM_DRAW or GL_STATIC_DRAW
-		bool useIndBuf;			// Yes: drawElements, No: drawArrays
 
 		template <typename T>
 		void initBuffer(GLenum glBufferType, std::vector<T>& buffer, unsigned& bufferID);
 		Mesh(std::string filePath, bool isStatic);
 		void init();
 
-
-		template <typename T>
-		void updateBuffer(const std::shared_ptr<Program> prog, std::string attribName, std::vector<T>& buffer, unsigned bufferID, int valuesPerVertex);
+		void updateBuffer(const std::shared_ptr<Program> prog, GLint attribID, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);
 		void draw(const std::shared_ptr<Program> prog);	
-		void drawElements(const std::shared_ptr<Program> prog);
-		void drawArrays(const std::shared_ptr<Program> prog);
-
 
 		void loadMshFile(std::string mshFilePath);
-		void loadObjFile(std::string objFilePath);
 		void computeNormals(); 
 		void transform(Transform transform);
 };

@@ -3,6 +3,8 @@
 
 #include "render_engine.h"
 #include "physics_engine.h"
+#include "mesh.h"
+#include "material.h"
 #include "object.h"
 #include "json.hpp"
 
@@ -49,24 +51,16 @@ vector<shared_ptr<Object>> parseObjects(string resourcePath, json objectListJson
 		string meshpath = objjson["mesh"];
 		json tfjson = objjson["transform"];
 		json matjson = objjson["material"];
-		bool isPhysical = objjson["is_physical"];
 		bool isStatic = objjson["is_static"];
 		
 		// Construct object parameters
-		Transform transform = {jsontovec3(tfjson["translation"]), jsontovec3(tfjson["scale"]), jsontovec3(tfjson["rotation"])};
+		Transform transform = {jsontovec3(tfjson["translation"]), jsontovec3(tfjson["rotation"]), jsontovec3(tfjson["scale"])};
 		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshpath, isStatic);
 		shared_ptr<Material> mat = make_shared<BPhongMaterial>(jsontovec3(matjson["ka"]), jsontovec3(matjson["kd"]), jsontovec3(matjson["ks"]), matjson["s"]);
 
-
-		// Physics-based objects apply transform directly to mesh (e.g. to squish springs)
-		if (isPhysical) {
-			mesh->transform(transform);
-			objects.push_back(make_shared<Object>(mesh, mat, true));
-
-		// Non physics-based objects apply transform on GPU 
-		} else {
-			objects.push_back(make_shared<Object>(mesh, mat, transform, false));
-		}
+		// Transform mesh directly
+		mesh->transform(transform);
+		objects.push_back(make_shared<Object>(mesh, mat));
 	}
 	
 	return objects;

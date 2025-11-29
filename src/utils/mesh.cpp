@@ -45,22 +45,10 @@ Mesh::Mesh(string filePath, bool isStatic): triPosBufID(0), triNorBufID(0), triT
 	string extension = getExtension(filePath);
 
 	if (extension == ".msh") {
-		useIndBuf = true;
 		loadMshFile(filePath);
-		
-
-	} else if (extension == ".obj") {
-		useIndBuf = false;
-		loadObjFile(filePath);
-		
-		
-		if (!isStatic) {
-			cerr << ".obj cannot be dynamic b/c they use 'drawArrays()' to render" << endl;
-			exit(1);
-		}
 
 	} else {
-		cerr << "'" << extension << "' is not a supported mesh file type (.msh, .obj)" << endl;
+		cerr << "'" << extension << "' is not a supported mesh file type (.msh only atm)" << endl;
 		exit(1);
 	} 	
 }
@@ -207,62 +195,7 @@ void Mesh::loadMshFile(string mshFilePath) {
 	f.close();
 }
 
-void Mesh::loadObjFile(string objFilePath) {
-
-	// Load geometry
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	string warnStr, errStr;
-	bool rc = tinyobj::LoadObj(&attrib, &shapes, &materials, &warnStr, &errStr, objFilePath.c_str());
-	if(!rc) {
-		cerr << errStr << endl;
-	} else {
-
-		// Some OBJ files have different indices for vertex positions, normals,
-		// and texture coordinates. For example, a cube corner vertex may have
-		// three different normals. Here, we are going to duplicate all such
-		// vertices.
-		// Loop over shapes   
-	
-		for(size_t s = 0; s < shapes.size(); s++) {
-			// Loop over faces (polygons)
-			size_t index_offset = 0;
-			for(size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-				size_t fv = shapes[s].mesh.num_face_vertices[f];
-				// Loop over vertices in the face.
-				for(size_t v = 0; v < fv; v++) {
-					// access to vertex
-					tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-					triPosBuf.push_back(attrib.vertices[3*idx.vertex_index+0]);
-					triPosBuf.push_back(attrib.vertices[3*idx.vertex_index+1]);
-
-					triPosBuf.push_back(attrib.vertices[3*idx.vertex_index+2]);
-					if(!attrib.normals.empty()) {
-						triNorBuf.push_back(attrib.normals[3*idx.normal_index+0]);
-						triNorBuf.push_back(attrib.normals[3*idx.normal_index+1]);
-						triNorBuf.push_back(attrib.normals[3*idx.normal_index+2]);
-					}
-					if(!attrib.texcoords.empty()) {
-						triTexBuf.push_back(attrib.texcoords[2*idx.texcoord_index+0]);
-						triTexBuf.push_back(attrib.texcoords[2*idx.texcoord_index+1]);
-					}
-				}
-				index_offset += fv;
-				// per-face material (IGNORE)
-				shapes[s].mesh.material_ids[f];
-			}
-		}
-	}
-
-	numPoints = triPosBuf.size()/3;
-}
-
 void Mesh::computeNormals() {
-	if (!useIndBuf) {
-		cerr << "computeNormals is intended for meshes that use drawElements (.msh) not drawElements (.obj)" << endl;
-		exit(1);
-	}
 
 	vector<vec3> normals(numPoints, vec3(0.0f));
 	vector<int> vertexDegrees(numPoints, 0);
@@ -312,83 +245,44 @@ void Mesh::transform(Transform transform) {
 
 // Drawing
 // ------------------------------------------------------------------------------------
-template <typename T>
-void Mesh::updateBuffer(const shared_ptr<Program> prog, string attribName, vector<T>& buffer, unsigned bufferID, int valuesPerVertex) {
-	int attribID = prog->getAttribute(attribName);
-	if (attribID != -1 && bufferID != -1) {
+void Mesh::updateBuffer(const shared_ptr<Program> prog, GLint attribID, vector<float>& buffer, unsigned bufferID, int valuesPerVertex) {
+	if (attribID != -1 && bufferID != 0) {
 
 		// Enable & bind
 		glEnableVertexAttribArray(attribID);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferID);
 
 		// Uses glBufferSubData instead of persistent map (for now) to avoid having to deal with CPU-GPU synchronization 
-		glBufferSubData(GL_ARRAY_BUFFER, 0, triNorBuf.size()*sizeof(T), &triNorBuf[0]);
+		if (!isStatic) glBufferSubData(GL_ARRAY_BUFFER, 0, buffer.size()*sizeof(float), &buffer[0]);
+		glVertexAttribPointer(attribID, valuesPerVertex, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
 		// Disable & unbind
-		glDisableVertexAttribArray(attribID);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 }
 
+// Currently only drawElements is supported
 void Mesh::draw(const shared_ptr<Program> prog) {
-	if (useIndBuf)	drawElements(prog);
-	else			drawArrays(prog);
-}
 
-void Mesh::drawElements(const shared_ptr<Program> prog) {
+	// Get attribute ids
+	GLint aPos = prog->getAttribute("aPos");
+	GLint aNor = prog->getAttribute("aNor");
+	GLint aTex = prog->getAttribute("aTex");
 
-	// Update the three dynamic buffers
-	updateBuffer(prog, "aPos", triPosBuf, triPosBufID, 3);
-	updateBuffer(prog, "aNor", triNorBuf, triNorBufID, 3);
-	updateBuffer(prog, "aTex", triTexBuf, triTexBufID, 2);
+	// Bind attribute pointers to their respective buffer (updating the buffer if not static)
+	updateBuffer(prog, aPos, triPosBuf, triPosBufID, 3);
+	updateBuffer(prog, aNor, triNorBuf, triNorBufID, 3);
+	updateBuffer(prog, aTex, triTexBuf, triTexBufID, 2);
 
 	// Draw triangles
-    glBindBuffer(GL_ARRAY_BUFFER, triTexBufID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triIndBufID);
     glDrawElements(GL_TRIANGLES, triIndBuf.size(), GL_UNSIGNED_INT, (void *)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	GLSL::checkError(GET_FILE_LINE);
-}
+	// Unbind attirbute pointers
+	if (aPos != -1) glDisableVertexAttribArray(aPos);
+	if (aNor != -1) glDisableVertexAttribArray(aNor);
+	if (aTex != -1) glDisableVertexAttribArray(aTex);
 
-void Mesh::drawArrays(const shared_ptr<Program> prog) {
-	
-	// Bind position buffer
-	int h_pos = prog->getAttribute("aPos");
-	glEnableVertexAttribArray(h_pos);
-	glBindBuffer(GL_ARRAY_BUFFER, triPosBufID);
-	glVertexAttribPointer(h_pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
-	
-	// Bind normal buffer
-	int h_nor = prog->getAttribute("aNor");
-	if(h_nor != -1 && triNorBufID != 0) {
-		glEnableVertexAttribArray(h_nor);
-		glBindBuffer(GL_ARRAY_BUFFER, triNorBufID);
-		glVertexAttribPointer(h_nor, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
-	}
-	
-	// Bind texcoords buffer
-	int h_tex = prog->getAttribute("aTex");
-	if(h_tex != -1 && triTexBufID != 0) {
-		glEnableVertexAttribArray(h_tex);
-		glBindBuffer(GL_ARRAY_BUFFER, triTexBufID);
-		glVertexAttribPointer(h_tex, 2, GL_FLOAT, GL_FALSE, 0, (const void *)0);
-	}
-	
-	// Draw
-	int count = triPosBuf.size()/3; // number of indices to be rendered
-	glDrawArrays(GL_TRIANGLES, 0, count);
-	
-	// Disable and unbind
-	if(h_tex != -1) {
-		glDisableVertexAttribArray(h_tex);
-	}
-	if(h_nor != -1) {
-		glDisableVertexAttribArray(h_nor);
-	}
-	glDisableVertexAttribArray(h_pos);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
 	GLSL::checkError(GET_FILE_LINE);
 }

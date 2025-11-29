@@ -22,7 +22,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
     // A running total used to calculate object indices (3*numpoints)
     numPoints = 0;
     for (auto obj: objectList) {
-        if (obj->isPhysical) {
+        if (!obj->mesh->isStatic) {
             physicsObjects.push_back(obj);
             objectOffsets.push_back(numPoints);
             numPoints += obj->mesh->numPoints;
@@ -30,7 +30,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
     }
 
 	if (physicsObjects.empty()) {
-		cerr << "WARNING | None of the constructed objects are set to be physicsObjects..." << endl;
+		cerr << "WARNING, there are no non-static meshes in the scene!" << endl;
 
 	} else {
 		// Initialize the ensemble state of all objects
@@ -46,7 +46,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 			positions.middleCols(offset, obj->mesh->numPoints) = Eigen::Map<Matrix3Xf>(obj->mesh->triPosBuf.data(), 3, obj->mesh->numPoints);
 			
 			for (Edge& edge: obj->mesh->edges) {
-				edges.push_back({offset+edge.v1, offset+edge.v1});
+				edges.push_back({offset+edge.v1, offset+edge.v2, edge.l2});
 			}
 
 			numEdges += obj->mesh->edges.size();
@@ -56,24 +56,24 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 		initialVelocities = velocities;
 
 
-		//!REMOVE ME
-		float maxHeight = positions.col(0).y();
-		vector<int> bestidxs = {0};
+		// //!REMOVE ME
+		// float maxHeight = positions.col(0).y();
+		// vector<int> bestidxs = {0};
 
-		for (int i=1; i<numPoints; i++) {
-			if (positions.col(i).y() > maxHeight) {
-				bestidxs.clear();
-				bestidxs.push_back(i);
-				maxHeight = positions.col(i).y();
-			} else if (positions.col(i).y() == maxHeight) {
-				bestidxs.push_back(i);
-			}
-		}
+		// for (int i=1; i<numPoints; i++) {
+		// 	if (positions.col(i).y() > maxHeight) {
+		// 		bestidxs.clear();
+		// 		bestidxs.push_back(i);
+		// 		maxHeight = positions.col(i).y();
+		// 	} else if (positions.col(i).y() == maxHeight) {
+		// 		bestidxs.push_back(i);
+		// 	}
+		// }
 
-		for (int idx: bestidxs) {
-			isFixedPoint[idx] = true;
-		}
-		//!
+		// for (int idx: bestidxs) {
+		// 	isFixedPoint[idx] = true;
+		// }
+		// //!
 	}
 }
 
