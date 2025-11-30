@@ -30,6 +30,7 @@ public:
 	// glRotate(): Right multiplies the top matrix by a rotation matrix (angle in radians)
 	void rotate(float angle, const glm::vec3 &axis);
 	void rotate(float angle, float x, float y, float z);
+	void rotate(const glm::vec3& xyzangles);
 	
 	// glGet(GL_MODELVIEW_MATRIX): Gets the top matrix
 	const glm::mat4 &topMatrix() const;

@@ -1,7 +1,9 @@
 #pragma once
 
+#define GLM_FORCE_RADIANS
+
 #include "program.h"
-#include "object.h"
+#include <glm/glm.hpp>
 
 #include <string>
 #include <vector>

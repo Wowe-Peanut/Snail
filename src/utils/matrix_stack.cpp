@@ -79,6 +79,13 @@ void MatrixStack::rotate(float angle, float x, float y, float z)
 	rotate(angle, glm::vec3(x, y, z));
 }
 
+void MatrixStack::rotate(const glm::vec3& xyzangles)
+{
+	rotate(xyzangles.x, 1, 0, 0);
+	rotate(xyzangles.y, 0, 1, 0);
+	rotate(xyzangles.z, 0, 0, 1);
+}
+
 void MatrixStack::multMatrix(const glm::mat4 &matrix)
 {
 	glm::mat4 &top = mstack->top();

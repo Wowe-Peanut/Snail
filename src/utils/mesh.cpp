@@ -227,9 +227,7 @@ void Mesh::transform(Transform transform) {
 	MatrixStack ms;
 	ms.loadIdentity();
 	ms.translate(transform.translation);
-	ms.rotate(transform.rotation.x, 1, 0, 0);
-	ms.rotate(transform.rotation.y, 0, 1, 0);
-	ms.rotate(transform.rotation.z, 0, 0, 1);
+	ms.rotate(transform.rotation);
 	ms.scale(transform.scale);
 	glm::mat4 tf = ms.topMatrix();
 
