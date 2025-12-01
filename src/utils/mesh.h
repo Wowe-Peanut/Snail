@@ -3,8 +3,10 @@
 #define GLM_FORCE_RADIANS
 
 #include "program.h"
-#include <glm/glm.hpp>
+#include "sdf.h"
+#include "json.hpp"
 
+#include <glm/glm.hpp>
 #include <string>
 #include <vector>
 #include <memory>
@@ -57,8 +59,9 @@ class Mesh {
 
 		// Properties
 		int numPoints;			
-		bool isStatic; // Determines GL_STREAM_DRAW or GL_STATIC_DRAW
+		bool isStatic;
 		std::vector<bool> isFixedPoint;
+		shared_ptr<SDF> sdf;
 		glm::vec3 initialVelocity;
 
 		template <typename T>

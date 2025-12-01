@@ -14,7 +14,6 @@ class PhysicsEngine {
         PhysicsEngine(std::vector<std::shared_ptr<Object>>& objectList, nlohmann::json parameters);
         void reset();
         void implicitStep();
-        void symplecticStep();
 
     private:
 
@@ -27,8 +26,9 @@ class PhysicsEngine {
         Eigen::Vector3f gravity;
 
         std::vector<std::shared_ptr<Object>> physicsObjects; 
+        std::vector<std::shared_ptr<Object>> staticObjects;
         
-        // Combined properties of all objects & their offsets in the cumulative vectors
+        // Combined properties of all physics objects & their offsets in the cumulative vectors (doesn't include static)
         int numPoints;
         std::vector<int> objectOffsets; 
         Eigen::Matrix3Xf positions;
@@ -44,7 +44,6 @@ class PhysicsEngine {
         
         // Constraints
         std::vector<bool> isFixedPoint;
-        std::vector<int> obstacleContactPoints;
 
         // Helper
         void makePSD(Eigen::MatrixXf& hess);
@@ -69,4 +68,9 @@ class PhysicsEngine {
         // Gravity
         float GravityValue();
         Eigen::Matrix3Xf GravityGradient();
+
+        // Contact
+        float ContactValue();
+        Eigen::Matrix3Xf ContactGradient();
+        Eigen::SparseMatrix<float> ContactHessian();
 };

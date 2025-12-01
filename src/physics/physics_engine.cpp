@@ -22,7 +22,9 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
     // A running total used to calculate object indices (3*numpoints)
     numPoints = 0;
     for (auto obj: objectList) {
-        if (!obj->mesh->isStatic) {
+		if (obj->mesh->isStatic) {
+			staticObjects.push_back(obj);
+		} else {
             physicsObjects.push_back(obj);
             objectOffsets.push_back(numPoints);
             numPoints += obj->mesh->numPoints;
@@ -68,9 +70,6 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 		initialVelocities = velocities;
 	}
 }
-
-
-
 
 // Step functions
 void PhysicsEngine::implicitStep() {
@@ -319,3 +318,17 @@ Matrix3Xf PhysicsEngine::GravityGradient() {
 	return grad;
 }
 
+
+
+// Contact Energy
+//! TODO
+
+float ContactValue() {
+
+}
+Matrix3Xf ContactGradient() {
+
+}
+SparseMatrix<float> ContactHessian() {
+	
+}
