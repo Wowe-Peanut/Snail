@@ -36,44 +36,36 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 		// Initialize the ensemble state of all objects
 		positions = Matrix3Xf::Zero(3, numPoints);
 		velocities = Matrix3Xf::Zero(3, numPoints); 
-		isFixedPoint = vector<bool>(numPoints, false);
 
 		numEdges = 0;
 		for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
 			auto obj = physicsObjects[objIdx];
 			int offset = objectOffsets[objIdx];
 
+			// Copy positions
 			positions.middleCols(offset, obj->mesh->numPoints) = Eigen::Map<Matrix3Xf>(obj->mesh->triPosBuf.data(), 3, obj->mesh->numPoints);
 			
+			// Copy edges
 			for (Edge& edge: obj->mesh->edges) {
 				edges.push_back({offset+edge.v1, offset+edge.v2, edge.l2});
 			}
-
 			numEdges += obj->mesh->edges.size();
+			
+			// Copy fixed points
+			isFixedPoint.insert(isFixedPoint.end(), obj->mesh->isFixedPoint.begin(), obj->mesh->isFixedPoint.end());
+
+			// Copy velocity
+			Vector3f initialVelocity(obj->mesh->initialVelocity.x, obj->mesh->initialVelocity.y, obj->mesh->initialVelocity.z);
+			for (int vidx=0; vidx < obj->mesh->numPoints; vidx++) {
+				if (!obj->mesh->isFixedPoint[vidx]) {
+					velocities.col(offset+vidx) = initialVelocity;
+				}
+			}
+
 		}
 
 		initialPositions = positions;
 		initialVelocities = velocities;
-
-
-		// //!REMOVE ME
-		// float maxHeight = positions.col(0).y();
-		// vector<int> bestidxs = {0};
-
-		// for (int i=1; i<numPoints; i++) {
-		// 	if (positions.col(i).y() > maxHeight) {
-		// 		bestidxs.clear();
-		// 		bestidxs.push_back(i);
-		// 		maxHeight = positions.col(i).y();
-		// 	} else if (positions.col(i).y() == maxHeight) {
-		// 		bestidxs.push_back(i);
-		// 	}
-		// }
-
-		// for (int idx: bestidxs) {
-		// 	isFixedPoint[idx] = true;
-		// }
-		// //!
 	}
 }
 

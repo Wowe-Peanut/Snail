@@ -56,12 +56,14 @@ class Mesh {
 		std::vector<Tetrahedron> tetrahedron;
 
 		// Properties
-		int numPoints;			// Number of vertices (internal AND external)
-		bool isStatic;			// Determines GL_STREAM_DRAW or GL_STATIC_DRAW
+		int numPoints;			
+		bool isStatic; // Determines GL_STREAM_DRAW or GL_STATIC_DRAW
+		std::vector<bool> isFixedPoint;
+		glm::vec3 initialVelocity;
 
 		template <typename T>
 		void initBuffer(GLenum glBufferType, std::vector<T>& buffer, unsigned& bufferID);
-		Mesh(std::string filePath, bool isStatic);
+		Mesh(std::string filePath, bool isStatic, Transform meshTransform, std::vector<int>& fixedPoints, glm::vec3 velocity);
 		void init();
 
 		void updateBuffer(const std::shared_ptr<Program> prog, GLint attribID, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);
@@ -70,6 +72,7 @@ class Mesh {
 		void loadMshFile(std::string mshFilePath);
 		void computeNormals(); 
 		void transform(Transform transform);
+		void setFixedPoints(std::vector<int>& fixedPoints);
 };
 
  

@@ -14,6 +14,7 @@
 #include <vector>
 #include <memory>
 #include <set>
+#include <map>
 #include <fstream>
 #include <glm/glm.hpp>
 
@@ -41,11 +42,13 @@ string getExtension(string path) {
 
 // Initialization
 // ------------------------------------------------------------------------------------
-Mesh::Mesh(string filePath, bool isStatic): triPosBufID(0), triNorBufID(0), triTexBufID(0), triIndBufID(0), isStatic(isStatic) {
+Mesh::Mesh(string filePath, bool isStatic, Transform meshTransform, vector<int>& fixedPoints, vec3 velocity): 
+triPosBufID(0), triNorBufID(0), triTexBufID(0), triIndBufID(0), isStatic(isStatic), initialVelocity(velocity) {
 	string extension = getExtension(filePath);
-
 	if (extension == ".msh") {
 		loadMshFile(filePath);
+		transform(meshTransform);
+		setFixedPoints(fixedPoints);
 
 	} else {
 		cerr << "'" << extension << "' is not a supported mesh file type (.msh only atm)" << endl;
@@ -89,6 +92,8 @@ void Mesh::loadMshFile(string mshFilePath) {
 
 	// Nodes are vertices in gmsh
 	string line;
+	map<int, int> nodeIdxs;
+
 	while (getline(f, line)) {
 		if (line.find("$Nodes") != string::npos) {
 
@@ -107,15 +112,16 @@ void Mesh::loadMshFile(string mshFilePath) {
 				f >> entityDim >> entityTag >> parametric >> numNodesInBlock;
 
 				// Read node indices
-				vector<int> nodeIdxs(numNodesInBlock);
 				for (int node=0; node<numNodesInBlock; node++) {
-					f >> nodeIdxs[node];
+					int tag;
+					f >> tag;
+
+					nodeIdxs[tag-1] = node;
 				}
 				
 				// Add node positions to position buffer, ordered by ID
 				for (int node=0; node<numNodesInBlock; node++) {
-					int nodeIdx = nodeIdxs[node] - 1;
-					f >> triPosBuf[nodeIdx*3] >> triPosBuf[nodeIdx*3 + 1] >> triPosBuf[nodeIdx*3 + 2];
+					f >> triPosBuf[node*3] >> triPosBuf[node*3 + 1] >> triPosBuf[node*3 + 2];
 				}
 			}
 			break;
@@ -145,7 +151,17 @@ void Mesh::loadMshFile(string mshFilePath) {
 					vector<int> nodes(nodesInElement);
 					for (int node=0; node<nodesInElement; node++) { 
 						f >> nodes[node];
-						nodes[node]--; // make zero-indexed
+						nodes[node] = nodeIdxs[nodes[node]-1]; 
+					}
+
+					// Contruct edges from pairs of nodes
+					for (size_t n1=0; n1<nodes.size(); n1++) {
+						for (size_t n2=n1+1; n2<nodes.size(); n2++) {
+							
+							// Sort by index so it's easier to remove duplicates later
+							if (nodes[n1] < nodes[n2]) 	edges.push_back({nodes[n1], nodes[n2]});
+							else 						edges.push_back({nodes[n2], nodes[n1]});
+						}
 					}
 
 					// Surface Primitives
@@ -155,17 +171,10 @@ void Mesh::loadMshFile(string mshFilePath) {
 					
 					// Volumetric Primitives
 					} else if (entityDim == 3) { 
-						for (size_t n1=0; n1<nodes.size(); n1++) {
-							for (size_t n2=n1+1; n2<nodes.size(); n2++) {
-								
-								// Sort by index so it's easier to remove duplicates later
-								if (nodes[n1] < nodes[n2]) 	edges.push_back({nodes[n1], nodes[n2]});
-								else 						edges.push_back({nodes[n2], nodes[n1]});
-							}
-						}
-
 						tetrahedron.push_back({nodes[0], nodes[1], nodes[2], nodes[3]});
 					} 
+					
+					
 				}
 				
 			}
@@ -240,6 +249,15 @@ void Mesh::transform(Transform transform) {
 	// Recompute normal directions
 	computeNormals();
 }
+
+void Mesh::setFixedPoints(vector<int>& fixedPoints) {
+	isFixedPoint = vector<bool>(numPoints, false);
+
+	for (int idx: fixedPoints) {
+		isFixedPoint[idx-1] = true;
+	}
+}
+
 
 // Drawing
 // ------------------------------------------------------------------------------------

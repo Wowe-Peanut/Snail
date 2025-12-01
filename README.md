@@ -153,8 +153,8 @@ small amounts of objects.
   to rest (p below tolerance) but I think I'm doing a single iteration each time (I think it's left over from testing)
 
 - JSON Parser
-  - [ ] Initial mesh conditions: fixed points, velocity, pre, post-init squishing
-  - [ ] Per object & global/default Bphong material parameters
+  - [X] Initial mesh conditions: fixed points, velocity, pre, post-init squishing
+  - [X] Per object & global/default Bphong material parameters
   - [ ] Bphong lights
   - [ ] Per object spring stiffness and pointmass
 
@@ -182,7 +182,7 @@ small amounts of objects.
   - [X] Normal Movement: 
     - Normals needs to transform as the positions are transformed by the engine
     - It'd be expensive but simply recalculating vertex norms by recalculating and reaveraging triangle norms
-  - [ ] Doulbe precision engine:
+  - [ ] Double precision engine:
     - OpenGL should stay using floats, but it'd be nice to have the option to use double precision in the physics half
     - Could probably use c++ templates/generics since Matrix3Xf is just 'typedef Matrix< float, 3, Dynamic >' 
     - Since we're already doing a copy from Engine to individual objects (for energy, interpolation, etc) it should be fine

@@ -48,21 +48,21 @@ vector<shared_ptr<Object>> parseObjects(string resourcePath, json objectListJson
 	for (auto objjson: objectListJson) {
 
 		// Read JSON sections
-		string meshpath = objjson["mesh"];
-		json meshtfjson = objjson["mesh_transform"];
-		json rendertfjson = objjson["render_transform"];
-		json matjson = objjson["material"];
-		bool isStatic = objjson["is_static"];
+		string 			meshpath 		= objjson["mesh"];
+		json 			meshtfjson 		= objjson["mesh_transform"];
+		json 			rendertfjson 	= objjson["render_transform"];
+		json 			matjson 		= objjson["material"];
+		vector<int> 	fixedPoints 	= objjson["fixed_points"].get<vector<int>>();
+		vec3 			velocity 		= jsontovec3(objjson["velocity"]);
+		bool 			isStatic 		= objjson["is_static"];
 		
-		// Construct object parameters
+		// Construct mesh
 		Transform meshTransform = {jsontovec3(meshtfjson["translation"]), jsontovec3(meshtfjson["rotation"]), jsontovec3(meshtfjson["scale"])};
+		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshpath, isStatic, meshTransform, fixedPoints, velocity);
+		
+		// Construct object
 		Transform renderTransform = {jsontovec3(rendertfjson["translation"]), jsontovec3(rendertfjson["rotation"]), jsontovec3(rendertfjson["scale"])};
-
-		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshpath, isStatic);
 		shared_ptr<Material> mat = make_shared<BPhongMaterial>(jsontovec3(matjson["ka"]), jsontovec3(matjson["kd"]), jsontovec3(matjson["ks"]), matjson["s"]);
-
-		// Transform mesh directly
-		mesh->transform(meshTransform);
 		objects.push_back(make_shared<Object>(mesh, mat, renderTransform));
 	}
 	
