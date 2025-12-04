@@ -258,7 +258,7 @@ Matrix3Xf PhysicsEngine::MassSpringGradient() {
 SparseMatrix<float> PhysicsEngine::MassSpringHessian() {
 
 	int dof = 3*numPoints;
-	vector<Triplet<float>> triplets(dof);
+	vector<Triplet<float>> triplets;
 	triplets.reserve(9*edges.size()); // 2 vertices per edge, each with 3 dofs = 3^2 = 9 second derivatives
 
 	for (Edge& edge: edges) {
@@ -296,7 +296,6 @@ SparseMatrix<float> PhysicsEngine::MassSpringHessian() {
 
 	SparseMatrix<float> hess = SparseMatrix<float>(3*numPoints, 3*numPoints);
 	hess.setFromTriplets(triplets.begin(), triplets.end());
-
 	return hess;
 }
 
@@ -323,27 +322,100 @@ Matrix3Xf PhysicsEngine::GravityGradient() {
 
 
 // Contact Energy
+float PhysicsEngine::ContactValue() {
+	float sum = 0;
 
-/*
+	// For each physics objects
+	for (int oidx1=0; oidx1<physicsObjects.size(); oidx1++) {
+		shared_ptr<Object> obj1 = physicsObjects[oidx1];
+		int offset = objectOffsets[oidx1];
+		
+		// For each vertex (should eventually convert to just surface) calculate contact with
+		// using the SDF of all other objects (both physics & static)
+		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
+			Vector3f p = positions.col(offset + vidx);
 
-Each should roughly follow the same shit...
-But I do want to make each take in a list of <node, sdf> pairs or <node, primitive_sdf>
+			//! FOR NOW ONLY STATIC MESHES
+			for (auto obj2: staticObjects) {
 
-for each object o1:
+				float d = obj2->mesh->sdf->distance(p);
+				if (d < contactDistance) {
+					sum += obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/2 * (d/contactDistance - 1) * log(d/contactDistance));
+				}
+			}
+		}
+	}
 
-	for surface node in o1:
-		for each object o2!=o1:
-			sdf = o2.sdf (the sdf should handle finding the closet primitive)
-
-
-*/
-
-float ContactValue() {
-
+	return sum;
 }
-Matrix3Xf ContactGradient() {
 
+Matrix3Xf PhysicsEngine::ContactGradient() {
+	Matrix3Xf grad = Matrix3Xf::Zero(3, numPoints);
+
+	// For each physics objects
+	for (int oidx1=0; oidx1<physicsObjects.size(); oidx1++) {
+		shared_ptr<Object> obj1 = physicsObjects[oidx1];
+		int offset = objectOffsets[oidx1];
+		
+		// For each vertex (should eventually convert to just surface) calculate contact with
+		// using the SDF of all other objects (both physics & static)
+		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
+			Vector3f p = positions.col(offset + vidx);
+
+			//! FOR NOW ONLY STATIC MESHES
+			for (auto obj2: staticObjects) {
+
+				float d = obj2->mesh->sdf->distance(p);
+				Vector3f dgrad = obj2->mesh->sdf->distanceGrad(p);
+				
+
+				if (d < contactDistance) {
+					grad.col(offset+vidx) = obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/2 * (log(d/contactDistance) / contactDistance + (d/contactDistance - 1) / d)) * dgrad;
+				}
+			}
+		}
+	}
+
+	return grad;
 }
-SparseMatrix<float> ContactHessian() {
-	
+SparseMatrix<float> PhysicsEngine::ContactHessian() {
+
+	vector<Triplet<float>> triplets;
+
+	// For each physics objects
+	for (int oidx1=0; oidx1<physicsObjects.size(); oidx1++) {
+		shared_ptr<Object> obj1 = physicsObjects[oidx1];
+		int offset = objectOffsets[oidx1];
+		
+		// For each vertex (should eventually convert to just surface) calculate contact with
+		// using the SDF of all other objects (both physics & static)
+		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
+			Vector3f p = positions.col(offset + vidx);
+
+			//! FOR NOW ONLY STATIC MESHES
+			for (auto obj2: staticObjects) {
+
+				float d = obj2->mesh->sdf->distance(p);
+				Vector3f dgrad = obj2->mesh->sdf->distanceGrad(p);
+				Matrix3f dhess = obj2->mesh->sdf->distanceHess(p);
+
+				if (d < contactDistance) {
+					Matrix3f localHess = obj1->mesh->vertexAreas[vidx] * contactDistance * contactStiffness / 2 * (
+						(d + contactDistance)/(2*contactDistance*contactDistance*contactStiffness)*(dgrad * dgrad.transpose()) + 
+						(log(d/contactDistance)/contactDistance + 1/contactDistance - 1/d)*dhess
+					);
+
+					for (int row=0; row<3; row++) {
+						for (int col=0; col<3 ;col++) {
+							triplets.push_back(Triplet<float>(3*(offset+vidx)+row, 3*(offset+vidx)+col, localHess(row, col)));
+						}
+					}	
+				}
+			}
+		}
+	}
+
+	SparseMatrix<float> hess = SparseMatrix<float>(3*numPoints, 3*numPoints);
+	hess.setFromTriplets(triplets.begin(), triplets.end());
+	return hess;
 }
