@@ -5,10 +5,10 @@
         "max_iterations": 10,
 
         "point_mass": 100,
-        "spring_stiffness": 10000,
+        "spring_stiffness": 100000,
 
-        "contact_stiffness": 100000,
-        "contact_distance": 0.01,
+        "contact_stiffness": 10000,
+        "contact_distance": 0.05,
 
         "gravity": -9.81
     },
@@ -39,7 +39,7 @@
 
             "mesh_transform": {
                 "translation":  [0, 0, 0],
-                "rotation":     [0, 0, 0],
+                "rotation":     [45, 0, 0],
                 "scale":        [1, 1, 1]
             }
         },

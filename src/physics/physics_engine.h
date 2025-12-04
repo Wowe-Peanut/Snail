@@ -52,6 +52,7 @@ class PhysicsEngine {
         void makePSD(Eigen::MatrixXf& hess);
         void updateObjects(); 
         Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde);
+        float CCD(Eigen::Matrix3Xf searchDirection);   
 
         // Total energy
         float IPValue(Eigen::Matrix3Xf& xtilde);

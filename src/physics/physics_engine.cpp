@@ -88,7 +88,7 @@ void PhysicsEngine::implicitStep() {
 	// Projected Newton Loop
 	for (int newtoniter=0; newtoniter<maxiter; newtoniter++) {
 		// Line search to guarantees a step size that reduces the systems energy
-		float alpha = 1;
+		float alpha = CCD(searchDirection);
 		positions = originalPositions + alpha*searchDirection;
 
 		float newIP = IPValue(predictedPositions);
@@ -117,6 +117,10 @@ void PhysicsEngine::implicitStep() {
 
 
 // Helper
+float PhysicsEngine::CCD(Matrix3Xf searchDirection) {
+	return 1;
+}
+
 Matrix3Xf PhysicsEngine::getSearchDirection(Matrix3Xf& xtilde) {
 	SparseMatrix<float> hess = IPHessian(xtilde);
 	Matrix3Xf grad = IPGradient(xtilde);
@@ -189,13 +193,13 @@ void PhysicsEngine::reset() {
 
 // Incremental Potential Energy
 float PhysicsEngine::IPValue(Matrix3Xf& xtilde) {
-	return InertiaValue(xtilde) + h*h*(MassSpringValue() + GravityValue());
+	return InertiaValue(xtilde) + h*h*(MassSpringValue() + GravityValue() + ContactValue());
 }
 Matrix3Xf PhysicsEngine::IPGradient(Matrix3Xf& xtilde) {
-	return InertiaGradient(xtilde) + h*h*(MassSpringGradient() + GravityGradient());
+	return InertiaGradient(xtilde) + h*h*(MassSpringGradient() + GravityGradient() + ContactGradient());
 }
 SparseMatrix<float> PhysicsEngine::IPHessian(Matrix3Xf& xtilde) {
-	return InertiaHessian(xtilde) + h*h*(MassSpringHessian());
+	return InertiaHessian(xtilde) + h*h*(MassSpringHessian() + ContactHessian());
 }
 
 

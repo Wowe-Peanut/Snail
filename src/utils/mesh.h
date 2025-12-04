@@ -1,11 +1,10 @@
 #pragma once
 
-#define GLM_FORCE_RADIANS
-
 #include "program.h"
 #include "sdf.h"
 #include "json.hpp"
 
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
@@ -67,7 +66,7 @@ class Mesh {
 
 		template <typename T>
 		void initBuffer(GLenum glBufferType, std::vector<T>& buffer, unsigned& bufferID);
-		Mesh(std::string filePath, bool isStatic, Transform meshTransform, std::vector<int>& fixedPoints, glm::vec3 velocity);
+		Mesh(std::string filePath, bool isStatic, std::shared_ptr<SDF> sdf, Transform meshTransform, std::vector<int>& fixedPoints, glm::vec3 velocity);
 		void init();
 
 		void updateBuffer(const std::shared_ptr<Program> prog, GLint attribID, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);

@@ -6,6 +6,8 @@
 using Eigen::Vector3f, Eigen::Matrix3f;
 using namespace std;
 
+PlaneSDF::PlaneSDF(Vector3f normal, Vector3f point): planeNormal(normal), planePoint(point) {}
+
 float PlaneSDF::distance(Vector3f& point) {
 	return planeNormal.dot(point - planePoint);
 } 

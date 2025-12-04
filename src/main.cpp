@@ -7,7 +7,9 @@
 #include "material.h"
 #include "object.h"
 #include "json.hpp"
+#include "sdf.h"
 
+#include <Eigen/Dense>
 #include <fstream>
 #include <iostream>
 #include <glm/glm.hpp>
@@ -19,6 +21,10 @@ using namespace std;
 
 vec3 jsontovec3 (json jsonlist) {
 	return vec3(jsonlist[0], jsonlist[1], jsonlist[2]);
+}
+
+Eigen::Vector3f jsontov3f(json jsonlist) {
+	return Eigen::Vector3f(jsonlist[0], jsonlist[1], jsonlist[2]);
 }
 
 json openjson(string path) {
@@ -40,6 +46,19 @@ json openjson(string path) {
 	return data;
 }
 
+shared_ptr<SDF> jsonToSDF(json sdfjson) {
+	string type = sdfjson["type"];
+
+	if (type == "mesh") {
+		return nullptr; //! TEMPORARY UNTIL I IMPLEMENT MESH ON MESH COLLISION
+	} else if (type == "plane") {
+		return make_shared<PlaneSDF>(jsontov3f(sdfjson["normal"]), jsontov3f(sdfjson["point"]));
+	} else {
+		cerr << "Unknown SDF type: '" << type << "'" << endl;
+		exit(1);
+	}
+}
+
 vector<shared_ptr<Object>> parseObjects(string resourcePath, json objectListJson) {
 
 	vector<shared_ptr<Object>> objects;
@@ -58,7 +77,8 @@ vector<shared_ptr<Object>> parseObjects(string resourcePath, json objectListJson
 		
 		// Construct mesh
 		Transform meshTransform = {jsontovec3(meshtfjson["translation"]), jsontovec3(meshtfjson["rotation"]), jsontovec3(meshtfjson["scale"])};
-		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshpath, isStatic, meshTransform, fixedPoints, velocity);
+		shared_ptr<SDF> sdf = jsonToSDF(objjson["sdf"]);
+		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshpath, isStatic, sdf, meshTransform, fixedPoints, velocity);
 		
 		// Construct object
 		Transform renderTransform = {jsontovec3(rendertfjson["translation"]), jsontovec3(rendertfjson["rotation"]), jsontovec3(rendertfjson["scale"])};

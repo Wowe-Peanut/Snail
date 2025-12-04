@@ -42,8 +42,8 @@ string getExtension(string path) {
 
 // Initialization
 // ------------------------------------------------------------------------------------
-Mesh::Mesh(string filePath, bool isStatic, Transform meshTransform, vector<int>& fixedPoints, vec3 velocity): 
-triPosBufID(0), triNorBufID(0), triTexBufID(0), triIndBufID(0), isStatic(isStatic), initialVelocity(velocity) {
+Mesh::Mesh(string filePath, bool isStatic, shared_ptr<SDF> sdf, Transform meshTransform, vector<int>& fixedPoints, vec3 velocity): 
+triPosBufID(0), triNorBufID(0), triTexBufID(0), triIndBufID(0), isStatic(isStatic), sdf(sdf), initialVelocity(velocity) {
 	string extension = getExtension(filePath);
 	if (extension == ".msh") {
 		loadMshFile(filePath);
