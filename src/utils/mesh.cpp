@@ -197,36 +197,42 @@ void Mesh::loadMshFile(string mshFilePath) {
 	}
 
 	// Calculate vertex normals
-	computeNormals();
+	computeSurfaceQualities();
 
 	// TODO - texture buffer initialization
 
 	f.close();
 }
 
-void Mesh::computeNormals() {
+void Mesh::computeSurfaceQualities() {
 
 	vector<vec3> normals(numPoints, vec3(0.0f));
 	vector<int> vertexDegrees(numPoints, 0);
+	vertexAreas = vector<float>(numPoints, 0);
 
 	// Calculate triangle norms
 	for (Triangle& tri: triangles) {
 		vec3 v1 = bufToVec(triPosBuf, tri.v1);
 		vec3 v2 = bufToVec(triPosBuf, tri.v2);
 		vec3 v3 = bufToVec(triPosBuf, tri.v3);	
+		vec3 cr = glm::cross(v2-v1, v3-v1);
 
-		vec3 triNormal = glm::normalize(glm::cross(v2-v1, v3-v1));
+		vec3 triNormal = glm::normalize(cr);
+		float triArea = cr.length() / 2;
 
 		for (int vidx: {tri.v1, tri.v2, tri.v3}) {
+			vertexAreas[vidx] += triArea;
 			normals[vidx] += triNormal;
 			vertexDegrees[vidx]++;
 		}
 	}
 
-	// Vertex normals calculated as average the triangle norms of all triangles it participates in
+	// Each vertex norm/area is the average norm/area of all participating triangles
 	for (int vidx=0; vidx<numPoints; vidx++) {
 		vec3 normal = glm::normalize(normals[vidx] / (float) vertexDegrees[vidx]);
 		vecToBuf(triNorBuf, normal, vidx);
+
+		vertexAreas[vidx] /= (float) vertexDegrees[vidx];
 	}
 }
 
@@ -246,8 +252,7 @@ void Mesh::transform(Transform transform) {
 		vecToBuf(triPosBuf, pos, vidx);
 	}
 
-	// Recompute normal directions
-	computeNormals();
+	computeSurfaceQualities();
 }
 
 void Mesh::setFixedPoints(vector<int>& fixedPoints) {

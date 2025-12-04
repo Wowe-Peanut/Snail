@@ -61,7 +61,8 @@ class Mesh {
 		int numPoints;			
 		bool isStatic;
 		std::vector<bool> isFixedPoint;
-		shared_ptr<SDF> sdf;
+		std::shared_ptr<SDF> sdf;
+		std::vector<float> vertexAreas;
 		glm::vec3 initialVelocity;
 
 		template <typename T>
@@ -72,10 +73,13 @@ class Mesh {
 		void updateBuffer(const std::shared_ptr<Program> prog, GLint attribID, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);
 		void draw(const std::shared_ptr<Program> prog);	
 
-		void loadMshFile(std::string mshFilePath);
-		void computeNormals(); 
+		
+
+		// Computes vertex normals and contact area of each vertex
+		void computeSurfaceQualities();
 		void transform(Transform transform);
 		void setFixedPoints(std::vector<int>& fixedPoints);
+		void loadMshFile(std::string mshFilePath);
 };
 
  

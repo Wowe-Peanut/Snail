@@ -17,6 +17,8 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
     maxiter             = parameters["max_iterations"];
     springStiffness     = parameters["spring_stiffness"];
     pointMass           = parameters["point_mass"];
+	contactStiffness	= parameters["contact_stiffness"];
+	contactDistance 	= parameters["contact_distance"];
     gravity             = Vector3f(0, parameters["gravity"], 0);
 
     // A running total used to calculate object indices (3*numpoints)
@@ -173,7 +175,7 @@ void PhysicsEngine::updateObjects() {
 		auto submatrix = positions.middleCols(offset, obj->mesh->numPoints);
 		obj->mesh->triPosBuf.assign(submatrix.data(), submatrix.data() + submatrix.size());
 
-		obj->mesh->computeNormals();
+		obj->mesh->computeSurfaceQualities();
 	}
 }
 void PhysicsEngine::reset() {
@@ -321,7 +323,20 @@ Matrix3Xf PhysicsEngine::GravityGradient() {
 
 
 // Contact Energy
-//! TODO
+
+/*
+
+Each should roughly follow the same shit...
+But I do want to make each take in a list of <node, sdf> pairs or <node, primitive_sdf>
+
+for each object o1:
+
+	for surface node in o1:
+		for each object o2!=o1:
+			sdf = o2.sdf (the sdf should handle finding the closet primitive)
+
+
+*/
 
 float ContactValue() {
 

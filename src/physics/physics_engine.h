@@ -23,6 +23,8 @@ class PhysicsEngine {
         int maxiter;
         float springStiffness;
 		float pointMass;
+        float contactStiffness;
+        float contactDistance;
         Eigen::Vector3f gravity;
 
         std::vector<std::shared_ptr<Object>> physicsObjects; 

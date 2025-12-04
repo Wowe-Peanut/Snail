@@ -1,7 +1,5 @@
 #pragma once
 
-#include "mesh.h"
-
 #include <Eigen/Dense>
 #include <memory>
 

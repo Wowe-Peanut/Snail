@@ -3,8 +3,13 @@
         "delta_time": 0.01,
         "tolerance": 0.01,
         "max_iterations": 10,
+
         "point_mass": 100,
         "spring_stiffness": 10000,
+
+        "contact_stiffness": 100000,
+        "contact_distance": 0.01,
+
         "gravity": -9.81
     },
 
