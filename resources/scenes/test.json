@@ -1,11 +1,11 @@
 {
     "parameters": {
-        "delta_time": 0.001,
+        "delta_time": 0.01,
         "tolerance": 0.01,
         "max_iterations": 10,
 
         "point_mass": 1000,
-        "spring_stiffness": 10000,
+        "spring_stiffness": 100000,
 
         "contact_stiffness": 10000,
         "contact_distance": 0.01,
@@ -15,9 +15,9 @@
 
     "objects": [
         {
-            "mesh": "models/cube/cube.msh",
+            "mesh": "models/cube/cube2.msh",
             "is_static": false,
-            "fixed_points": [],
+            "fixed_points": [10],
             "velocity": [0, -3, 0],
 
             "material": {
@@ -42,38 +42,6 @@
                 "rotation":     [0, 0, 0],
                 "scale":        [1, 1, 1]
             }
-        },
-
-        {
-            "mesh": "models/plane/plane.msh",
-            "is_static": true,
-            "fixed_points": [],
-            "velocity": [0, 0, 0],
-
-            "material": {
-                "ka": [0.2, 0.2, 0.2],
-                "kd": [0.8, 0.7, 0.7],
-                "ks": [1.0, 0.9, 0.8],
-                "s": 200
-            },
-            
-            "sdf": {
-                "type": "plane",
-                "normal": [0, 1, 0],
-                "point": [0, -1, 0]
-            },
-
-            "render_transform": {
-                "translation":  [0, 0, 0],
-                "rotation":     [0, 0, 0],
-                "scale":        [1, 1, 1]
-            },
-
-            "mesh_transform": {
-                "translation":  [0, -1, 0],
-                "rotation":     [0, 0, 0],
-                "scale":        [3, 1, 3]
-            }
-        }
+        }   
     ]
 }
