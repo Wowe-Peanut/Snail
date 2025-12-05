@@ -87,6 +87,8 @@ void PhysicsEngine::implicitStep() {
 
 	// Projected Newton Loop
 	for (int newtoniter=0; newtoniter<maxiter; newtoniter++) {
+		
+
 		// Line search to guarantees a step size that reduces the systems energy
 		float alpha = CCD(searchDirection);
 		positions = originalPositions + alpha*searchDirection;
@@ -104,7 +106,7 @@ void PhysicsEngine::implicitStep() {
 		// Update IP & calculate next search direction
 		IP = newIP;
 		searchDirection = getSearchDirection(predictedPositions);
-		if (searchDirection.cwiseAbs().maxCoeff() < tol) break; // infinity norm early convergence condition
+		if (searchDirection.cwiseAbs().maxCoeff() / h < tol) break; // infinity norm early convergence condition
 	}
 
 	// Update velocities with final positions
@@ -117,8 +119,29 @@ void PhysicsEngine::implicitStep() {
 
 
 // Helper
-float PhysicsEngine::CCD(Matrix3Xf searchDirection) {
-	return 1;
+float PhysicsEngine::CCD(Matrix3Xf& searchDirection) {
+
+	float alpha = 1;
+
+	// For each physics objects
+	for (int oidx1=0; oidx1<physicsObjects.size(); oidx1++) {
+		shared_ptr<Object> obj1 = physicsObjects[oidx1];
+		int offset = objectOffsets[oidx1];
+		
+		// For each vertex (should eventually convert to just surface) calculate contact with
+		// using the SDF of all other objects (both physics & static)
+		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
+			Vector3f p = positions.col(offset + vidx);
+			Vector3f partialSearchDir = searchDirection.col(offset + vidx);
+
+			//! FOR NOW ONLY STATIC MESHES
+			for (auto obj2: staticObjects) {		
+				alpha = min(alpha, obj2->mesh->sdf->ccd(p, partialSearchDir));
+			}
+		}
+	}
+
+	return alpha;
 }
 
 Matrix3Xf PhysicsEngine::getSearchDirection(Matrix3Xf& xtilde) {
@@ -382,6 +405,7 @@ Matrix3Xf PhysicsEngine::ContactGradient() {
 
 	return grad;
 }
+
 SparseMatrix<float> PhysicsEngine::ContactHessian() {
 
 	vector<Triplet<float>> triplets;

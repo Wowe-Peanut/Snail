@@ -7,6 +7,7 @@ struct SDF {
 	virtual float distance(Eigen::Vector3f& point) = 0;
 	virtual Eigen::Vector3f distanceGrad(Eigen::Vector3f& point) = 0;
 	virtual Eigen::Matrix3f distanceHess(Eigen::Vector3f& point) = 0; 
+	virtual float ccd(Eigen::Vector3f& point, Eigen::Vector3f& partialSearchDir) = 0;
 };
 
 struct PlaneSDF : SDF {
@@ -17,6 +18,7 @@ struct PlaneSDF : SDF {
 	float distance(Eigen::Vector3f& point) override;
 	Eigen::Vector3f distanceGrad(Eigen::Vector3f& point) override;
 	Eigen::Matrix3f distanceHess(Eigen::Vector3f& point) override; 
+	float ccd(Eigen::Vector3f& point, Eigen::Vector3f& partialSearchDir) override;
 };
 
 // struct MeshSDF : SDF {

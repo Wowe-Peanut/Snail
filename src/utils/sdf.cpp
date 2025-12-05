@@ -19,3 +19,14 @@ Vector3f PlaneSDF::distanceGrad(Vector3f& point) {
 Matrix3f PlaneSDF::distanceHess(Vector3f& point) {
 	return Matrix3f::Zero();
 }
+
+float PlaneSDF::ccd(Eigen::Vector3f& point, Eigen::Vector3f& partialSearchDir) {
+
+	float searchProj = planeNormal.dot(partialSearchDir);
+
+	if (searchProj < 0) {
+		return 0.9 * planeNormal.dot(point - planePoint) / -searchProj;
+	} else {
+		return 1;
+	}
+}

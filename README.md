@@ -1,5 +1,11 @@
-# Currently working on:
-- Ok, I can't run from it any longer. It was fine in python but now it's time to add contact to c++... 
+
+
+
+Ok currently two major bugs and a bunch of optimizations needed:
+- Anything that is not a cube be comes Nan
+- Cube doesn't even bounce it just hits ground
+- Need to do board/narrow phase and precompute sdf results
+
 
 Ok I'm currently still brainstorming how to structure everything.
 
@@ -106,7 +112,7 @@ if A touch B and B touch C, the Hessian of B is coupled with both and we can't s
 fast (if we have lots of objects) using DSU (fast *disjoint set union*, thanks ACPC!) though it might not be worth it for 
 small amounts of objects. 
 
-2) Iterate through islands and create jobs
+1) Iterate through islands and create jobs
     - Singleton islands --> Can be simulated normally, *shouldn't be copied to some other class if it's by itself*
     - Mixed Islands --> Combine positions/velocities/DBCs of *non-obstacles*, constraints (both mesh-obstacle & mesh-mesh)
       - Do broad-ish phase: *only do the math for contact pairs whose boxes DIRECTlY OVERLAP*. E.g. A touch B, B touch C,
@@ -114,7 +120,7 @@ small amounts of objects.
       *These overlaps can probably be saved during island formation*
     - Obstacle Islands --> don't need processing, *should be skipped*
 
-3) Dispath jobs to threads
+2) Dispath jobs to threads
 
 
 # TODO
