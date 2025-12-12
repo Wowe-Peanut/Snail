@@ -1,9 +1,12 @@
 
+Ok I made the msh reader not break anymore but there are some .msh files that don't work (plane.msh) because the tags are messed up. The previous 
+fix I made for this didn't work so I need to redo that. However, that didn't fix the issue of collisions still not really working...
+
 Ok currently two major bugs and a bunch of optimizations needed:
-- Still something wrong with the parser, the higher order cubes aren't working...
 - Anything that is not a cube be comes Nan
 - Cube doesn't even bounce it just hits ground
 - Need to do board/narrow phase and precompute sdf results
+- Will need to also apply the transformation to the SDF (at least for plane maybe)
 
 # TODO
 

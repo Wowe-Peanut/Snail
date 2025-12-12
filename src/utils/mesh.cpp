@@ -112,16 +112,15 @@ void Mesh::loadMshFile(string mshFilePath) {
 				f >> entityDim >> entityTag >> parametric >> numNodesInBlock;
 
 				// Read node indices
+				vector<int> nodeIdxs(numNodesInBlock);
 				for (int node=0; node<numNodesInBlock; node++) {
-					int tag;
-					f >> tag;
-
-					nodeIdxs[tag-1] = node;
+					f >> nodeIdxs[node];
 				}
 				
 				// Add node positions to position buffer, ordered by ID
 				for (int node=0; node<numNodesInBlock; node++) {
-					f >> triPosBuf[node*3] >> triPosBuf[node*3 + 1] >> triPosBuf[node*3 + 2];
+					int nodeIdx = nodeIdxs[node] - 1;
+					f >> triPosBuf[nodeIdx*3] >> triPosBuf[nodeIdx*3 + 1] >> triPosBuf[nodeIdx*3 + 2];
 				}
 			}
 			break;
@@ -151,7 +150,7 @@ void Mesh::loadMshFile(string mshFilePath) {
 					vector<int> nodes(nodesInElement);
 					for (int node=0; node<nodesInElement; node++) { 
 						f >> nodes[node];
-						nodes[node] = nodeIdxs[nodes[node]-1]; 
+						nodes[node]--;
 					}
 
 					// Contruct edges from pairs of nodes
