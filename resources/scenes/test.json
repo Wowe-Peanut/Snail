@@ -1,13 +1,13 @@
 {
     "parameters": {
-        "delta_time": 0.01,
+        "delta_time": 0.001,
         "tolerance": 0.01,
-        "max_iterations": 10,
+        "max_iterations": 100,
 
-        "point_mass": 1000,
-        "spring_stiffness": 500000,
+        "point_mass": 100,
+        "spring_stiffness": 10000,
 
-        "contact_stiffness": 10000,
+        "contact_stiffness": 100000,
         "contact_distance": 0.01,
 
         "gravity": -9.81
@@ -72,7 +72,7 @@
             "mesh_transform": {
                 "translation":  [0, -1, 0],
                 "rotation":     [0, 0, 0],
-                "scale":        [3, 1, 3]
+                "scale":        [6, 1, 6]
             }
         }
     ]
