@@ -1,14 +1,13 @@
 {
     "parameters": {
-        "delta_time": 0.005,
-        "tolerance": 0.05,
-        "max_iterations": 100,
+        "delta_time": 0.01,
+        "tolerance": 0.01,
 
-        "point_mass": 100,
-        "spring_stiffness": 1000000,
+        "point_mass": 40,
+        "spring_stiffness": 20000,
 
         "contact_stiffness": 10000,
-        "contact_distance": 0.5,
+        "contact_distance": 1,
 
         "gravity": -9.81
     },

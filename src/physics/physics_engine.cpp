@@ -14,7 +14,6 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
     // Read parameters
     h                   = parameters["delta_time"];
     tol                 = parameters["tolerance"];
-    maxiter             = parameters["max_iterations"];
     springStiffness     = parameters["spring_stiffness"];
     pointMass           = parameters["point_mass"];
 	contactStiffness	= parameters["contact_stiffness"];
@@ -86,8 +85,7 @@ void PhysicsEngine::implicitStep() {
 	Matrix3Xf searchDirection = getSearchDirection(predictedPositions);
 
 	// Projected Newton Loop
-	for (int newtoniter=0; newtoniter<maxiter; newtoniter++) {
-		
+	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / h > tol)  {
 
 		// Line search to guarantees a step size that reduces the systems energy
 		float alpha = CCD(searchDirection);
@@ -95,9 +93,7 @@ void PhysicsEngine::implicitStep() {
 
 		float newIP = IPValue(predictedPositions);
 
-		for (int lineiter=0; lineiter<maxiter; lineiter++) {
-			if (newIP < IP) break;
-
+		while (newIP < IP) {
 			alpha /= 2;
 			positions = originalPositions + alpha*searchDirection;
 			newIP = IPValue(predictedPositions);
@@ -106,7 +102,7 @@ void PhysicsEngine::implicitStep() {
 		// Update IP & calculate next search direction
 		IP = newIP;
 		searchDirection = getSearchDirection(predictedPositions);
-		if (searchDirection.cwiseAbs().maxCoeff() / h < tol) break; // infinity norm early convergence condition
+		
 	}
 
 	// Update velocities with final positions
@@ -216,13 +212,13 @@ void PhysicsEngine::reset() {
 
 // Incremental Potential Energy
 float PhysicsEngine::IPValue(Matrix3Xf& xtilde) {
-	return InertiaValue(xtilde) + h*h*(MassSpringValue() + GravityValue() + ContactValue());
+	return InertiaValue(xtilde) + h*h*(MassSpringValue() + GravityValue());
 }
 Matrix3Xf PhysicsEngine::IPGradient(Matrix3Xf& xtilde) {
-	return InertiaGradient(xtilde) + h*h*(MassSpringGradient() + GravityGradient() + ContactGradient());
+	return InertiaGradient(xtilde) + h*h*(MassSpringGradient() + GravityGradient());
 }
 SparseMatrix<float> PhysicsEngine::IPHessian(Matrix3Xf& xtilde) {
-	return InertiaHessian(xtilde) + h*h*(MassSpringHessian() + ContactHessian());
+	return InertiaHessian(xtilde) + h*h*(MassSpringHessian());
 }
 
 
@@ -367,7 +363,7 @@ float PhysicsEngine::ContactValue() {
 
 				float d = obj2->mesh->sdf->distance(p);
 				if (d < contactDistance) {
-					sum += obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/2 * (d/contactDistance - 1) * log(d/contactDistance));
+					sum += contactDistance * (contactStiffness/2 * (d/contactDistance - 1) * log(d/contactDistance));
 				}
 			}
 		}
@@ -397,7 +393,7 @@ Matrix3Xf PhysicsEngine::ContactGradient() {
 				
 
 				if (d < contactDistance) {
-					grad.col(offset+vidx) = obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/(2*contactDistance) * log(d/contactDistance) + 1/d) * dgrad;
+					grad.col(offset+vidx) = contactDistance * (contactStiffness/(2*contactDistance) * log(d/contactDistance) + 1/d) * dgrad;
 				}
 			}
 		}
@@ -428,7 +424,7 @@ SparseMatrix<float> PhysicsEngine::ContactHessian() {
 				Matrix3f dhess = obj2->mesh->sdf->distanceHess(p);
 
 				if (d < contactDistance) {
-					float contactWeight = obj1->mesh->vertexAreas[vidx] * contactDistance;
+					float contactWeight = contactDistance;
 					Matrix3f term1 = contactStiffness/(2*contactDistance*d) * (dgrad * dgrad.transpose());
 					Matrix3f term2 = (contactStiffness/(2*contactDistance)*log(d/contactDistance) + 1/d) * dhess;
 					Matrix3f localHess =  contactWeight * (term1 + term2);

@@ -16,16 +16,13 @@ class PhysicsEngine {
         void reset();
         void implicitStep();
 
-    private:
-
         // Simulation parameters
-        float h;
-        float tol;
-        int maxiter;
-        float springStiffness;
-		float pointMass;
-        float contactStiffness;
-        float contactDistance;
+        double h;
+        double tol;
+        double springStiffness;
+		double pointMass;
+        double contactStiffness;
+        double contactDistance;
         Eigen::Vector3f gravity;
 
         std::vector<std::shared_ptr<Object>> physicsObjects; 
@@ -34,12 +31,12 @@ class PhysicsEngine {
         // Combined properties of all physics objects & their offsets in the cumulative vectors (doesn't include static)
         int numPoints;
         std::vector<int> objectOffsets; 
-        Eigen::Matrix3Xf positions;
-        Eigen::Matrix3Xf velocities;
+        Eigen::Matrix3Xd positions;
+        Eigen::Matrix3Xd velocities;
 
         // Used to reset sim
-        Eigen::Matrix3Xf initialPositions;
-        Eigen::Matrix3Xf initialVelocities;
+        Eigen::Matrix3Xd initialPositions;
+        Eigen::Matrix3Xd initialVelocities;
         
         // Spring Edges
         int numEdges;
@@ -51,30 +48,30 @@ class PhysicsEngine {
         // Helper
         void makePSD(Eigen::MatrixXf& hess);
         void updateObjects(); 
-        Eigen::Matrix3Xf getSearchDirection(Eigen::Matrix3Xf& xtilde);
-        float CCD(Eigen::Matrix3Xf& searchDirection);   
+        Eigen::Matrix3Xd getSearchDirection(Eigen::Matrix3Xd& xtilde);
+        double CCD(Eigen::Matrix3Xd& searchDirection);   
 
         // Total energy
-        float IPValue(Eigen::Matrix3Xf& xtilde);
-        Eigen::Matrix3Xf IPGradient(Eigen::Matrix3Xf& xtilde);
-        Eigen::SparseMatrix<float> IPHessian(Eigen::Matrix3Xf& xtilde);
+        double IPValue(Eigen::Matrix3Xd& xtilde);
+        Eigen::Matrix3Xd IPGradient(Eigen::Matrix3Xd& xtilde);
+        Eigen::SparseMatrix<double> IPHessian(Eigen::Matrix3Xd& xtilde);
 
         // Inertia
-        float InertiaValue(Eigen::Matrix3Xf& xtilde);
-        Eigen::Matrix3Xf InertiaGradient(Eigen::Matrix3Xf& xtilde);
-        Eigen::SparseMatrix<float> InertiaHessian(Eigen::Matrix3Xf& xtilde);
+        double InertiaValue(Eigen::Matrix3Xd& xtilde);
+        Eigen::Matrix3Xd InertiaGradient(Eigen::Matrix3Xd& xtilde);
+        Eigen::SparseMatrix<double> InertiaHessian(Eigen::Matrix3Xd& xtilde);
 
         // Spring
-        float MassSpringValue();
-        Eigen::Matrix3Xf MassSpringGradient();
-        Eigen::SparseMatrix<float> MassSpringHessian();
+        double MassSpringValue();
+        Eigen::Matrix3Xd MassSpringGradient();
+        Eigen::SparseMatrix<double> MassSpringHessian();
 
         // Gravity
-        float GravityValue();
-        Eigen::Matrix3Xf GravityGradient();
+        double GravityValue();
+        Eigen::Matrix3Xd GravityGradient();
 
         // Contact
-        float ContactValue();
-        Eigen::Matrix3Xf ContactGradient();
-        Eigen::SparseMatrix<float> ContactHessian();
+        double ContactValue();
+        Eigen::Matrix3Xd ContactGradient();
+        Eigen::SparseMatrix<double> ContactHessian();
 };

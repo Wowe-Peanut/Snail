@@ -13,6 +13,8 @@
 #include <fstream>
 #include <iostream>
 #include <glm/glm.hpp>
+#include <unistd.h>
+
 
 using json = nlohmann::json;
 using vec3 = glm::vec3;
@@ -115,6 +117,9 @@ void simulate(string resourcePath, string jsonPath) {
 		renderer.render();
 		glfwSwapBuffers(renderer.window);
 		glfwPollEvents();
+
+		
+		usleep(engine.h * 1000000.0f);
 	}
 
 	renderer.bphongProg->unbind();
