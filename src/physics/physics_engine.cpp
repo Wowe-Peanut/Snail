@@ -397,7 +397,7 @@ Matrix3Xf PhysicsEngine::ContactGradient() {
 				
 
 				if (d < contactDistance) {
-					grad.col(offset+vidx) = obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/2 * (log(d/contactDistance) / contactDistance + (d/contactDistance - 1) / d)) * dgrad;
+					grad.col(offset+vidx) = obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/(2*contactDistance) * log(d/contactDistance) + 1/d) * dgrad;
 				}
 			}
 		}
@@ -428,10 +428,10 @@ SparseMatrix<float> PhysicsEngine::ContactHessian() {
 				Matrix3f dhess = obj2->mesh->sdf->distanceHess(p);
 
 				if (d < contactDistance) {
-					Matrix3f localHess = obj1->mesh->vertexAreas[vidx] * contactDistance * contactStiffness / 2 * (
-						(d + contactDistance)/(2*contactDistance*contactDistance*contactStiffness)*(dgrad * dgrad.transpose()) + 
-						(log(d/contactDistance)/contactDistance + 1/contactDistance - 1/d)*dhess
-					);
+					float contactWeight = obj1->mesh->vertexAreas[vidx] * contactDistance;
+					Matrix3f term1 = contactStiffness/(2*contactDistance*d) * (dgrad * dgrad.transpose());
+					Matrix3f term2 = (contactStiffness/(2*contactDistance)*log(d/contactDistance) + 1/d) * dhess;
+					Matrix3f localHess =  contactWeight * (term1 + term2);
 
 					for (int row=0; row<3; row++) {
 						for (int col=0; col<3 ;col++) {

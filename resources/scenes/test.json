@@ -1,21 +1,21 @@
 {
     "parameters": {
-        "delta_time": 0.001,
-        "tolerance": 0.01,
+        "delta_time": 0.005,
+        "tolerance": 0.05,
         "max_iterations": 100,
 
         "point_mass": 100,
-        "spring_stiffness": 10000,
+        "spring_stiffness": 1000000,
 
-        "contact_stiffness": 100000,
-        "contact_distance": 0.01,
+        "contact_stiffness": 10000,
+        "contact_distance": 0.5,
 
         "gravity": -9.81
     },
 
     "objects": [
         {
-            "mesh": "models/sphere/sphere.msh",
+            "mesh": "models/cube/cube2.msh",
             "is_static": false,
             "fixed_points": [],
             "velocity": [0, 0, 0],
@@ -38,7 +38,7 @@
             },
 
             "mesh_transform": {
-                "translation":  [0, 0, 0],
+                "translation":  [0, 3, 0],
                 "rotation":     [0, 0, 0],
                 "scale":        [1, 1, 1]
             }
