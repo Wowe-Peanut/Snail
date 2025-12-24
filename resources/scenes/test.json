@@ -14,7 +14,7 @@
 
     "objects": [
         {
-            "mesh": "models/sphere/sphere.msh",
+            "mesh": "models/cube/cube.msh",
             "is_static": false,
             "fixed_points": [],
             "velocity": [0, 0, 0],

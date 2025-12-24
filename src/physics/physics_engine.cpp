@@ -107,6 +107,8 @@ void PhysicsEngine::implicitStep() {
 			alpha /= 2;
 			positions = previousPositions + alpha*searchDirection;
 			newIP = IPValue(predictedPositions);
+
+			if (alpha > 0.00001) break;
 		}
 
 		cout << "Step Size = " << alpha << endl << endl;
