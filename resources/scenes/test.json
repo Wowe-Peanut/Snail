@@ -1,9 +1,9 @@
 {
     "parameters": {
-        "delta_time": 0.05,
+        "delta_time": 0.01,
         "tolerance": 0.01,
 
-        "point_mass": 200,
+        "point_mass": 40,
         "spring_stiffness": 10000,
 
         "contact_stiffness": 1000000,
@@ -14,7 +14,7 @@
 
     "objects": [
         {
-            "mesh": "models/cube/cube.msh",
+            "mesh": "models/cube/cube2.msh",
             "is_static": false,
             "fixed_points": [],
             "velocity": [0, 0, 0],
@@ -59,7 +59,7 @@
             "sdf": {
                 "type": "plane",
                 "normal": [0, 1, 0],
-                "point": [0, -1, 0]
+                "point": [0, 0, 0]
             },
 
             "render_transform": {
@@ -69,7 +69,7 @@
             },
 
             "mesh_transform": {
-                "translation":  [0, -1, 0],
+                "translation":  [0, 0, 0],
                 "rotation":     [0, 0, 0],
                 "scale":        [6, 1, 6]
             }
