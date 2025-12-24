@@ -1,20 +1,20 @@
 {
     "parameters": {
-        "delta_time": 0.01,
+        "delta_time": 0.05,
         "tolerance": 0.01,
 
-        "point_mass": 40,
-        "spring_stiffness": 20000,
+        "point_mass": 200,
+        "spring_stiffness": 10000,
 
-        "contact_stiffness": 10000,
-        "contact_distance": 1,
+        "contact_stiffness": 1000000,
+        "contact_distance": 0.01,
 
         "gravity": -9.81
     },
 
     "objects": [
         {
-            "mesh": "models/cube/cube2.msh",
+            "mesh": "models/cube/cube.msh",
             "is_static": false,
             "fixed_points": [],
             "velocity": [0, 0, 0],

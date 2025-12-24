@@ -4,28 +4,28 @@
 #include <memory>
 
 struct SDF {
-	virtual double distance(Eigen::Vector3f& point) = 0;
-	virtual Eigen::Vector3f distanceGrad(Eigen::Vector3f& point) = 0;
-	virtual Eigen::Matrix3f distanceHess(Eigen::Vector3f& point) = 0; 
-	virtual double ccd(Eigen::Vector3f& point, Eigen::Vector3f& partialSearchDir) = 0;
+	virtual double distance(Eigen::Vector3d& point) = 0;
+	virtual Eigen::Vector3d distanceGrad(Eigen::Vector3d& point) = 0;
+	virtual Eigen::Matrix3d distanceHess(Eigen::Vector3d& point) = 0; 
+	virtual double ccd(Eigen::Vector3d& point, Eigen::Vector3d& partialSearchDir) = 0;
 };
 
 struct PlaneSDF : SDF {
-	Eigen::Vector3f planeNormal;
-	Eigen::Vector3f planePoint;
+	Eigen::Vector3d planeNormal;
+	Eigen::Vector3d planePoint;
 	
-	PlaneSDF(Eigen::Vector3f normal, Eigen::Vector3f point);
-	double distance(Eigen::Vector3f& point) override;
-	Eigen::Vector3f distanceGrad(Eigen::Vector3f& point) override;
-	Eigen::Matrix3f distanceHess(Eigen::Vector3f& point) override; 
-	double ccd(Eigen::Vector3f& point, Eigen::Vector3f& partialSearchDir) override;
+	PlaneSDF(Eigen::Vector3d normal, Eigen::Vector3d point);
+	double distance(Eigen::Vector3d& point) override;
+	Eigen::Vector3d distanceGrad(Eigen::Vector3d& point) override;
+	Eigen::Matrix3d distanceHess(Eigen::Vector3d& point) override; 
+	double ccd(Eigen::Vector3d& point, Eigen::Vector3d& partialSearchDir) override;
 };
 
 // struct MeshSDF : SDF {
 // 	std::shared_ptr<Mesh> mesh;
 
-// 	double distance(Eigen::Vector3f point) override;
-// 	Eigen::Vector3f distanceGrad(Eigen::Vector3f point) override;
-// 	Eigen::Matrix3Xf distanceHess(Eigen::Vector3f point) override; 
+// 	double distance(Eigen::Vector3d point) override;
+// 	Eigen::Vector3d distanceGrad(Eigen::Vector3d point) override;
+// 	Eigen::Matrix3Xf distanceHess(Eigen::Vector3d point) override; 
 // };
 

@@ -23,7 +23,7 @@ class PhysicsEngine {
 		double pointMass;
         double contactStiffness;
         double contactDistance;
-        Eigen::Vector3f gravity;
+        Eigen::Vector3d gravity;
 
         std::vector<std::shared_ptr<Object>> physicsObjects; 
         std::vector<std::shared_ptr<Object>> staticObjects;
@@ -46,7 +46,7 @@ class PhysicsEngine {
         std::vector<bool> isFixedPoint;
 
         // Helper
-        void makePSD(Eigen::MatrixXf& hess);
+        void makePSD(Eigen::MatrixXd& hess);
         void updateObjects(); 
         Eigen::Matrix3Xd getSearchDirection(Eigen::Matrix3Xd& xtilde);
         double CCD(Eigen::Matrix3Xd& searchDirection);   

@@ -207,7 +207,7 @@ void Mesh::computeSurfaceQualities() {
 
 	vector<vec3> normals(numPoints, vec3(0.0f));
 	vector<int> vertexDegrees(numPoints, 0);
-	vertexAreas = vector<float>(numPoints, 0);
+	vertexAreas = vector<double>(numPoints, 0);
 
 	// Calculate triangle norms
 	for (Triangle& tri: triangles) {
@@ -231,7 +231,7 @@ void Mesh::computeSurfaceQualities() {
 		vec3 normal = glm::normalize(normals[vidx] / (float) vertexDegrees[vidx]);
 		vecToBuf(triNorBuf, normal, vidx);
 
-		vertexAreas[vidx] /= (float) vertexDegrees[vidx];
+		vertexAreas[vidx] /= (double) vertexDegrees[vidx];
 	}
 }
 

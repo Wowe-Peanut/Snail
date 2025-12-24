@@ -25,8 +25,8 @@ vec3 jsontovec3 (json jsonlist) {
 	return vec3(jsonlist[0], jsonlist[1], jsonlist[2]);
 }
 
-Eigen::Vector3f jsontov3f(json jsonlist) {
-	return Eigen::Vector3f(jsonlist[0], jsonlist[1], jsonlist[2]);
+Eigen::Vector3d jsontov3f(json jsonlist) {
+	return Eigen::Vector3d(jsonlist[0], jsonlist[1], jsonlist[2]);
 }
 
 json openjson(string path) {
@@ -99,7 +99,10 @@ void simulate(string resourcePath, string jsonPath) {
 	RenderEngine renderer(objects, resourcePath);
 	PhysicsEngine engine(objects, data["parameters"]);
 	
+	int timestep = 0;
 	while (!glfwWindowShouldClose(renderer.window)) {
+		cout << "### TIMESTEP " << timestep++ << "###" << endl;
+
 		if (renderer.PAUSED) {
 			if (renderer.STEP) {
 				engine.implicitStep();

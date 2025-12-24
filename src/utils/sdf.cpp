@@ -3,26 +3,26 @@
 
 #include <Eigen/Dense>
 
-using Eigen::Vector3f, Eigen::Matrix3f;
+using Eigen::Vector3d, Eigen::Matrix3d;
 using namespace std;
 
-PlaneSDF::PlaneSDF(Vector3f normal, Vector3f point): planeNormal(normal), planePoint(point) {}
+PlaneSDF::PlaneSDF(Vector3d normal, Vector3d point): planeNormal(normal), planePoint(point) {}
 
-float PlaneSDF::distance(Vector3f& point) {
+double PlaneSDF::distance(Vector3d& point) {
 	return planeNormal.dot(point - planePoint);
 } 
 
-Vector3f PlaneSDF::distanceGrad(Vector3f& point) {
+Vector3d PlaneSDF::distanceGrad(Vector3d& point) {
 	return planeNormal;
 } 
 
-Matrix3f PlaneSDF::distanceHess(Vector3f& point) {
-	return Matrix3f::Zero();
+Matrix3d PlaneSDF::distanceHess(Vector3d& point) {
+	return Matrix3d::Zero();
 }
 
-float PlaneSDF::ccd(Eigen::Vector3f& point, Eigen::Vector3f& partialSearchDir) {
+double PlaneSDF::ccd(Eigen::Vector3d& point, Eigen::Vector3d& partialSearchDir) {
 
-	float searchProj = planeNormal.dot(partialSearchDir);
+	double searchProj = planeNormal.dot(partialSearchDir);
 
 	if (searchProj < 0) {
 		return 0.9 * planeNormal.dot(point - planePoint) / -searchProj;

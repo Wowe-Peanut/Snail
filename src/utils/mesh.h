@@ -19,7 +19,7 @@ struct Transform {
 
 struct Edge {
 	int v1, v2;
-	float l2;
+	double l2;
 
     bool operator<(const Edge& other) const {
         if (v1 != other.v1) return v1 < other.v1;
@@ -61,7 +61,7 @@ class Mesh {
 		bool isStatic;
 		std::vector<bool> isFixedPoint;
 		std::shared_ptr<SDF> sdf;
-		std::vector<float> vertexAreas;
+		std::vector<double> vertexAreas;
 		glm::vec3 initialVelocity;
 
 		template <typename T>
