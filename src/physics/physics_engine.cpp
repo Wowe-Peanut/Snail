@@ -370,18 +370,13 @@ double PhysicsEngine::ContactValue() {
 		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
 			Vector3d p = positions.col(offset + vidx);
 
-			// //! FOR NOW ONLY STATIC MESHES
-			// for (auto obj2: staticObjects) {
+			//! FOR NOW ONLY STATIC MESHES
+			for (auto obj2: staticObjects) {
 
-			// 	double d = obj2->mesh->sdf->distance(p);
-			// 	if (d < contactDistance) {
-			// 		sum += obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/2 * (d/contactDistance - 1) * log(d/contactDistance));
-			// 	}
-			// }
-
-			if (p[1] < contactDistance) {
-				double s = p[1] / contactDistance;
-				sum += obj1->mesh->vertexAreas[vidx] * contactDistance * contactStiffness / 2 * (s - 1) * log(s);
+				double d = obj2->mesh->sdf->distance(p);
+				if (d < contactDistance) {
+					sum += obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/2 * (d/contactDistance - 1) * log(d/contactDistance));
+				}
 			}
 		}
 	}
@@ -402,22 +397,16 @@ Matrix3Xd PhysicsEngine::ContactGradient() {
 		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
 			Vector3d p = positions.col(offset + vidx);
 
-			// //! FOR NOW ONLY STATIC MESHES
-			// for (auto obj2: staticObjects) {
+			//! FOR NOW ONLY STATIC MESHES
+			for (auto obj2: staticObjects) {
 
-			// 	double d = obj2->mesh->sdf->distance(p);
-			// 	Vector3d dgrad = obj2->mesh->sdf->distanceGrad(p);
+				double d = obj2->mesh->sdf->distance(p);
+				Vector3d dgrad = obj2->mesh->sdf->distanceGrad(p);
 				
 
-			// 	if (d < contactDistance) {
-			// 		grad.col(offset+vidx) = obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/(2*contactDistance) * log(d/contactDistance) + 1/d) * dgrad;
-			// 	}
-			// }
-
-			if (p[1] < contactDistance) {
-				double s = p[1] / contactDistance;
-				// g[i][1] = contact_area[i] * dhat * (kappa / 2 * (math.log(s) / dhat + (s - 1) / d))
-				grad.col(offset+vidx)[1] = obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness / 2 * (log(s) / contactDistance + (s-1) / p[1]));
+				if (d < contactDistance) {
+					grad.col(offset+vidx) = obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/(2*contactDistance) * log(d/contactDistance) + 1/d) * dgrad;
+				}
 			}
 		}
 	}
@@ -439,30 +428,25 @@ SparseMatrix<double> PhysicsEngine::ContactHessian() {
 		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
 			Vector3d p = positions.col(offset + vidx);
 
-			// //! FOR NOW ONLY STATIC MESHES
-			// for (auto obj2: staticObjects) {
+			//! FOR NOW ONLY STATIC MESHES
+			for (auto obj2: staticObjects) {
 
-			// 	double d = obj2->mesh->sdf->distance(p);
-			// 	Vector3d dgrad = obj2->mesh->sdf->distanceGrad(p);
-			// 	Matrix3d dhess = obj2->mesh->sdf->distanceHess(p);
+				double d = obj2->mesh->sdf->distance(p);
+				Vector3d dgrad = obj2->mesh->sdf->distanceGrad(p);
+				Matrix3d dhess = obj2->mesh->sdf->distanceHess(p);
 
-			// 	if (d < contactDistance) {
-			// 		double contactWeight = obj1->mesh->vertexAreas[vidx] * contactDistance;
-			// 		Matrix3d term1 = contactStiffness/(2*contactDistance*d) * (dgrad * dgrad.transpose());
-			// 		Matrix3d term2 = (contactStiffness/(2*contactDistance)*log(d/contactDistance) + 1/d) * dhess;
-			// 		Matrix3d localHess =  contactWeight * (term1 + term2);
+				if (d < contactDistance) {
+					double contactWeight = obj1->mesh->vertexAreas[vidx] * contactDistance;
+					Matrix3d term1 = contactStiffness/(2*contactDistance*d) * (dgrad * dgrad.transpose());
+					Matrix3d term2 = (contactStiffness/(2*contactDistance)*log(d/contactDistance) + 1/d) * dhess;
+					Matrix3d localHess =  contactWeight * (term1 + term2);
 
-			// 		for (int row=0; row<3; row++) {
-			// 			for (int col=0; col<3 ;col++) {
-			// 				triplets.push_back(Triplet<double>(3*(offset+vidx)+row, 3*(offset+vidx)+col, localHess(row, col)));
-			// 			}
-			// 		}	
-			// 	}
-			// }
-
-			if (p[1] < contactDistance) {
-				double energy = obj1->mesh->vertexAreas[vidx] * contactDistance * contactStiffness / (2 * p[1] * p[1] * contactDistance) * (p[1] + contactDistance);
-				triplets.emplace_back(3*(offset+vidx)+1, 3*(offset+vidx)+1, energy);
+					for (int row=0; row<3; row++) {
+						for (int col=0; col<3 ;col++) {
+							triplets.push_back(Triplet<double>(3*(offset+vidx)+row, 3*(offset+vidx)+col, localHess(row, col)));
+						}
+					}	
+				}
 			}
 		}
 	}

@@ -122,7 +122,7 @@ void simulate(string resourcePath, string jsonPath) {
 		glfwPollEvents();
 
 		
-		// usleep(engine.h * 1000000.0f);
+		usleep(engine.h * 1000000.0f);
 	}
 
 	renderer.bphongProg->unbind();
