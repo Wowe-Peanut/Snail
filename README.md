@@ -1,19 +1,19 @@
 
-Ok I made the msh reader not break anymore but there are some .msh files that don't work (plane.msh) because the tags are messed up. The previous 
-fix I made for this didn't work so I need to redo that. However, that didn't fix the issue of collisions still not really working...
+- Newton's method was the main culprit making contact not work! 
+- Now I'm working on restructing and adding general mesh-mesh contact.
 
-Ok currently two major bugs and a bunch of optimizations needed:
-- Anything that is not a cube be comes Nan
-- Cube doesn't even bounce it just hits ground
-- Need to do board/narrow phase and precompute sdf results
-- Will need to also apply the transformation to the SDF (at least for plane maybe)
+
+- Current CCD, barrier energy value/grad/hessian does a lot of redundant calculation --> Add broad & narrow phase to 
+  generate a set of collision pairs with distance value/grad/hessian already calculated. There should be different
+  types that it will need to compute independently since different primitive pairs will have different barrier functions.
+
+
 
 # TODO
 
 - Refactoring:
   - [X] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
   - [X] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
-  - [ ] Get rid of compiler warnings...
   - [X] Read into ECSs: https://www.david-colson.com/2020/02/09/making-a-simple-ecs.html
 
 - QOL: 
@@ -21,16 +21,17 @@ Ok currently two major bugs and a bunch of optimizations needed:
   - [X] Add reset animation button
   - [X] Add single step button 
   - [X] Zoom in and out with camera
+  - [ ] Make alpha lowerbound a setable parameter
   - [ ] **Animation saving & replaying**
 
 - Optimizations
   - [X] Sparse Hessian Solver
-  - [ ] Multithreading (CUDA is too fucking scary)
+  - [ ] Multithreading
   - [ ] GPU Optimizations
   - [ ] Broad/Narrow phase
 
 - IPC:
-  - [ ] Fixed boundary condition
+  - [X] Fixed boundary condition
   - [ ] Moving boundary condition
   - [ ] Mesh on Mesh contact
   - [ ] Inversion free
@@ -38,10 +39,11 @@ Ok currently two major bugs and a bunch of optimizations needed:
 
 - Bugs
   - [X] Fix sticky DBC Hessian transformation more (I think it's causing the fixed point to move around rn)
-  - [ ] Sometimes the engine will hit a minimum prematurely, resulting in a more sudden stop than is physically accurate. Lowering
+  - [X] Sometimes the engine will hit a minimum prematurely, resulting in a more sudden stop than is physically accurate. Lowering
   step size helps with this but that isn't always viable
-  - [ ] Take another look at the Projected Newton loop, in the TB it doesn't perform a single integration once the model comes
+  - [X] Take another look at the Projected Newton loop, in the TB it doesn't perform a single integration once the model comes
   to rest (p below tolerance) but I think I'm doing a single iteration each time (I think it's left over from testing)
+  - [ ] If the .msh node tags are not 1-n and instead have a skip the parser breaks!
 
 - JSON Parser
   - [X] Initial mesh conditions: fixed points, velocity, pre, post-init squishing
@@ -73,7 +75,7 @@ Ok currently two major bugs and a bunch of optimizations needed:
   - [X] Normal Movement: 
     - Normals needs to transform as the positions are transformed by the engine
     - It'd be expensive but simply recalculating vertex norms by recalculating and reaveraging triangle norms
-  - [ ] Double precision engine:
+  - [X] Double precision engine:
     - OpenGL should stay using floats, but it'd be nice to have the option to use double precision in the physics half
     - Could probably use c++ templates/generics since Matrix3Xf is just 'typedef Matrix< float, 3, Dynamic >' 
     - Since we're already doing a copy from Engine to individual objects (for energy, interpolation, etc) it should be fine
