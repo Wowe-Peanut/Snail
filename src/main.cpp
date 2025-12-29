@@ -101,7 +101,7 @@ void simulate(string resourcePath, string jsonPath) {
 	
 	int timestep = 0;
 	while (!glfwWindowShouldClose(renderer.window)) {
-		cout << "### TIMESTEP " << timestep++ << "###" << endl;
+		// cout << "### TIMESTEP " << timestep++ << "###" << endl;
 
 		if (renderer.PAUSED) {
 			if (renderer.STEP) {

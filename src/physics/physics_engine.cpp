@@ -93,9 +93,9 @@ void PhysicsEngine::implicitStep() {
 	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / h > tol)  {
 
 
-		double residual = searchDirection.colwise().lpNorm<1>().maxCoeff() / h;
-		cout << "Iteration = " << iter++ << endl;
-		cout << "Residual = " << residual << endl;
+		// double residual = searchDirection.colwise().lpNorm<1>().maxCoeff() / h;
+		// cout << "Iteration = " << iter++ << endl;
+		// cout << "Residual = " << residual << endl;
 
 		// Line search to guarantees a step size that reduces the systems energy
 		double alpha = CCD(searchDirection);
@@ -111,7 +111,7 @@ void PhysicsEngine::implicitStep() {
 			if (alpha > 0.00001) break;
 		}
 
-		cout << "Step Size = " << alpha << endl << endl;
+		// cout << "Step Size = " << alpha << endl << endl;
 		
 		// Update IP & calculate next search direction
 		IP = newIP;
