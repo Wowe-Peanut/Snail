@@ -83,8 +83,8 @@ void PhysicsEngine::implicitStep() {
 	Matrix3Xd predictedPositions = positions + h*velocities;
 
 	// Calculate initial Incremental Potential value and search direction 
-	double IP = IPValue(predictedPositions);
 	Matrix3Xd searchDirection = getSearchDirection(predictedPositions);
+	double IP = IPValue(predictedPositions);
 
 	// Projected Newton Loop
 

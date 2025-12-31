@@ -40,6 +40,75 @@ further enlarging AABB boxes (larger than contactDistance) and only refitting if
 2) Rebuilding subtrees can be expensive
 3) remove and re-insert (with tree rotations to make total SA contained in sibling nodes as even as possible)
 
+Ok I'm going to put aside BVH for now but setup the collision code so that it's easy to add later
+So thinking about broadphase, during line search we call IPValue a lot which means that if I'm going to 
+utilize broadphase it needs to think about how IPValue will need testing different object locations. Maybe if I set a 
+the buffer on the AABB boxes large enough maybe, but I think for fast moving objects that won't work...
+
+Maybe instead I just need to consider those alpha steps the same as moving the object and need to update the scene each time :)
+it'll have to be the same with ACCD since it slowly moves forward until we get an approximated alpha_toi. Although, it seems that 
+collision pairs that are already in that contactDistance threshold if we add that contactDistnace buffer to all AABB will be
+the first objects to hit during the ACCD iterative moving so it doesn't really matter. Not sure if the same logic applies to 
+IPValue tho... 
+
+IT DOES NOT! Ok so doing some more research, the contactDistance buffer seems to be a good idea but I also need
+to consider every position long the search direction with alpha_max = 1, so all positions from x to x+p which 
+is refered to as a swept volume. The problem is that the search direction is also determined by using barrier 
+energy value/grad/hess which is part of what is supposed to be accelerated using the broadphase/BVH so the IPC paper
+uses two stages:
+- Static broadphase: fix using padded AABB bounding boxes and use to efficiently calculate search direction
+- Swept Volume broadphase:  Using search direction to calculat swept volume AABB boxes and then use only those potential
+                            collision pairs for ACCD and line-search
+
+It may even be possible to 
+
+Honestly it's the IPGrad and IPHessian which really need the help and could probably reuse the distance val/grad/hess values
+since they are always called inbetween moves. 
+
+I also need to consider while generating collision pairs is that node's shouldn't collide with the triangles 
+they are a part of (it shouldn't generate any barrier energy)
+
+Ok I really need to move energy methods to their own file and just pass position and other parameters and put broadphase stuff into
+it's own file that can generate a vector of potential collision pairs that we can send to the barrier methods. The issue is that
+they all use a lot of the same values that are currently fields of PhysicsEngine (h, contactDistance) and I might need to pass
+the objects offsets array too... Actually that doesn't sound so bad, inertia and spring only really need pointmass, spring stiffness,
+and edge lists (in addition to positions of course) and this further abstracts away the energy math from the engine.
+
+I might also change how the sdf class works and probably add different barrier energy functions (for dist vs sqr dist methods)
+
+I need the broadphase to generate a vector of collision pairs. The distance value/grad/hess
+are kind of reused between the barrier energy val/grad/hess so those values for the collision 
+pairs should be calculated before sending those vectors to the energy functions. *THAT IS*, until 
+we begin ACCD and line search in which case those values need to be recomputed by just iterating over the
+pair array and calling .compute or something that will need to be done separtely by each
+function since they check for different things I think?... **(ACCD and line-search only use value, so no need to recompute grad & hess)**
+
+It might also be better for MassSpring and Barrier energy at least to combine the energy value/grad/hess into a single loop since 
+they do the same thing? That way it's only a single pass through the constraint list
+
+
+PhysicsEngine
+  simulation parameters
+  object information
+
+  updateObjects
+  getSearchDir
+  implicitSet
+
+Utils
+  makePSD (cause it will be used by contact (at least mesh-mesh), spring, and friction)
+
+BroadPhase:
+  
+
+*In addition to positions & parameters*
+inertia: nothing
+spring: edges
+gravity: none (since that's a param)
+barrier: meshes (for contact area maybe?), edges, triangles, contact pairs
+
+  
+
 
 
 
