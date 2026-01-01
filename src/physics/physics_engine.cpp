@@ -40,7 +40,6 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 		positions = Matrix3Xd::Zero(3, numPoints);
 		velocities = Matrix3Xd::Zero(3, numPoints); 
 
-		numEdges = 0;
 		for (size_t objIdx=0; objIdx<physicsObjects.size(); objIdx++) {
 			auto obj = physicsObjects[objIdx];
 			int offset = objectOffsets[objIdx];
@@ -53,7 +52,11 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objectList, json parame
 			for (Edge& edge: obj->mesh->edges) {
 				edges.push_back({offset+edge.v1, offset+edge.v2, edge.l2});
 			}
-			numEdges += obj->mesh->edges.size();
+			
+			// Copy triangles
+			for (Triangle& tri: obj->mesh->triangles) {
+				surfaceTriangles.push_back({offset+tri.v1, offset+tri.v2, offset+tri.v3});
+			}
 			
 			// Copy fixed points
 			isFixedPoint.insert(isFixedPoint.end(), obj->mesh->isFixedPoint.begin(), obj->mesh->isFixedPoint.end());
@@ -87,15 +90,7 @@ void PhysicsEngine::implicitStep() {
 	double IP = IPValue(predictedPositions);
 
 	// Projected Newton Loop
-
-	int iter = 0;
-	
 	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / h > tol)  {
-
-
-		// double residual = searchDirection.colwise().lpNorm<1>().maxCoeff() / h;
-		// cout << "Iteration = " << iter++ << endl;
-		// cout << "Residual = " << residual << endl;
 
 		// Line search to guarantees a step size that reduces the systems energy
 		double alpha = CCD(searchDirection);
@@ -110,8 +105,6 @@ void PhysicsEngine::implicitStep() {
 
 			if (alpha > 0.00001) break;
 		}
-
-		// cout << "Step Size = " << alpha << endl << endl;
 		
 		// Update IP & calculate next search direction
 		IP = newIP;

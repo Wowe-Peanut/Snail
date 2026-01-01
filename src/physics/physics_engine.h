@@ -8,6 +8,10 @@
 #include <Eigen/Sparse>
 
 
+struct CollisionPair { 
+    double contactArea();
+    
+}; 
 
 class PhysicsEngine {
     
@@ -39,8 +43,8 @@ class PhysicsEngine {
         Eigen::Matrix3Xd initialVelocities;
         
         // Spring Edges
-        int numEdges;
         std::vector<Edge> edges;
+        std::vector<Triangle> surfaceTriangles;
         
         // Constraints
         std::vector<bool> isFixedPoint;

@@ -86,26 +86,52 @@ function since they check for different things I think?... **(ACCD and line-sear
 It might also be better for MassSpring and Barrier energy at least to combine the energy value/grad/hess into a single loop since 
 they do the same thing? That way it's only a single pass through the constraint list
 
+The TB mentions taking a linear combination (usually 1/2 and 1/2) of triangle-node and edge-edge barrier energy discretizations but
+I'm also still not super sure what the contact area between the two should be 🤷 and you also need to be careful not 
+to not include edges in same triangles, nodes and an edge that includes it, etc... and to not iterate over
+duplicate collision pairs
+
+This has details on the contact area: https://phys-sim-book.github.io/lec24.1-barrier_and_dist.html
+It seems for node-triangle, it seems to be 1/3 * #triangles that include node * area of contact triangle
+For edge-edge, it seems to be 1/3 * (#edges involved ) * average area of triangles that include the contact edge?
+
 
 PhysicsEngine
   simulation parameters
   object information
+  staticObjects
 
+  broadphase
   updateObjects
   getSearchDir
-  implicitSet
+  implicitStep
+    
+CollisionManager:
+  CollisionPair:
+  PointPlane:
+    int v, bool vstatic
+    Plane p, bool pstatic
+    
+  PointTriangle: 
+    int v, bool vstatic
+    Triangle t, bool tstatic
 
-Utils
-  makePSD (cause it will be used by contact (at least mesh-mesh), spring, and friction)
+  EdgeEdge:
+    Edge e1, bool e1static
+    Edge e2, bool e2static
 
-BroadPhase:
+
+SDF
+  PointTriangle
+  EdgeEdge
+  PointPlane
+
+  PointEdge
+  PointPoint
+  PointLine
+   
+
   
-
-*In addition to positions & parameters*
-inertia: nothing
-spring: edges
-gravity: none (since that's a param)
-barrier: meshes (for contact area maybe?), edges, triangles, contact pairs
 
   
 
