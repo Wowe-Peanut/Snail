@@ -37,17 +37,13 @@ class PhysicsEngine {
         std::vector<int> objectOffsets; 
         Eigen::Matrix3Xd positions;
         Eigen::Matrix3Xd velocities;
+        std::vector<Edge> edges;
+        std::vector<Triangle> surfaceTriangles;
+        std::vector<bool> isFixedPoint;
 
         // Used to reset sim
         Eigen::Matrix3Xd initialPositions;
         Eigen::Matrix3Xd initialVelocities;
-        
-        // Spring Edges
-        std::vector<Edge> edges;
-        std::vector<Triangle> surfaceTriangles;
-        
-        // Constraints
-        std::vector<bool> isFixedPoint;
 
         // Helper
         void makePSD(Eigen::MatrixXd& hess);

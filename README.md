@@ -95,6 +95,40 @@ This has details on the contact area: https://phys-sim-book.github.io/lec24.1-ba
 It seems for node-triangle, it seems to be 1/3 * #triangles that include node * area of contact triangle
 For edge-edge, it seems to be 1/3 * (#edges involved ) * average area of triangles that include the contact edge?
 
+*Ok* I'm realizing that the whole 'static' object thing is really just when every point is a sticky DBC. Having them in a 
+separate list is fine b/c it does speed some things up, but it over complicates things rn and is kind of premature optmization.
+I'll still keep the 'static' field on the objects/mesh but in reality it just sets everypoint to sticky DBC will also
+check the isstatic field when copying over data to the renderer (no need to static objects). 
+
+I also need to think about how I combine mesh sdf and arbitary sdf (or just discard plane for now and add that later and
+replace the bottom plane with) 
+
+**We could also (LATER ON) avoid excessive computation by just checking if a DOF is a sticky DBC, no need to have static**
+**booleans in the collision pairs I think**
+
+
+Todo
+  - Turn static into just a all dof = sticky DBC object (everything still in physics engine positions)
+  - Keep using static to determine whether a mesh uses GL_DRAW_DYNAMIC or GL_DRAW_STATIC and use it in physics
+  engine to determine which position data to send back to the mesh
+  - Rename SDF files (and refactor includes), and remove SDF from objects and the parser
+  
+  - Implement distance functions for all cases in a single file (standalone methods, no need for class, will be called by collision
+  pair code)
+  - Make file for collision pair code, CollisionPair should be a class with have fields for dval, dgrad, and dhess 
+  and methods to compute each (fields b/c we are going to reuse the results and we want control over when they are calculated).
+
+  - Add a method to physics_engine called generate_collision_pairs (right now it's just gonna brute force search, BVH and
+  swept volume collision will come later) --> rn it should check calculate distance --> If < contactDist, calculate grad & hess
+  (if specified since line-search and ACCD will need to cacll gen_collision_pairs again and won't need grad/hess). This list
+  of pairs will be passed to the barrier energy functions 
+
+  - Move energy methods to own file (just pass everything as parameters it aint that hard)
+  - Revamp the barrier energy methods, collision pairs and their distance val/grad/hess will already be computed, the barrier energy
+  functions needs to compute barrier energy, cast hessians to SPD, and ensemble the local val/grad/hess.
+
+
+
 
 PhysicsEngine
   simulation parameters
@@ -106,22 +140,21 @@ PhysicsEngine
   getSearchDir
   implicitStep
     
-CollisionManager:
-  CollisionPair:
-  PointPlane:
-    int v, bool vstatic
-    Plane p, bool pstatic
-    
+Collision Pairs
+  dval, dgrad, dhess
+  calcVal
+  calcGrad
+  calcHess
+
   PointTriangle: 
-    int v, bool vstatic
-    Triangle t, bool tstatic
+    int v
+    Triangle t
 
   EdgeEdge:
-    Edge e1, bool e1static
-    Edge e2, bool e2static
+    Edge e1
+    Edge e2
 
-
-SDF
+Distance Functions
   PointTriangle
   EdgeEdge
   PointPlane
@@ -151,6 +184,7 @@ SDF
   - [X] Add single step button 
   - [X] Zoom in and out with camera
   - [ ] Make alpha lowerbound a setable parameter
+  - [ ] Change 'render_transform' and 'mesh_transform' to 'pre_init_transform' and 'post_init_scale'
   - [ ] **Animation saving & replaying**
 
 - Optimizations

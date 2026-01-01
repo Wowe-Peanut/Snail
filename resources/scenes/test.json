@@ -45,8 +45,8 @@
 
         {
             "mesh": "models/plane/plane.msh",
-            "is_static": true,
-            "fixed_points": [],
+            "is_static": false,
+            "fixed_points": [1,2,3,4],
             "velocity": [0, 0, 0],
 
             "material": {
