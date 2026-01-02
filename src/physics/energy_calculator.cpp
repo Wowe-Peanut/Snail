@@ -1,0 +1,259 @@
+
+#include "energy_calculator.h"
+#include "mesh.h"
+using namespace std;
+using Eigen::Matrix3Xd, Eigen::SparseMatrix, Eigen::VectorXd, Eigen::Vector3d, Eigen::MatrixXd, Eigen::Matrix3d, Eigen::Triplet; 
+
+void EnergyCalculator::makePSD(MatrixXd& mat) {
+
+	// Self-adjoint (A = A^T) matrix has real eigenvalues and orthogonal eigenvectors and our local hess
+	// is a block of (H, -H; -H, H) which is self-adjoint so we can use the SelfAdjointEigenSolver)
+	Eigen::SelfAdjointEigenSolver<MatrixXd> es(mat);
+	VectorXd evals = es.eigenvalues();
+	MatrixXd evecs = es.eigenvectors();
+
+	// Zero out negative eigenvalues to make PSD
+	for (int i=0; i<evals.size(); i++) {
+		if (evals(i) < 0) evals(i) = 0;
+	}
+
+	// Reconstruct matrix with new eigenvalues
+	mat = evecs * evals.asDiagonal() * evecs.transpose();
+}
+
+// Incremental Potential Energy
+double EnergyCalculator::IPValue(Matrix3Xd& xtilde) {
+	double dt = params.dt;
+	return InertiaValue(xtilde) + dt*dt*(MassSpringValue() + GravityValue());
+}
+Matrix3Xd EnergyCalculator::IPGradient(Matrix3Xd& xtilde) {
+	double dt = params.dt;
+	return InertiaGradient(xtilde) + dt*dt*(MassSpringGradient() + GravityGradient());
+}
+SparseMatrix<double> EnergyCalculator::IPHessian(Matrix3Xd& xtilde) {
+	double dt = params.dt;
+	return InertiaHessian(xtilde) + dt*dt*(MassSpringHessian());
+}
+
+
+
+// Inertia Energy 
+double EnergyCalculator::InertiaValue(Matrix3Xd& xtilde) {
+	double sum = 0;
+	for (int vidx=0; vidx<state.numPoints; vidx++) {
+		Vector3d diff = state.positions.col(vidx) - xtilde.col(vidx);
+		sum += diff.dot(diff);
+	}
+
+	return params.pointMass * sum / 2;
+}
+Matrix3Xd EnergyCalculator::InertiaGradient(Matrix3Xd& xtilde) {
+	return params.pointMass * (state.positions - xtilde);
+}
+SparseMatrix<double> EnergyCalculator::InertiaHessian(Matrix3Xd& xtilde) {
+
+	// From eigen docs: "The cost of a single purely random insertion into a SparseMatrix is O(nnz), 
+	// where nnz is the current number of non-zero coefficients."
+	// So it recommends using triplets, which constructs the SparseMatrix in O(n) with n the number of triplets
+
+	int dof = 3*state.numPoints;
+	vector<Triplet<double>> triplets(dof);
+	for (int i=0; i<dof; i++) {
+		triplets[i] = Triplet<double>(i, i, params.pointMass);
+	}
+
+	SparseMatrix<double> hess(dof, dof);
+	hess.setFromSortedTriplets(triplets.begin(), triplets.end());
+
+	return hess;
+}
+
+
+
+// Mass Spring Energy 
+double EnergyCalculator::MassSpringValue() {
+	double sum = 0;
+	for (Edge& edge: state.edges) {
+		Vector3d diff = state.positions.col(edge.v1) - state.positions.col(edge.v2);
+		sum += edge.l2 * pow(diff.dot(diff) / edge.l2 - 1, 2);
+	}
+	return sum * params.springStiffness / 2;
+}
+Matrix3Xd EnergyCalculator::MassSpringGradient() {
+	Matrix3Xd grad = MatrixXd::Zero(3, state.numPoints);
+
+	for (Edge& edge: state.edges) {
+		Vector3d diff = state.positions.col(edge.v1) - state.positions.col(edge.v2);
+		Vector3d edgeGrad = 2 * params.springStiffness * (diff.dot(diff) / edge.l2 - 1) * diff;
+
+		grad.col(edge.v1) += edgeGrad;
+		grad.col(edge.v2) -= edgeGrad;
+	}
+
+	return grad;
+}
+SparseMatrix<double> EnergyCalculator::MassSpringHessian() {
+
+	int dof = 3*state.numPoints;
+	vector<Triplet<double>> triplets;
+	triplets.reserve(9*state.edges.size()); // 2 vertices per edge, each with 3 dofs = 3^2 = 9 second derivatives
+
+	for (Edge& edge: state.edges) {
+		Vector3d diff = state.positions.col(edge.v1) - state.positions.col(edge.v2);
+
+		// Hessian for the energy of single edge, 3x3 for each DIFFERENCE in the two vertices
+		Matrix3d diffHess = 2 * params.springStiffness / edge.l2 * (2 * diff * diff.transpose() + (diff.dot(diff) - edge.l2) * Matrix3d::Identity());
+
+		// Essemble 6x6 hessian for the 6 DOFs on the two vertices of the edge. diffHess is symmetric, so 
+		// this block matrix will also be symmetric so we can use a SelfAdjointEigenSolver to make PSD
+		MatrixXd localHess(6, 6);
+		localHess.block<3,3>(0,0) = diffHess;
+		localHess.block<3,3>(0,3) = -diffHess;
+		localHess.block<3,3>(3,0) = -diffHess;
+		localHess.block<3,3>(3,3) = diffHess;
+		makePSD(localHess);
+
+
+		for (int blockRow=0; blockRow<=1; blockRow++) {
+			for (int blockCol=0; blockCol<=1; blockCol++) {
+
+				int startRow = (blockRow == 0 ? 3*edge.v1 : 3*edge.v2);
+				int startCol = (blockCol == 0 ? 3*edge.v1 : 3*edge.v2);
+
+				for (int row=0; row<3; row++) {
+					for (int col=0; col<3 ;col++) {
+						double value = localHess(3*blockRow+row, 3*blockCol+col);
+
+						triplets.push_back(Triplet<double>(startRow+row, startCol+col, value));
+					}
+				}	
+			}
+		}
+	}
+
+	SparseMatrix<double> hess = SparseMatrix<double>(3*state.numPoints, 3*state.numPoints);
+	hess.setFromTriplets(triplets.begin(), triplets.end());
+	return hess;
+}
+
+
+
+// Gravity Energy 
+double EnergyCalculator::GravityValue() {
+	double sum = 0;
+	for (int vidx=0; vidx<state.numPoints; vidx++) {
+		sum += params.gravity.dot(state.positions.col(vidx));
+	}
+
+	return -sum * params.pointMass;
+}
+Matrix3Xd EnergyCalculator::GravityGradient() {
+	Matrix3Xd grad = Matrix3Xd::Zero(3, state.numPoints);
+	for (int vidx=0; vidx<state.numPoints; vidx++) {
+		grad.col(vidx) = -params.pointMass * params.gravity;
+	}
+
+	return grad;
+}
+
+
+
+// // Contact Energy
+// double EnergyCalculator::ContactValue() {
+// 	double sum = 0;
+
+// 	// For each physics objects
+// 	for (int oidx1=0; oidx1<objects.size(); oidx1++) {
+// 		shared_ptr<Object> obj1 = objects[oidx1];
+// 		int offset = offsets[oidx1];
+		
+// 		// For each vertex (should eventually convert to just surface) calculate contact with
+// 		// using the SDF of all other objects (both physics & static)
+// 		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
+// 			Vector3d p = positions.col(offset + vidx);
+
+// 			//! FOR NOW ONLY STATIC MESHES
+// 			for (auto obj2: staticObjects) {
+
+// 				double d = obj2->mesh->sdf->distance(p);
+// 				if (d < contactDistance) {
+// 					sum += obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/2 * (d/contactDistance - 1) * log(d/contactDistance));
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	return sum;
+// }
+
+// Matrix3Xd EnergyCalculator::ContactGradient() {
+// 	Matrix3Xd grad = Matrix3Xd::Zero(3, numPoints);
+
+// 	// For each physics objects
+// 	for (int oidx1=0; oidx1<objects.size(); oidx1++) {
+// 		shared_ptr<Object> obj1 = objects[oidx1];
+// 		int offset = offsets[oidx1];
+		
+// 		// For each vertex (should eventually convert to just surface) calculate contact with
+// 		// using the SDF of all other objects (both physics & static)
+// 		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
+// 			Vector3d p = positions.col(offset + vidx);
+
+// 			//! FOR NOW ONLY STATIC MESHES
+// 			for (auto obj2: staticObjects) {
+
+// 				double d = obj2->mesh->sdf->distance(p);
+// 				Vector3d dgrad = obj2->mesh->sdf->distanceGrad(p);
+				
+
+// 				if (d < contactDistance) {
+// 					grad.col(offset+vidx) = obj1->mesh->vertexAreas[vidx] * contactDistance * (contactStiffness/(2*contactDistance) * log(d/contactDistance) + 1/d) * dgrad;
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	return grad;
+// }
+
+// SparseMatrix<double> EnergyCalculator::ContactHessian() {
+
+// 	vector<Triplet<double>> triplets;
+
+// 	// For each physics objects
+// 	for (int oidx1=0; oidx1<objects.size(); oidx1++) {
+// 		shared_ptr<Object> obj1 = objects[oidx1];
+// 		int offset = offsets[oidx1];
+		
+// 		// For each vertex (should eventually convert to just surface) calculate contact with
+// 		// using the SDF of all other objects (both physics & static)
+// 		for (int vidx=0; vidx<obj1->mesh->numPoints; vidx++) {
+// 			Vector3d p = positions.col(offset + vidx);
+
+// 			//! FOR NOW ONLY STATIC MESHES
+// 			for (auto obj2: staticObjects) {
+
+// 				double d = obj2->mesh->sdf->distance(p);
+// 				Vector3d dgrad = obj2->mesh->sdf->distanceGrad(p);
+// 				Matrix3d dhess = obj2->mesh->sdf->distanceHess(p);
+
+// 				if (d < contactDistance) {
+// 					double contactWeight = obj1->mesh->vertexAreas[vidx] * contactDistance;
+// 					Matrix3d term1 = contactStiffness/(2*contactDistance*d) * (dgrad * dgrad.transpose());
+// 					Matrix3d term2 = (contactStiffness/(2*contactDistance)*log(d/contactDistance) + 1/d) * dhess;
+// 					Matrix3d localHess =  contactWeight * (term1 + term2);
+
+// 					for (int row=0; row<3; row++) {
+// 						for (int col=0; col<3 ;col++) {
+// 							triplets.push_back(Triplet<double>(3*(offset+vidx)+row, 3*(offset+vidx)+col, localHess(row, col)));
+// 						}
+// 					}	
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	SparseMatrix<double> hess = SparseMatrix<double>(3*numPoints, 3*numPoints);
+// 	hess.setFromTriplets(triplets.begin(), triplets.end());
+// 	return hess;
+// }

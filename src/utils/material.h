@@ -6,18 +6,16 @@
 #include <memory>
 #include <glm/glm.hpp> 
 
-class Material {
-	public:
-		virtual void loadUniforms(std::shared_ptr<Program> prog) = 0;
+struct Material {
+	virtual void loadUniforms(std::shared_ptr<Program> prog) = 0;
 };
 
-class BPhongMaterial : public Material {
-	public:
-		glm::vec3 ka;
-		glm::vec3 kd;
-		glm::vec3 ks;
-		float s;
+struct BPhongMaterial : Material {
+	glm::vec3 ka;
+	glm::vec3 kd;
+	glm::vec3 ks;
+	float s;
 
-		BPhongMaterial(glm::vec3 ka, glm::vec3 kd, glm::vec3 ks, float s);
-		void loadUniforms(std::shared_ptr<Program> prog);
+	BPhongMaterial(glm::vec3 ka, glm::vec3 kd, glm::vec3 ks, float s);
+	void loadUniforms(std::shared_ptr<Program> prog);
 };

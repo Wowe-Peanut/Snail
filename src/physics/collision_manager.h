@@ -1,9 +1,9 @@
 #pragma once
 
 #include "mesh.h"
+#include "physics_engine.h"
 
 #include <Eigen/Dense>
-
 
 struct CollisionManager {
 	
@@ -31,13 +31,12 @@ struct CollisionManager {
 		void updateHess() override;
 	};
 
-	Eigen::Matrix3Xd& positions;
-	std::vector<Triangle>& surfaceTriangles;
+	
+	SimParameters& params;
+	SimState& state;
 
-	std::vector<PointTriangle> activePointTriangle;
-	std::vector<EdgeEdge> activeEdgeEdge;
-
-	CollisionManager(Eigen::Matrix3Xd& positions, std::vector<Triangle>& surfaceTriangles): positions(positions), surfaceTriangles(surfaceTriangles) {};
+	CollisionManager(SimParameters& params, SimState& state): params(params), state(state) {};
 	void broadphase();
+	double CCD(Eigen::Matrix3Xd& searchDirection);
 	void updateActivePairs(bool updateValues, bool updateGradients, bool updateHessians);
 };

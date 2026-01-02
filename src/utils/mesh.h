@@ -35,48 +35,46 @@ struct Tetrahedron {
 };
 
  
-class Mesh {
-	public:
+struct Mesh {
 
-		// OpenGL rendering buffers
-		std::vector<float> triPosBuf;
-		std::vector<float> triNorBuf;
-		std::vector<float> triTexBuf;
-		std::vector<unsigned int> triIndBuf;
+	// OpenGL rendering buffers
+	std::vector<float> triPosBuf;
+	std::vector<float> triNorBuf;
+	std::vector<float> triTexBuf;
+	std::vector<unsigned int> triIndBuf;
 
-		// OpenGL rendering buffer ids
-		unsigned triPosBufID;
-		unsigned triNorBufID;
-		unsigned triTexBufID;
-		unsigned triIndBufID;
+	// OpenGL rendering buffer ids
+	unsigned triPosBufID;
+	unsigned triNorBufID;
+	unsigned triTexBufID;
+	unsigned triIndBufID;
 
-		// Geometric primitives
-		std::vector<Edge> edges;
-		std::vector<Triangle> triangles;
-		std::vector<Tetrahedron> tetrahedron;
+	// Geometric primitives
+	std::vector<Edge> edges;
+	std::vector<Triangle> triangles;
+	std::vector<Tetrahedron> tetrahedron;
 
-		// Properties
-		int numPoints;			
-		bool isStatic;
-		std::vector<bool> isFixedPoint;
-		std::vector<double> vertexAreas;
-		glm::vec3 initialVelocity;
+	// Properties
+	int numPoints;			
+	bool isStatic;
+	std::vector<bool> isFixedPoint;
+	std::vector<double> vertexAreas;
+	glm::vec3 initialVelocity;
 
-		template <typename T>
-		void initBuffer(GLenum glBufferType, std::vector<T>& buffer, unsigned& bufferID);
-		Mesh(std::string filePath, bool isStatic, Transform meshTransform, std::vector<int>& fixedPoints, glm::vec3 velocity);
-		void init();
+	template <typename T>
+	void initBuffer(GLenum glBufferType, std::vector<T>& buffer, unsigned& bufferID);
+	Mesh(std::string filePath, bool isStatic, Transform meshTransform, std::vector<int>& fixedPoints, glm::vec3 velocity);
+	void init();
 
-		void updateBuffer(const std::shared_ptr<Program> prog, GLint attribID, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);
-		void draw(const std::shared_ptr<Program> prog);	
+	void updateBuffer(const std::shared_ptr<Program> prog, GLint attribID, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);
+	void draw(const std::shared_ptr<Program> prog);	
 
-		
-
-		// Computes vertex normals and contact area of each vertex
-		void computeSurfaceQualities();
-		void transform(Transform transform);
-		void setFixedPoints(std::vector<int>& fixedPoints);
-		void loadMshFile(std::string mshFilePath);
+	
+	// Computes vertex normals and contact area of each vertex
+	void computeSurfaceQualities();
+	void transform(Transform transform);
+	void setFixedPoints(std::vector<int>& fixedPoints);
+	void loadMshFile(std::string mshFilePath);
 };
 
  

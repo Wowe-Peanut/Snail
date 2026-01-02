@@ -10,17 +10,16 @@
 #include <memory>
 #include <glm/glm.hpp> 
 
-class Mesh;
+struct Mesh;
 
-class Object {
-	public:	
+struct Object {
 		
-		std::shared_ptr<Mesh> mesh;
-		std::shared_ptr<Material> material;
-		Transform renderTransform;
+	std::shared_ptr<Mesh> mesh;
+	std::shared_ptr<Material> material;
+	Transform renderTransform;
 
-		Object(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material>, Transform renderTransform);
-		void draw(std::shared_ptr<MatrixStack> MV, std::shared_ptr<Program> prog);
+	Object(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material>, Transform renderTransform);
+	void draw(std::shared_ptr<MatrixStack> MV, std::shared_ptr<Program> prog);
 };
 
 

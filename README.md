@@ -57,6 +57,25 @@ Todo
   functions needs to compute barrier energy, cast hessians to SPD, and ensemble the local val/grad/hess.
 
 
+PhysicsEngine
+  Should ensemble the object properties, construct the time integrator object,
+  send dynamic mesh data back to objects for the renderer to draw, and manage
+  how the objects are reset & surface quantities updated
+
+
+  TimeIntegrator  
+    Should handle Newton's method, line-search, calculating search direction, etc.
+    Should construct the CollisionManager and EnergyCalculator using the data passed 
+    from the PhysicsEngine and will use those managers to run sims
+
+    CollisionManager
+    EnergyCalculator
+
+Parser
+  ObjectParser
+  ParameterParser
+
+
 
 
 
@@ -66,7 +85,8 @@ Todo
   - [X] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
   - [X] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
   - [X] Read into ECSs: https://www.david-colson.com/2020/02/09/making-a-simple-ecs.html
-  - [ ] Move JSON parser into own file and clean it up
+  - [X] Move JSON parser into own file and clean it up
+  - [ ] CLEANUP NAMESPACES, INCLUDES, AND ALIASING 
 
 - QOL: 
   - [X] Make scene & simulation parameters setable from input file
