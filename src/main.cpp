@@ -7,7 +7,6 @@
 #include "material.h"
 #include "object.h"
 #include "json.hpp"
-#include "sdf.h"
 
 #include <Eigen/Dense>
 #include <fstream>
@@ -48,19 +47,6 @@ json openjson(string path) {
 	return data;
 }
 
-shared_ptr<SDF> jsonToSDF(json sdfjson) {
-	string type = sdfjson["type"];
-
-	if (type == "mesh") {
-		return nullptr; //! TEMPORARY UNTIL I IMPLEMENT MESH ON MESH COLLISION
-	} else if (type == "plane") {
-		return make_shared<PlaneSDF>(jsontov3f(sdfjson["normal"]), jsontov3f(sdfjson["point"]));
-	} else {
-		cerr << "Unknown SDF type: '" << type << "'" << endl;
-		exit(1);
-	}
-}
-
 vector<shared_ptr<Object>> parseObjects(string resourcePath, json objectListJson) {
 
 	vector<shared_ptr<Object>> objects;
@@ -79,8 +65,7 @@ vector<shared_ptr<Object>> parseObjects(string resourcePath, json objectListJson
 		
 		// Construct mesh
 		Transform meshTransform = {jsontovec3(meshtfjson["translation"]), jsontovec3(meshtfjson["rotation"]), jsontovec3(meshtfjson["scale"])};
-		shared_ptr<SDF> sdf = jsonToSDF(objjson["sdf"]);
-		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshpath, isStatic, sdf, meshTransform, fixedPoints, velocity);
+		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshpath, isStatic, meshTransform, fixedPoints, velocity);
 		
 		// Construct object
 		Transform renderTransform = {jsontovec3(rendertfjson["translation"]), jsontovec3(rendertfjson["rotation"]), jsontovec3(rendertfjson["scale"])};
@@ -99,10 +84,7 @@ void simulate(string resourcePath, string jsonPath) {
 	RenderEngine renderer(objects, resourcePath);
 	PhysicsEngine engine(objects, data["parameters"]);
 	
-	int timestep = 0;
 	while (!glfwWindowShouldClose(renderer.window)) {
-		// cout << "### TIMESTEP " << timestep++ << "###" << endl;
-
 		if (renderer.PAUSED) {
 			if (renderer.STEP) {
 				engine.implicitStep();

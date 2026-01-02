@@ -8,13 +8,9 @@
 #include <Eigen/Sparse>
 
 
-struct CollisionPair { 
-    double contactArea();
-    
-}; 
+
 
 class PhysicsEngine {
-    
     public:
         PhysicsEngine(std::vector<std::shared_ptr<Object>>& objectList, nlohmann::json parameters);
         void reset();
@@ -29,18 +25,18 @@ class PhysicsEngine {
         double contactDistance;
         Eigen::Vector3d gravity;
 
-        std::vector<std::shared_ptr<Object>> physicsObjects; 
-        std::vector<std::shared_ptr<Object>> staticObjects;
+        // Objects and their ensemble properties
+        std::vector<std::shared_ptr<Object>> objects; 
+        std::vector<int> offsets; 
         
-        // Combined properties of all physics objects & their offsets in the cumulative vectors (doesn't include static)
         int numPoints;
-        std::vector<int> objectOffsets; 
         Eigen::Matrix3Xd positions;
         Eigen::Matrix3Xd velocities;
         std::vector<Edge> edges;
-        std::vector<Triangle> surfaceTriangles;
         std::vector<bool> isFixedPoint;
+        std::vector<Triangle> surfaceTriangles;
 
+        
         // Used to reset sim
         Eigen::Matrix3Xd initialPositions;
         Eigen::Matrix3Xd initialVelocities;

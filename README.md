@@ -1,57 +1,13 @@
 
-- Newton's method was the main culprit making contact not work! 
-- Now I'm working on restructing and adding general mesh-mesh contact.
-
-
-- Current CCD, barrier energy value/grad/hessian does a lot of redundant calculation --> Add broad & narrow phase to 
-  generate a set of collision pairs with distance value/grad/hessian already calculated. There should be different
-  types that it will need to compute independently since different primitive pairs will have different barrier functions.
-
-Note to self: for the mesh-mesh distance & barrier functions I need to consider how static objects DOFs
-aren't actuallt really and can probably skip calculating some derivates maybe 
-
-Ok doing some reading on broadphase partitioning techniques, oct-tree doesn't really seem like the way to go because it
-partitions space and is hard to update for dynamic scenes. BVH for it's object partitioning and simpler updates seems
-better and spatial hashing for its simplicity (however memory-hungry it may be) seem to be better options.
-
-I would need to have bounding boxes have a buffer in each direction = contactDistance so that a bounding box overlap is
+BVH:
+- I would need to have bounding boxes have a buffer in each direction = contactDistance so that a bounding box overlap is
 gauranteed to happen if objects are within contact distance of one another
-
-I still don't have a great intuition for how the BVH would work for collision detection. During broadphase, would it only check 
-for bounding box overlap between objects in the same direct parent? or that share a grandparent as well?
-
-Maybe for each object, it starts at the root of the BVH (the AABB containing everything ig?) and checks for collision, then
-it tries with the child nodes (sub AABB regions). It only continues checking deeper if it overlaps... this seems strange since 
-we already kind of know which node the object is in. Although I suppose that doesn't really tell you all objects that are close,
-just which are grouped together and multiple can be grouped together. 
-
-OR other resources recommend often it's not the number of total objects that is the issue but the number of primitives? So each
-object would have a large bounding box and there own internal BVH. However that doesn't allow for self-collision right? Maybe it
-will be both, each object will need it's own BVH but a world one would help as well. 
 
 Then each node will need to search the BVH for triangle within contact distance and each edge will need
 to search the BVH for edges within contact distance. Both cases seem like overlap but I need to be careful
 not to duplicate nodes by just searching for triangles near an edge...
 
-Object movement means we have to adjust the BVH. Since move objects will be moving each frame, it might be worth 
-further enlarging AABB boxes (larger than contactDistance) and only refitting if they move out of those boxes?... 
-
-1) Refit ancestors --> can reduce quality of BVH
-2) Rebuilding subtrees can be expensive
-3) remove and re-insert (with tree rotations to make total SA contained in sibling nodes as even as possible)
-
-Ok I'm going to put aside BVH for now but setup the collision code so that it's easy to add later
-So thinking about broadphase, during line search we call IPValue a lot which means that if I'm going to 
-utilize broadphase it needs to think about how IPValue will need testing different object locations. Maybe if I set a 
-the buffer on the AABB boxes large enough maybe, but I think for fast moving objects that won't work...
-
-Maybe instead I just need to consider those alpha steps the same as moving the object and need to update the scene each time :)
-it'll have to be the same with ACCD since it slowly moves forward until we get an approximated alpha_toi. Although, it seems that 
-collision pairs that are already in that contactDistance threshold if we add that contactDistnace buffer to all AABB will be
-the first objects to hit during the ACCD iterative moving so it doesn't really matter. Not sure if the same logic applies to 
-IPValue tho... 
-
-IT DOES NOT! Ok so doing some more research, the contactDistance buffer seems to be a good idea but I also need
+Ok so doing some more research, the contactDistance buffer seems to be a good idea but I also need
 to consider every position long the search direction with alpha_max = 1, so all positions from x to x+p which 
 is refered to as a swept volume. The problem is that the search direction is also determined by using barrier 
 energy value/grad/hess which is part of what is supposed to be accelerated using the broadphase/BVH so the IPC paper
@@ -60,21 +16,6 @@ uses two stages:
 - Swept Volume broadphase:  Using search direction to calculat swept volume AABB boxes and then use only those potential
                             collision pairs for ACCD and line-search
 
-It may even be possible to 
-
-Honestly it's the IPGrad and IPHessian which really need the help and could probably reuse the distance val/grad/hess values
-since they are always called inbetween moves. 
-
-I also need to consider while generating collision pairs is that node's shouldn't collide with the triangles 
-they are a part of (it shouldn't generate any barrier energy)
-
-Ok I really need to move energy methods to their own file and just pass position and other parameters and put broadphase stuff into
-it's own file that can generate a vector of potential collision pairs that we can send to the barrier methods. The issue is that
-they all use a lot of the same values that are currently fields of PhysicsEngine (h, contactDistance) and I might need to pass
-the objects offsets array too... Actually that doesn't sound so bad, inertia and spring only really need pointmass, spring stiffness,
-and edge lists (in addition to positions of course) and this further abstracts away the energy math from the engine.
-
-I might also change how the sdf class works and probably add different barrier energy functions (for dist vs sqr dist methods)
 
 I need the broadphase to generate a vector of collision pairs. The distance value/grad/hess
 are kind of reused between the barrier energy val/grad/hess so those values for the collision 
@@ -95,24 +36,14 @@ This has details on the contact area: https://phys-sim-book.github.io/lec24.1-ba
 It seems for node-triangle, it seems to be 1/3 * #triangles that include node * area of contact triangle
 For edge-edge, it seems to be 1/3 * (#edges involved ) * average area of triangles that include the contact edge?
 
-*Ok* I'm realizing that the whole 'static' object thing is really just when every point is a sticky DBC. Having them in a 
-separate list is fine b/c it does speed some things up, but it over complicates things rn and is kind of premature optmization.
-I'll still keep the 'static' field on the objects/mesh but in reality it just sets everypoint to sticky DBC will also
-check the isstatic field when copying over data to the renderer (no need to static objects). 
-
-I also need to think about how I combine mesh sdf and arbitary sdf (or just discard plane for now and add that later and
-replace the bottom plane with) 
-
-**We could also (LATER ON) avoid excessive computation by just checking if a DOF is a sticky DBC, no need to have static**
-**booleans in the collision pairs I think**
-
-
-Todo
+Done:
   - Turn static into just a all dof = sticky DBC object (everything still in physics engine positions)
   - Keep using static to determine whether a mesh uses GL_DRAW_DYNAMIC or GL_DRAW_STATIC and use it in physics
   engine to determine which position data to send back to the mesh
   - Rename SDF files (and refactor includes), and remove SDF from objects and the parser
-  
+
+Todo
+  - **Use Catch2 to create tests for the distance functions in a separate sandbox file (they will probably be the most error prone code I've hever had to write)**
   - Implement distance functions for all cases in a single file (standalone methods, no need for class, will be called by collision
   pair code)
   - Make file for collision pair code, CollisionPair should be a class with have fields for dval, dgrad, and dhess 
@@ -122,51 +53,9 @@ Todo
   swept volume collision will come later) --> rn it should check calculate distance --> If < contactDist, calculate grad & hess
   (if specified since line-search and ACCD will need to cacll gen_collision_pairs again and won't need grad/hess). This list
   of pairs will be passed to the barrier energy functions 
-
-  - Move energy methods to own file (just pass everything as parameters it aint that hard)
   - Revamp the barrier energy methods, collision pairs and their distance val/grad/hess will already be computed, the barrier energy
   functions needs to compute barrier energy, cast hessians to SPD, and ensemble the local val/grad/hess.
 
-
-
-
-PhysicsEngine
-  simulation parameters
-  object information
-  staticObjects
-
-  broadphase
-  updateObjects
-  getSearchDir
-  implicitStep
-    
-Collision Pairs
-  dval, dgrad, dhess
-  calcVal
-  calcGrad
-  calcHess
-
-  PointTriangle: 
-    int v
-    Triangle t
-
-  EdgeEdge:
-    Edge e1
-    Edge e2
-
-Distance Functions
-  PointTriangle
-  EdgeEdge
-  PointPlane
-
-  PointEdge
-  PointPoint
-  PointLine
-   
-
-  
-
-  
 
 
 
@@ -177,6 +66,7 @@ Distance Functions
   - [X] Make Renderer class separate from main that can be initialized later with the given JSON or replay saved animations
   - [X] Separate rendering and physics engine. B/c of interpolation and float cast we already have to copy shit over so just aim to link
   - [X] Read into ECSs: https://www.david-colson.com/2020/02/09/making-a-simple-ecs.html
+  - [ ] Move JSON parser into own file and clean it up
 
 - QOL: 
   - [X] Make scene & simulation parameters setable from input file
@@ -191,7 +81,8 @@ Distance Functions
   - [X] Sparse Hessian Solver
   - [ ] Multithreading
   - [ ] GPU Optimizations
-  - [ ] Broad/Narrow phase
+  - [ ] BVH
+  - [ ] Avoid the unnecessary energy calculations for static objects
 
 - IPC:
   - [X] Fixed boundary condition
