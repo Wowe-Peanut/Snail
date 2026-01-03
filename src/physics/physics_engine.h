@@ -1,8 +1,8 @@
 #pragma once
 
+#include "time_integrator.h"
 #include "object.h"
 #include "mesh.h"
-#include "time_integrator.h"
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
@@ -38,7 +38,7 @@ struct PhysicsEngine {
     Eigen::Matrix3Xd initialPositions;
     Eigen::Matrix3Xd initialVelocities;
 
-    PhysicsEngine(std::vector<std::shared_ptr<Object>>& objects, SimParameters params);
+    PhysicsEngine(std::vector<std::shared_ptr<Object>>& objects, SimParameters& params);
     void step(); 
     void reset();
     void updateObjects();

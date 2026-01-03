@@ -5,7 +5,7 @@
 #include <Eigen/Sparse>
 using namespace std;
 
-PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters params): params(params), integrator(params, state) {
+PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters& params): params(params), integrator(params, state) {
 
     state.numPoints = 0;
     for (auto obj: objects) {	

@@ -19,7 +19,7 @@ json openjson(string path) {
 	try {
 		data = json::parse(file);
 	} catch (json::parse_error& ex) {
-		cerr << "JSON Parse error at byte " << ex.byte << endl;
+		cout << "JSON Parse error at byte " << ex.byte << endl;
 		exit(1);
 	} 
 
@@ -44,7 +44,7 @@ shared_ptr<Material> toMaterial(json data) {
 
 vector<shared_ptr<Object>> parseObjects(string resourcePath, string jsonPath) {
 
-	json data = openjson(jsonPath);
+	json data = openjson(resourcePath + jsonPath);
 	
 	vector<shared_ptr<Object>> objects;
 	for (auto objData: data["objects"]) {
@@ -72,10 +72,10 @@ SimParameters parseParameters(string jsonPath) {
 	return {
 		data["dt"],
 		data["tolerance"],
-		data["springStiffness"],
-		data["pointMass"],
-		data["contactStiffness"],
-		data["contactDistance"],
+		data["spring_stiffness"],
+		data["point_mass"],
+		data["contact_stiffness"],
+		data["contact_distance"],
 		toVector3d(data["gravity"])
 	};
 }

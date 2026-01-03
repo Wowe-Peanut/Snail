@@ -2,11 +2,13 @@
 
 #include "energy_calculator.h"
 #include "collision_manager.h"
-#include "physics_engine.h"
 #include "object.h"
 #include <Eigen/Dense>
 
 const double ALPHA_LOWER_BOUND = 0.00001;
+
+struct SimParameters;
+struct SimState;
 
 struct TimeIntegrator {
 	SimParameters& params;

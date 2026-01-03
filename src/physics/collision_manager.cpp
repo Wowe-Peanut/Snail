@@ -1,7 +1,7 @@
 
 #include "collision_manager.h"
-using Eigen::Matrix3Xd;
+#include "physics_engine.h"
 
-double CollisionManager::CCD(Matrix3Xd& searchDirection) {
+double CollisionManager::CCD(Eigen::Matrix3Xd& searchDirection) {
 	return 1;
 }

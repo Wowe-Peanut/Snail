@@ -1,6 +1,6 @@
 
 #include "energy_calculator.h"
-#include "mesh.h"
+#include "physics_engine.h"
 using namespace std;
 using Eigen::Matrix3Xd, Eigen::SparseMatrix, Eigen::VectorXd, Eigen::Vector3d, Eigen::MatrixXd, Eigen::Matrix3d, Eigen::Triplet; 
 
@@ -94,9 +94,8 @@ Matrix3Xd EnergyCalculator::MassSpringGradient() {
 }
 SparseMatrix<double> EnergyCalculator::MassSpringHessian() {
 
-	int dof = 3*state.numPoints;
 	vector<Triplet<double>> triplets;
-	triplets.reserve(9*state.edges.size()); // 2 vertices per edge, each with 3 dofs = 3^2 = 9 second derivatives
+	triplets.reserve(36*state.edges.size()); // 1 edge = 2 vertices = 6 dof = 36 hessian entries
 
 	for (Edge& edge: state.edges) {
 		Vector3d diff = state.positions.col(edge.v1) - state.positions.col(edge.v2);

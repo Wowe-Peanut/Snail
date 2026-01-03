@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 	string jsonPath = argv[2];
 
 	vector<shared_ptr<Object>> objects = parseObjects(resourcePath, jsonPath);
-	SimParameters params = parseParameters(jsonPath);
+	SimParameters params = parseParameters(resourcePath + jsonPath);
 
 	RenderEngine renderer(objects, resourcePath);
 	PhysicsEngine engine(objects, params);

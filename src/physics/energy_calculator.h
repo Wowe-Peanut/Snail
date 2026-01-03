@@ -1,8 +1,10 @@
 #pragma once
 
-#include "physics_engine.h"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+
+struct SimParameters;
+struct SimState;
 
 struct EnergyCalculator {
 	

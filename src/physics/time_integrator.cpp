@@ -1,5 +1,8 @@
 
 #include "time_integrator.h"
+#include "physics_engine.h"
+#include "energy_calculator.h"
+#include "collision_manager.h"
 #include <iostream>
 using namespace std;
 using Eigen::Matrix3Xd, Eigen::SparseMatrix, Eigen::VectorXd, Eigen::Vector3d; 
