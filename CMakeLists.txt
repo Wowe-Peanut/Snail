@@ -51,6 +51,22 @@ TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${GLEW_DIR}/lib/libGLEW.a)
 SET(EIGEN3_INCLUDE_DIR "$ENV{EIGEN3_INCLUDE_DIR}")
 INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
 
+# Enable CTest
+enable_testing()
+
+# Fetch Catch2
+include(FetchContent)
+FetchContent_Declare(
+  catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG v3.4.0  # pick a stable v3 tag
+)
+FetchContent_MakeAvailable(catch2)
+
+# Add tests subdirectory
+add_subdirectory(tests)
+
+
 
 # Use c++17
 SET_TARGET_PROPERTIES(${CMAKE_PROJECT_NAME} PROPERTIES CXX_STANDARD 17)

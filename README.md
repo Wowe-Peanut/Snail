@@ -57,23 +57,9 @@ Todo
   functions needs to compute barrier energy, cast hessians to SPD, and ensemble the local val/grad/hess.
 
 
-PhysicsEngine
-  Should ensemble the object properties, construct the time integrator object,
-  send dynamic mesh data back to objects for the renderer to draw, and manage
-  how the objects are reset & surface quantities updated
-
-
-  TimeIntegrator  
-    Should handle Newton's method, line-search, calculating search direction, etc.
-    Should construct the CollisionManager and EnergyCalculator using the data passed 
-    from the PhysicsEngine and will use those managers to run sims
-
-    CollisionManager
-    EnergyCalculator
-
-Parser
-  ObjectParser
-  ParameterParser
+Ok I'm adding catch2 test cases for the distant functions b/c of the hellish matrix calculus involved, but making
+test cases by hand also seems tedious so I'm going to use python to a .txt file with test cases (inputs and answers)
+that the catch2 .cpp will read, evaluate, and check it's answers against :)
 
 
 
