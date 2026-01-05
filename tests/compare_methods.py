@@ -57,26 +57,17 @@ def pl2(x, l1, l2):
     grad = np.concatenate((2*p, 2*(t-1)*p, -2*t*p))
 
     O = np.identity(3) - np.outer(l, l)/lsq
-    dtdl2 = (a.T - 2*t*l.T)/lsq
+    dtdl2 = (a - 2*t*l)/lsq                 
 
     H_xx = 2*O
     H_xl2 = -2*t*O - 2*np.outer(p, l)/lsq
     H_xl1 = -(H_xx + H_xl2)
-
-    H_l2l2 = -2*p*dtdl2 - t*H_xl2
+    H_l1l2 = 2*np.outer(dtdl2,p) + (t-1)*H_xl2 
     H_l1x = H_xl1.T
     H_l2x = H_xl2.T
-    H_l2l1 = -(H_l2l2 + H_l2x)
-    H_l1l2 = H_l2l1.T
-    H_l1l1 = -(H_l1l2 + H_l1x)
-
-
-    # H_l1l2 = 2*p*dtdl2 + (t-1)*H_xl2
-    # H_l1x = H_xl1.T
-    # H_l2x = H_xl2.T
-    # H_l1l1 = -(H_l1x + H_l1l2)
-    # H_l2l1 = H_l1l2.T
-    # H_l2l2 = -(H_l2x + H_l2l1)
+    H_l1l1 = -(H_l1x + H_l1l2)
+    H_l2l1 = H_l1l2.T
+    H_l2l2 = -(H_l2x + H_l2l1)
 
     hess = np.block([
         [H_xx, H_l1x, H_l2x],
