@@ -30,6 +30,8 @@ def pl(x, l1, l2):
 
     return val, np.array(grad, dtype=float), np.array(hess, dtype=float)
 
+def pt(x, t1, t2, t3):
+    pass
 
 # numpy simplified
 def pp2(x1, x2):
@@ -78,14 +80,19 @@ def pl2(x, l1, l2):
 
     return val, grad, hess
 
+def pt2(x, t1, t2, t3):
+    pass
+
 bruteforce = [
     ("PointPoint", pp, 2),
-    ("PointLine", pl, 3)
+    ("PointLine", pl, 3),
+    ("PointPlane", pt, 4)
 ]
 
 simplified = [
     ("PointPoint", pp2, 2),
-    ("PointLine", pl2, 3)
+    ("PointLine", pl2, 3),
+    ("PointPlane", pt2, 4)
 ]
 
 results = defaultdict(lambda: {"val": [], "grad": [], "hess": []})

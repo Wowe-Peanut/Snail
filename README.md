@@ -61,7 +61,12 @@ Ok I'm adding catch2 test cases for the distant functions b/c of the hellish mat
 test cases by hand also seems tedious so I'm going to use python to a .txt file with test cases (inputs and answers)
 that the catch2 .cpp will read, evaluate, and check it's answers against :)
 
-
+Ok the paper mentions that although it's less efficient, dropping the second term from the barrier energy hessian
+that involves the distance hessian (**at least just for the point-plane case*) is a decent enough "Gauss-newton" approximation.
+Also the first term is already SDP so no extra eigenvalue-decomposition. I'm mainly choosing this since the 12x12 Hessian
+calculations for the Point-Plane are incredibly annoying (I get it already...) I'll add it to the list of potential improvements. 
+I believe this approximation is fine if the distances are small (which they are b/c we check that they're below contactDist each time).
+I still need the distance gradient tho and add check for hess or just return zero
 
 
 
