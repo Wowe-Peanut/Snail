@@ -31,7 +31,24 @@ def pl(x, l1, l2):
     return val, np.array(grad, dtype=float), np.array(hess, dtype=float)
 
 def pt(x, t1, t2, t3):
-    pass
+    x1, x2, x3, t11, t12, t13, t21, t22, t23, t31, t32, t33 = symbols("x1, x2, x3, t11, t12, t13, t21, t22, t23, t31, t32, t33")
+    varsubs = {x1: x[0], x2: x[1], x3: x[2], t11: t1[0], t12: t1[1], t13: t1[2], t21: t2[0], t22: t2[1], t23: t2[2], t31: t3[0], t32: t3[1], t33: t3[2]}
+    vars = [x1, x2, x3, t11, t12, t13, t21, t22, t23, t31, t32, t33]
+
+    a = [x1-t11, x2-t12, x3-t13]
+    e1 = [t21-t11, t22-t12, t23-t13]
+    e2 = [t31-t11, t32-t12, t33-t13]
+
+    n = [(e1[1]*e2[2] - e1[2]*e2[1]), -(e1[0]*e2[2] - e1[2]*e2[0]), (e1[0]*e2[1] - e1[1]*e2[0])]
+    nlen = sqrt(n[0]**2 + n[1]**2 + n[2]**2)
+    nhat = [n[0]/nlen, n[1]/nlen, n[2]/nlen]
+    f = (a[0]*nhat[0] + a[1]*nhat[1] + a[2]*nhat[2])**2
+
+    val = f.subs(varsubs)
+    grad = [f.diff(v).subs(varsubs) for v in vars] 
+    hess = [[f.diff(v2).diff(v1).subs(varsubs) for v2 in vars] for v1 in vars]
+
+    return val, np.array(grad, dtype=float), np.array(hess, dtype=float)
 
 # numpy simplified
 def pp2(x1, x2):
@@ -81,7 +98,42 @@ def pl2(x, l1, l2):
     return val, grad, hess
 
 def pt2(x, t1, t2, t3):
-    pass
+
+    a = x-t1
+    e1 = t2-t1
+    e2 = t3-t1
+    n = np.cross(e1, e2)
+    s = a.dot(n)/n.dot(n)
+    p = s*n
+
+    
+    dndt2 = np.array([
+        [0,-e2[2],e2[1]],
+        [e2[2],0,-e2[0]],
+        [-e2[1],e2[0],0]
+    ])
+    dndt3 = -np.array([
+        [0,-e1[2],e1[1]],
+        [e1[2],0,-e1[0]],
+        [-e1[1],e1[0],0]
+    ])
+
+    dsdt2 = np.matmul(dndt2, a-2*s*n)/n.dot(n)
+    dsdt3 = np.matmul(dndt3, a-2*s*n)/n.dot(n)
+
+
+    grad_x = 2*p
+    grad_t2 = np.matmul(np.outer(dsdt2, n) + s*dndt2, 2*p)
+    grad_t3 = np.matmul(np.outer(dsdt3, n) + s*dndt3, 2*p)
+    grad_t1 = -(grad_x + grad_t2 + grad_t3)
+
+    print(grad_t2)
+
+    val = p.dot(p)
+    grad = np.concatenate((grad_x, grad_t1, grad_t2, grad_t3))
+
+
+    return val, grad, np.identity(12, dtype=float)
 
 bruteforce = [
     ("PointPoint", pp, 2),
@@ -101,14 +153,13 @@ seed = np.random.randint(100)
 for version in [bruteforce, simplified]:
     np.random.seed(seed)
     for name, func, dim in version:
-        points = [10*np.random.randn(3) for _ in range(dim)]
+        points = [0.1*np.random.randn(3) for _ in range(dim)]
 
         val, grad, hess = func(*points)
         results[name]["val"].append(val)
         results[name]["grad"].append(grad)
         results[name]["hess"].append(hess)
         
-
 
 np.set_printoptions(linewidth=200)
 
@@ -126,7 +177,7 @@ for test, outputs in results.items():
             strval = str(value).replace("\n", "\n\t\t")
             print(f"\t\t{strval}\n")
 
-        if not match:
+        if not match and name != "val":
             matchstr = str(np.isclose(outputlist[0], outputlist[1]).astype(int)).replace("\n", "\n\t\t")
             print(f"\t\t{matchstr}\n")
 
