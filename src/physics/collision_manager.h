@@ -1,41 +1,41 @@
 #pragma once
 
 #include "mesh.h"
+#include "distances.h"
 #include <Eigen/Dense>
 
 struct SimParameters;
 struct SimState;
 
 struct CollisionPair {
-	double dvalue;
-	Eigen::Matrix3Xd dgrad;
-	Eigen::MatrixXd dhess;
+	Distance dist;
 
-	virtual void updateValue() = 0;
-	virtual void updateGrad() = 0;
-	virtual void updateHess() = 0;
+	// Updates distance calculations (and grad/hess if specified)
+	virtual void update(bool valueOnly) = 0;
+
+	// 'Time of impact' lowerbound used for ACCD step size estimation
+	virtual double toiLowerBound(Eigen::Matrix3Xd& searchDirection) = 0;
 };
 
 struct PointTriangle : CollisionPair {
 	int p, t1, t2, t3;
-	void updateValue() override;
-	void updateGrad() override;
-	void updateHess() override;
+	void update(bool valueOnly) override;
+	double toiLowerBound(Eigen::Matrix3Xd& searchDirection) override;
 };
 
 struct EdgeEdge : CollisionPair {
 	int e1, e2, e3, e4;
-	void updateValue() override;
-	void updateGrad() override;
-	void updateHess() override;
+	void update(bool valueOnly) override;
+	double toiLowerBound(Eigen::Matrix3Xd& searchDirection) override;
 };
 
 struct CollisionManager {
 	SimParameters& params;
 	SimState& state;
+	std::vector<std::shared_ptr<CollisionPair>> activePairs;
 
 	CollisionManager(SimParameters& params, SimState& state): params(params), state(state) {};
-	void broadphase();
+	void broadPhase();
 	double CCD(Eigen::Matrix3Xd& searchDirection);
-	void updateActivePairs(bool updateValues, bool updateGradients, bool updateHessians);
+	void updateActivePairs(bool valueOnly);
 };

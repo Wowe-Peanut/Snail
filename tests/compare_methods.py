@@ -46,9 +46,12 @@ def pt(x, t1, t2, t3):
 
     val = f.subs(varsubs)
     grad = [f.diff(v).subs(varsubs) for v in vars] 
-    hess = [[f.diff(v2).diff(v1).subs(varsubs) for v2 in vars] for v1 in vars]
+    # hess = [[f.diff(v2).diff(v1).subs(varsubs) for v2 in vars] for v1 in vars]
 
-    return val, np.array(grad, dtype=float), np.array(hess, dtype=float)
+    return val, np.array(grad, dtype=float), np.identity(12, dtype=float)
+
+def ll(a1, a2, b1, b2):
+    return 0, np.zeros(12, dtype=float), np.identity(12, dtype=float)
 
 # numpy simplified
 def pp2(x1, x2):
@@ -127,35 +130,60 @@ def pt2(x, t1, t2, t3):
     grad_t3 = np.matmul(np.outer(dsdt3, n) + s*dndt3, 2*p)
     grad_t1 = -(grad_x + grad_t2 + grad_t3)
 
-    print(grad_t2)
-
     val = p.dot(p)
     grad = np.concatenate((grad_x, grad_t1, grad_t2, grad_t3))
 
 
     return val, grad, np.identity(12, dtype=float)
 
+def ll2(a1, a2, b1, b2):
+    la = a2-a1
+    lb = b2-b1
+    c = b1-a1
+
+    aa = la.dot(la)
+    bb = lb.dot(lb)
+    ab = la.dot(lb)
+    ca = c.dot(la)
+    cb = c.dot(lb)
+
+    # if near parallel (ab ~ 0) then apparently it collapses to point-edge... 
+    # do we need to check all four?
+    if ab < 1e-8:
+        alpha = 0 
+        beta = 0
+    else:
+        alpha = ((ca*bb/ab)-cb)/((aa*bb/ab)-ab)
+        beta = (alpha*aa-ca)/ab
+
+    
+
+    print("Alpha & Beta", alpha, beta)
+    return 0, np.zeros(12, dtype=float), np.identity(12, dtype=float)
+
 bruteforce = [
     ("PointPoint", pp, 2),
     ("PointLine", pl, 3),
-    ("PointPlane", pt, 4)
+    ("PointPlane", pt, 4),
+    ("LineLine", ll, 4)
 ]
 
 simplified = [
     ("PointPoint", pp2, 2),
     ("PointLine", pl2, 3),
-    ("PointPlane", pt2, 4)
+    ("PointPlane", pt2, 4),
+    ("LineLine", ll2, 4)
 ]
 
-results = defaultdict(lambda: {"val": [], "grad": [], "hess": []})
-
-seed = np.random.randint(100)
+results = defaultdict(lambda: {"points": [], "val": [], "grad": [], "hess": []})
+seed = 1001 #np.random.randint(100)
 for version in [bruteforce, simplified]:
     np.random.seed(seed)
     for name, func, dim in version:
-        points = [0.1*np.random.randn(3) for _ in range(dim)]
+        points = [2*np.random.randn(3) for _ in range(dim)]
 
         val, grad, hess = func(*points)
+        results[name]["points"] = points
         results[name]["val"].append(val)
         results[name]["grad"].append(grad)
         results[name]["hess"].append(hess)
@@ -166,6 +194,11 @@ np.set_printoptions(linewidth=200)
 for test, outputs in results.items():
     print(test)
     for name, outputlist in outputs.items():
+        if name == "points":
+            s = f"\tVertices:\n{np.array(outputlist)}"
+            print(s.replace("\n", "\n\t\t"))
+            continue
+
         if name == "val":
             match = abs(outputlist[0] - outputlist[1]) < 0.0001
         else:
