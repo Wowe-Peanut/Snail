@@ -1,7 +1,9 @@
 import numpy as np
 from sympy import *
 from collections import defaultdict
-
+import sys
+seed = 1001
+pointscale = 2
 
 # sympy brute force
 def pp(x1, x2):
@@ -161,62 +163,87 @@ def ll2(a1, a2, b1, b2):
     print("Alpha & Beta", alpha, beta)
     return 0, np.zeros(12, dtype=float), np.identity(12, dtype=float)
 
-bruteforce = [
-    ("PointPoint", pp, 2),
-    ("PointLine", pl, 3),
-    ("PointPlane", pt, 4),
-    ("LineLine", ll, 4)
-]
 
-simplified = [
-    ("PointPoint", pp2, 2),
-    ("PointLine", pl2, 3),
-    ("PointPlane", pt2, 4),
-    ("LineLine", ll2, 4)
-]
 
-results = defaultdict(lambda: {"points": [], "val": [], "grad": [], "hess": []})
-seed = 1001 #np.random.randint(100)
-for version in [bruteforce, simplified]:
+def test_numpy():
+    bruteforce = [
+        ("PointPoint", pp, 2),
+        ("PointLine", pl, 3),
+        ("PointPlane", pt, 4),
+        ("LineLine", ll, 4)
+    ]
+
+    simplified = [
+        ("PointPoint", pp2, 2),
+        ("PointLine", pl2, 3),
+        ("PointPlane", pt2, 4),
+        ("LineLine", ll2, 4)
+    ]
+
+    results = defaultdict(lambda: {"points": [], "val": [], "grad": [], "hess": []})
+    for version in [bruteforce, simplified]:
+        np.random.seed(seed)
+        for name, func, dim in version:
+            points = [pointscale*np.random.randn(3) for _ in range(dim)]
+
+            val, grad, hess = func(*points)
+            results[name]["points"] = points
+            results[name]["val"].append(val)
+            results[name]["grad"].append(grad)
+            results[name]["hess"].append(hess)
+            
+
+    np.set_printoptions(linewidth=200)
+
+    for test, outputs in results.items():
+        print(test)
+        for name, outputlist in outputs.items():
+            if name == "points":
+                s = f"\tVertices:\n{np.array(outputlist)}"
+                print(s.replace("\n", "\n\t\t"))
+                continue
+
+            if name == "val":
+                match = abs(outputlist[0] - outputlist[1]) < 0.0001
+            else:
+                match = np.isclose(outputlist[0], outputlist[1]).all()
+
+            print(f"\t{name}:  {'MATCH' if match else 'DIFFERENT'}")
+            
+            for value in outputlist:
+                strval = str(value).replace("\n", "\n\t\t")
+                print(f"\t\t{strval}\n")
+
+            if not match and name != "val":
+                matchstr = str(np.isclose(outputlist[0], outputlist[1]).astype(int)).replace("\n", "\n\t\t")
+                print(f"\t\t{matchstr}\n")
+
+        print("\n\n\n")
+
+def print_sympy():
+    functions = [
+        ("PointPoint", pp, 2),
+        ("PointLine", pl, 3),
+        ("PointPlane", pt, 4),
+        ("LineLine", ll, 4)
+    ]
+
     np.random.seed(seed)
-    for name, func, dim in version:
-        points = [2*np.random.randn(3) for _ in range(dim)]
+    for name, func, dim in functions:
+        points = [pointscale*np.random.randn(3) for _ in range(dim)]
 
         val, grad, hess = func(*points)
-        results[name]["points"] = points
-        results[name]["val"].append(val)
-        results[name]["grad"].append(grad)
-        results[name]["hess"].append(hess)
-        
+        print(name)
+        print(val)
+        print(grad)
+        print(hess)
 
-np.set_printoptions(linewidth=200)
 
-for test, outputs in results.items():
-    print(test)
-    for name, outputlist in outputs.items():
-        if name == "points":
-            s = f"\tVertices:\n{np.array(outputlist)}"
-            print(s.replace("\n", "\n\t\t"))
-            continue
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        option = sys.argv[1]
 
-        if name == "val":
-            match = abs(outputlist[0] - outputlist[1]) < 0.0001
-        else:
-            match = np.isclose(outputlist[0], outputlist[1]).all()
-
-        print(f"\t{name}:  {'MATCH' if match else 'DIFFERENT'}")
-        
-        for value in outputlist:
-            strval = str(value).replace("\n", "\n\t\t")
-            print(f"\t\t{strval}\n")
-
-        if not match and name != "val":
-            matchstr = str(np.isclose(outputlist[0], outputlist[1]).astype(int)).replace("\n", "\n\t\t")
-            print(f"\t\t{matchstr}\n")
-
-    print("\n\n\n")
-
-        
-            
-
-            
+        if option == "test_numpy":
+            test_numpy()
+        elif option == "print_sympy":
+            print_sympy()

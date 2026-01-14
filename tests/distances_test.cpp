@@ -6,27 +6,44 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
+#include <map>
 
-// Can use mat.isApprox(correct mat, tol) for checking eigen accuracy
+using namespace std;
+
 const double tol = 0.01;
 
-void DCOMP(double val, double target) {
-	REQUIRE_THAT(val, Catch::Matchers::WithinAbs(target, tol));
+
+
+struct Setup {
+	map<string, vector<Eigen::Vector3d>> inputs;
+	map<string, Distance> gts;
+
+	Setup() {
+		
+	}
+
+	~Setup() {
+		
+	}
+};
+
+static Setup globalsetup;
+
+
+void DCOMP(Distance gt, Distance test) {
+	REQUIRE_THAT(test.value, Catch::Matchers::WithinAbs(gt.value, tol));
+	REQUIRE(test.grad.isApprox(gt.grad, tol));
+	REQUIRE(test.hess.isApprox(gt.hess, tol));
 }
 
-TEST_CASE("PPval") {
-    Eigen::Vector3d a(0.0, 0.0, 0.0);
-    Eigen::Vector3d b(-1.0, 2.0, 2.0);
-	Eigen::Vector3d c(2.0, 1.5, -100.0);
-
-	DCOMP(PPval(a,b), 9.0);
-	DCOMP(PPval(b,a), 9.0);
-	DCOMP(PPval(a,c), 10006.25);
-	DCOMP(PPval(c,a), 10006.25);
-	DCOMP(PPval(b,c), 10413.25);
-	DCOMP(PPval(c,b), 10413.25);
+TEST_CASE("Point-Point") {
+	auto inputs = globalsetup.inputs["PL"];
+	DCOMP(globalsetup.gts["PP"], PointPointDist(inputs[0], inputs[1], false));
 }
 
-TEST_CASE("PPgrad") {	
-	
+TEST_CASE("Point-Line") {
+	auto inputs = globalsetup.inputs["PL"];
+	DCOMP(globalsetup.gts["PL"], PointLineDist(inputs[0], inputs[1], inputs[2], false));
 }
+
