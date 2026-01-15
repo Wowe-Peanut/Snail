@@ -50,10 +50,27 @@ def pt(x, t1, t2, t3):
     grad = [f.diff(v).subs(varsubs) for v in vars] 
     # hess = [[f.diff(v2).diff(v1).subs(varsubs) for v2 in vars] for v1 in vars]
 
-    return val, np.array(grad, dtype=float), np.identity(12, dtype=float)
+    return val, np.array(grad, dtype=float), np.zeros((12,12), dtype=float)
 
 def ll(a1, a2, b1, b2):
-    return 0, np.zeros(12, dtype=float), np.identity(12, dtype=float)
+    a11, a12, a13, a21, a22, a23, b11, b12, b13, b21, b22, b23 = symbols("a11, a12, a13, a21, a22, a23, b11, b12, b13, b21, b22, b23")
+    varsubs = {a11: a1[0], a12: a1[1], a13: a1[2], a21: a2[0], a22: a2[1], a23: a2[2], b11: b1[0], b12: b1[1], b13: b1[2], b21: b2[0], b22: b2[1], b23: b2[2]}
+    vars = [a11, a12, a13, a21, a22, a23, b11, b12, b13, b21, b22, b23]
+
+    a = [a21 - a11, a22 - a12, a23 - a13]
+    b = [b21 - b11, b22 - b12, b23 - b13]
+    n = [(a[1]*b[2] - a[2]*b[1]), -(a[0]*b[2] - a[2]*b[0]), (a[0]*b[1] - a[1]*b[0])]
+    nlen = sqrt(n[0]**2 + n[1]**2 + n[2]**2)
+    nhat = [n[0]/nlen, n[1]/nlen, n[2]/nlen]
+    f = ((a11-b11)*nhat[0] + (a12-b12)*nhat[1] + (a13-b13)*nhat[2])**2
+
+    val = f.subs(varsubs)
+    grad = [f.diff(v).subs(varsubs) for v in vars] 
+    # hess = [[f.diff(v2).diff(v1).subs(varsubs) for v2 in vars] for v1 in vars]
+
+    return val, np.array(grad, dtype=float), np.zeros((12,12), dtype=float)
+
+
 
 # numpy simplified
 def pp2(x1, x2):
@@ -136,9 +153,9 @@ def pt2(x, t1, t2, t3):
     grad = np.concatenate((grad_x, grad_t1, grad_t2, grad_t3))
 
 
-    return val, grad, np.identity(12, dtype=float)
+    return val, grad, np.zeros((12,12), dtype=float)
 
-def ll2(a1, a2, b1, b2):
+def llratios(a1, a2, b1, b2):
     la = a2-a1
     lb = b2-b1
     c = b1-a1
@@ -157,11 +174,18 @@ def ll2(a1, a2, b1, b2):
     else:
         alpha = ((ca*bb/ab)-cb)/((aa*bb/ab)-ab)
         beta = (alpha*aa-ca)/ab
-
     
+    return alpha, beta
 
-    print("Alpha & Beta", alpha, beta)
-    return 0, np.zeros(12, dtype=float), np.identity(12, dtype=float)
+def ll2(a1, a2, b1, b2):
+    a = a2 - a1
+    b = b2 - b1
+    n = a.cross(b)
+    c = a1 - b1
+
+    val = ()**2
+
+    return val, np.zeros(12, dtype=float), np.zeros((12,12), dtype=float)
 
 
 
@@ -229,14 +253,21 @@ def print_sympy():
     ]
 
     np.random.seed(seed)
+
+    print(len(functions))
     for name, func, dim in functions:
         points = [pointscale*np.random.randn(3) for _ in range(dim)]
 
         val, grad, hess = func(*points)
+
         print(name)
+        print(dim)
+        for point in points:
+            print(*point)
         print(val)
-        print(grad)
-        print(hess)
+        print(*grad)
+        for row in hess:
+            print(*row)
 
 
 if __name__ == "__main__":
