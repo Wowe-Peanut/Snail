@@ -68,6 +68,7 @@ calculations for the Point-Plane are incredibly annoying (I get it already...) I
 I believe this approximation is fine if the distances are small (which they are b/c we check that they're below contactDist each time).
 I still need the distance gradient tho and add check for hess or just return zero
 
+Here is a better explanation: https://math.stackexchange.com/questions/1105214/difference-between-newtons-method-and-gauss-newton-method
 
 
 # TODO
@@ -94,6 +95,7 @@ I still need the distance gradient tho and add check for hess or just return zer
   - [ ] GPU Optimizations
   - [ ] BVH
   - [ ] Avoid the unnecessary energy calculations for static objects
+  - [ ] Stop returning zero hessian and just keep it uninitialized (ensure barrier energy doesn't use it if that's the case) OR maybe just avoid using the hessian altogether for the distance funcs at least (Guass-Newton approx of Barrier Energy hessians)
 
 - IPC:
   - [X] Fixed boundary condition

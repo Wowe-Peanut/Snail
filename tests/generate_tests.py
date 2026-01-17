@@ -2,7 +2,7 @@ import numpy as np
 from sympy import *
 from collections import defaultdict
 import sys
-seed = 1001
+seed = np.random.randint(0, 100000)
 pointscale = 2
 
 # sympy brute force
@@ -155,6 +155,53 @@ def pt2(x, t1, t2, t3):
 
     return val, grad, np.zeros((12,12), dtype=float)
 
+
+    
+    return alpha, beta
+
+def ll2(a1, a2, b1, b2):
+    a = a2 - a1
+    b = b2 - b1
+    n = np.cross(a, b)
+    nn = n.dot(n)
+    c = a1 - b1
+
+
+    s = c.dot(n)/nn
+    p = s*n
+
+    val = p.dot(p)
+
+    skew_a = -np.array([
+        [0,-a[2],a[1]],
+        [a[2],0,-a[0]],
+        [-a[1],a[0],0]
+    ])
+
+    skew_b = -np.array([
+        [0,-b[2],b[1]],
+        [b[2],0,-b[0]],
+        [-b[1],b[0],0]
+    ])
+
+    c2p = c - 2*p
+    temp2 = np.matmul(skew_b, c2p)/nn
+
+    dsda1 = n/nn + temp2
+    dsda2 = -temp2
+    dsdb2 = np.matmul(skew_a, c2p)/nn
+
+    grad_a1 = np.matmul(np.outer(dsda1, n) + s*skew_b, 2*p)
+    grad_a2 = np.matmul(np.outer(dsda2, n) - s*skew_b, 2*p)
+    grad_b2 = np.matmul(np.outer(dsdb2, n) + s*skew_a, 2*p)
+    grad_b1 = -(grad_a1 + grad_a2 + grad_b2)
+
+    grad = np.concatenate((grad_a1, grad_a2, grad_b1, grad_b2))
+
+    return val, grad, np.zeros((12,12), dtype=float)
+
+
+
 def llratios(a1, a2, b1, b2):
     la = a2-a1
     lb = b2-b1
@@ -166,28 +213,12 @@ def llratios(a1, a2, b1, b2):
     ca = c.dot(la)
     cb = c.dot(lb)
 
-    # if near parallel (ab ~ 0) then apparently it collapses to point-edge... 
-    # do we need to check all four?
-    if ab < 1e-8:
-        alpha = 0 
-        beta = 0
-    else:
-        alpha = ((ca*bb/ab)-cb)/((aa*bb/ab)-ab)
-        beta = (alpha*aa-ca)/ab
-    
-    return alpha, beta
 
-def ll2(a1, a2, b1, b2):
-    a = a2 - a1
-    b = b2 - b1
-    n = a.cross(b)
-    c = a1 - b1
+    # Not sure how to determine if parallel or not... 
+    # also need to be careful of ab ~ 0
 
-    val = ()**2
-
-    return val, np.zeros(12, dtype=float), np.zeros((12,12), dtype=float)
-
-
+    alpha = ((ca*bb/ab)-cb)/((aa*bb/ab)-ab)
+    beta = (alpha*aa-ca)/ab
 
 def test_numpy():
     bruteforce = [

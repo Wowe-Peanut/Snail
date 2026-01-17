@@ -98,3 +98,8 @@ TEST_CASE("PointPlane") {
 	DCOMP(globalsetup.gts["PointPlane"], PointPlaneDist(inputs[0], inputs[1], inputs[2], inputs[3], false));
 }
 
+TEST_CASE("LineLine") {
+	auto inputs = globalsetup.inputs["LineLine"];
+	DCOMP(globalsetup.gts["LineLine"], LineLineDist(inputs[0], inputs[1], inputs[2], inputs[3], false));
+}
+

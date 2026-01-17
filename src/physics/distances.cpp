@@ -5,6 +5,7 @@
 using Eigen::Vector3d, Eigen::Matrix3Xd, Eigen::MatrixXd, Eigen::Matrix3d;
 
 
+
 Matrix3d asSkewSymmetric(Vector3d& v) {
 	Matrix3d ssmat;
 	ssmat << 0, -v[2], v[1], v[2], 0, -v[0], -v[1], v[0], 0;
@@ -87,7 +88,7 @@ Distance PointPlaneDist(Vector3d& x, Vector3d& p1, Vector3d& p2, Vector3d& p3, b
 		Matrix3d dndp2 = asSkewSymmetric(e2);
 		Matrix3d dndp3 = -asSkewSymmetric(e1);
 		
-		Vector3d temp = a-2*s*n;
+		Vector3d temp = a-2*p;
 		Vector3d dsdp2 = (dndp2 * temp) / nn;
 		Vector3d dsdp3 = (dndp3 * temp) / nn;
 
@@ -105,3 +106,51 @@ Distance PointPlaneDist(Vector3d& x, Vector3d& p1, Vector3d& p2, Vector3d& p3, b
 	return dist;
 }
 
+Distance LineLineDist(Vector3d& l11, Vector3d& l12, Vector3d& l21, Vector3d& l22, bool valueOnly) {
+	Distance dist;
+
+	Vector3d a = l12-l11;
+    Vector3d b = l22-l21;
+    Vector3d c = l11-l21;
+
+	Vector3d n = a.cross(b);
+	double nn = n.dot(n);
+
+	double s = c.dot(n)/nn;
+	Vector3d p = s*n;
+
+	dist.value = p.dot(p);
+	if (!valueOnly) {
+		Matrix3d askew = -asSkewSymmetric(a);
+		Matrix3d bskew = -asSkewSymmetric(b);
+
+		Vector3d temp = c-2*p;
+		Vector3d dsda1 = (n + bskew*temp)/nn;
+		Vector3d dsda2 = -bskew*temp/nn;
+		Vector3d dsdb2 = askew*temp/nn;
+
+		Vector3d grad_a1 = (dsda1*n.transpose() + s*bskew) * 2*p;
+		Vector3d grad_a2 = (dsda2*n.transpose() - s*bskew) * 2*p;
+		Vector3d grad_b2 = (dsdb2*n.transpose() + s*askew) * 2*p;
+		Vector3d grad_b1 = -(grad_a1 + grad_a2 + grad_b2);
+
+		dist.grad = Matrix3Xd(3, 4);
+		dist.grad << grad_a1, grad_a2, grad_b1, grad_b2;
+
+		dist.hess = MatrixXd::Zero(12, 12);
+	}
+	
+	return dist;
+}
+
+Distance EdgeEdgeDist(EigenVector3d& e11, EigenVector3d& e12, EigenVector3d& e21, Vector3d& e22, bool valueOnly) {
+
+	// Calculate line ratios
+	Vector3d a = e12 - e11;
+	Vector3d b = e22 - e21;
+	Vector3d c = e2 - e1;
+
+	
+
+	
+}
