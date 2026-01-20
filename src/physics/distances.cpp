@@ -2,7 +2,7 @@
 #include "distances.h"
 #include <Eigen/Dense> 
 #include <iostream>
-using Eigen::Vector3d, Eigen::Matrix3Xd, Eigen::MatrixXd, Eigen::Matrix3d;
+using std::vector, Eigen::Vector3d, Eigen::Matrix3Xd, Eigen::MatrixXd, Eigen::Matrix3d;
 
 
 
@@ -11,6 +11,28 @@ Matrix3d asSkewSymmetric(Vector3d& v) {
 	ssmat << 0, -v[2], v[1], v[2], 0, -v[0], -v[1], v[0], 0;
 
 	return ssmat;
+}
+
+Matrix3Xd mapGrad(Matrix3Xd& grad, int numNewPoints, vector<int>& idxmap) {
+
+	Matrix3Xd newGrad = Matrix3Xd::Zero(3, numNewPoints);
+	for (int idx=0; idx<idxmap.size(); idx++) {
+		newGrad.col(idx) = grad.col(idxmap[idx]);
+	}
+
+	return newGrad;
+}
+
+MatrixXd mapHess(MatrixXd& hess, int numNewPoints, vector<int>& idxmap) {
+
+	MatrixXd newHess = MatrixXd::Zero(3*numNewPoints, 3*numNewPoints);
+	for (int ridx=0; ridx<idxmap.size(); ridx++) {
+		for (int cidx=0; cidx<idxmap.size(); cidx++) {
+			hess.block<3, 3>(3*idxmap[ridx], 3*idxmap[cidx]) = hess.block<3, 3>(ridx, cidx);
+		}
+	}
+
+	return newHess;
 }
 
 Distance PointPointDist(Vector3d& x1, Vector3d& x2, bool valueOnly) {
@@ -143,14 +165,111 @@ Distance LineLineDist(Vector3d& l11, Vector3d& l12, Vector3d& l21, Vector3d& l22
 	return dist;
 }
 
-Distance EdgeEdgeDist(EigenVector3d& e11, EigenVector3d& e12, EigenVector3d& e21, Vector3d& e22, bool valueOnly) {
+Distance EdgeEdgeDist(Vector3d& e11, Vector3d& e12, Vector3d& e21, Vector3d& e22, bool valueOnly) {
 
-	// Calculate line ratios
+	// Intermediate values
 	Vector3d a = e12 - e11;
 	Vector3d b = e22 - e21;
-	Vector3d c = e2 - e1;
+	Vector3d c = e11 - e21;
+	double aa = a.dot(a);
+	double bb = b.dot(b);
+	double ab = a.dot(b);
+	double ac = a.dot(c);
+	double bc = b.dot(c);
 
+	// Parallel (or near parallel) = PointPoint OR PoineLine
+	if (abs(aa*bb - ab*ab) < 1e-6) {
+		
+	}
 	
+	// Non-parallel lines = PointPoint OR PointLine OR LineLine
+	else {
 
-	
+		// Calculate where along lines the closest points are
+		double alpha = (ac*bb - bc*ab)/(aa*bb - ab*ab);
+		double beta = (alpha*aa - ac)/ab;
+		bool aonline = (alpha > 0) && (alpha < 1);
+		bool bonline = (beta > 0) && (beta < 1);
+
+		// LineLine
+		if (aonline && bonline) {
+			return LineLineDist(e11, e12, e21, e22, valueOnly);
+		} 
+		
+		// PointLine
+		else if (aonline != bonline) {
+			Vector3d point, line1, line2;
+			vector<int> idxmap;
+			
+			// edge 1 is line, determine active point on edge 2
+			if (aonline) {
+				if (beta <= 0) {
+					point = e21;
+					idxmap[0] = 2;
+				} else {
+					point = e22;
+					idxmap[0] = 3;
+				}
+				
+				line1 = e11;
+				line2 = e12;
+				idxmap[1] = 0;
+				idxmap[2] = 1;
+			} 
+			
+			// edge 2 is line, determine active point on edge 1
+			else {
+				if (alpha <= 0) {
+					point = e11;
+					idxmap[0] = 0;
+				} else {
+					point = e12;
+					idxmap[0] = 1;
+				}
+				
+				line1 = e21;
+				line2 = e22;
+				idxmap[1] = 2;
+				idxmap[2] = 3;
+
+			}
+
+			Distance dist = PointLineDist(point, line1, line2, valueOnly);
+			if (!valueOnly) {
+				dist.grad = mapGrad(dist.grad, 4, idxmap);
+				dist.hess = mapHess(dist.hess, 4, idxmap);
+			}
+		} 
+
+		// PointPoint
+		else {
+			Vector3d pointa, pointb;
+			vector<int> idxmap(2, 0);
+
+			// Determine active point on edge 1
+			if (alpha <= 0) {
+				pointa = e11;
+				idxmap[0] = 0;
+			} else {
+				pointa = e12;
+				idxmap[0] = 1;
+			}
+			
+			// Determine actiive point on edge 2
+			if (beta <= 0) {
+				pointb = e21;
+				idxmap[1] = 2;
+			} else {
+				pointb = e22;
+				idxmap[1] = 3;
+			}
+
+			Distance dist = PointPointDist(pointa, pointb, valueOnly);
+			if (!valueOnly) {
+				dist.grad = mapGrad(dist.grad, 4, idxmap);
+				dist.hess = mapHess(dist.hess, 4, idxmap);
+			}
+			return dist;
+		}
+	}
 }
