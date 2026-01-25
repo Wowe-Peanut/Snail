@@ -58,7 +58,7 @@ void TimeIntegrator::step() {
 	// Calculate initial Incremental Potential value and search direction 
 	Matrix3Xd predictedPositions = positions + dt*velocities;
 	Matrix3Xd searchDirection = getSearchDirection(predictedPositions);
-	double IP = energyCalculator.IPValue(predictedPositions);
+	double IP = energyCalculator.ipValue(predictedPositions);
 
 	// Projected Newton Loop
 	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / dt > tol)  {
@@ -67,12 +67,11 @@ void TimeIntegrator::step() {
 		double alpha = collisionManager.CCD(searchDirection);
 		positions = previousPositions + alpha*searchDirection;
 
-		double newIP = energyCalculator.IPValue(predictedPositions);
-
+		double newIP = energyCalculator.ipValue(predictedPositions);
 		while (newIP > IP) {
 			alpha /= 2;
 			positions = previousPositions + alpha*searchDirection;
-			newIP = energyCalculator.IPValue(predictedPositions);
+			newIP = energyCalculator.ipValue(predictedPositions);
 
 			if (alpha > ALPHA_LOWER_BOUND) break;
 		}

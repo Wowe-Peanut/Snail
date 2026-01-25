@@ -22,23 +22,23 @@ void EnergyCalculator::makePSD(MatrixXd& mat) {
 }
 
 // Incremental Potential Energy
-double EnergyCalculator::IPValue(Matrix3Xd& xtilde) {
+double EnergyCalculator::ipValue(Matrix3Xd& xtilde) {
 	double dt = params.dt;
-	return InertiaValue(xtilde) + dt*dt*(MassSpringValue() + GravityValue());
+	return inertiaValue(xtilde) + dt*dt*(massSpringValue() + gravityValue());
 }
-Matrix3Xd EnergyCalculator::IPGradient(Matrix3Xd& xtilde) {
+Matrix3Xd EnergyCalculator::ipGradient(Matrix3Xd& xtilde) {
 	double dt = params.dt;
-	return InertiaGradient(xtilde) + dt*dt*(MassSpringGradient() + GravityGradient());
+	return inertiaGradient(xtilde) + dt*dt*(massSpringGradient() + gravityGradient());
 }
-SparseMatrix<double> EnergyCalculator::IPHessian(Matrix3Xd& xtilde) {
+SparseMatrix<double> EnergyCalculator::ipHessian(Matrix3Xd& xtilde) {
 	double dt = params.dt;
-	return InertiaHessian(xtilde) + dt*dt*(MassSpringHessian());
+	return inertiaHessian(xtilde) + dt*dt*(massSpringHessian());
 }
 
 
 
 // Inertia Energy 
-double EnergyCalculator::InertiaValue(Matrix3Xd& xtilde) {
+double EnergyCalculator::inertiaValue(Matrix3Xd& xtilde) {
 	double sum = 0;
 	for (int vidx=0; vidx<state.numPoints; vidx++) {
 		Vector3d diff = state.positions.col(vidx) - xtilde.col(vidx);
@@ -47,10 +47,10 @@ double EnergyCalculator::InertiaValue(Matrix3Xd& xtilde) {
 
 	return params.pointMass * sum / 2;
 }
-Matrix3Xd EnergyCalculator::InertiaGradient(Matrix3Xd& xtilde) {
+Matrix3Xd EnergyCalculator::inertiaGradient(Matrix3Xd& xtilde) {
 	return params.pointMass * (state.positions - xtilde);
 }
-SparseMatrix<double> EnergyCalculator::InertiaHessian(Matrix3Xd& xtilde) {
+SparseMatrix<double> EnergyCalculator::inertiaHessian(Matrix3Xd& xtilde) {
 
 	// From eigen docs: "The cost of a single purely random insertion into a SparseMatrix is O(nnz), 
 	// where nnz is the current number of non-zero coefficients."
@@ -71,7 +71,7 @@ SparseMatrix<double> EnergyCalculator::InertiaHessian(Matrix3Xd& xtilde) {
 
 
 // Mass Spring Energy 
-double EnergyCalculator::MassSpringValue() {
+double EnergyCalculator::massSpringValue() {
 	double sum = 0;
 	for (Edge& edge: state.edges) {
 		Vector3d diff = state.positions.col(edge.v1) - state.positions.col(edge.v2);
@@ -79,7 +79,7 @@ double EnergyCalculator::MassSpringValue() {
 	}
 	return sum * params.springStiffness / 2;
 }
-Matrix3Xd EnergyCalculator::MassSpringGradient() {
+Matrix3Xd EnergyCalculator::massSpringGradient() {
 	Matrix3Xd grad = MatrixXd::Zero(3, state.numPoints);
 
 	for (Edge& edge: state.edges) {
@@ -92,7 +92,7 @@ Matrix3Xd EnergyCalculator::MassSpringGradient() {
 
 	return grad;
 }
-SparseMatrix<double> EnergyCalculator::MassSpringHessian() {
+SparseMatrix<double> EnergyCalculator::massSpringHessian() {
 
 	vector<Triplet<double>> triplets;
 	triplets.reserve(36*state.edges.size()); // 1 edge = 2 vertices = 6 dof = 36 hessian entries
@@ -138,7 +138,7 @@ SparseMatrix<double> EnergyCalculator::MassSpringHessian() {
 
 
 // Gravity Energy 
-double EnergyCalculator::GravityValue() {
+double EnergyCalculator::gravityValue() {
 	double sum = 0;
 	for (int vidx=0; vidx<state.numPoints; vidx++) {
 		sum += params.gravity.dot(state.positions.col(vidx));
@@ -146,11 +146,95 @@ double EnergyCalculator::GravityValue() {
 
 	return -sum * params.pointMass;
 }
-Matrix3Xd EnergyCalculator::GravityGradient() {
+Matrix3Xd EnergyCalculator::gravityGradient() {
 	Matrix3Xd grad = Matrix3Xd::Zero(3, state.numPoints);
 	for (int vidx=0; vidx<state.numPoints; vidx++) {
 		grad.col(vidx) = -params.pointMass * params.gravity;
 	}
 
 	return grad;
+}
+
+
+// Contact energy
+double EnergyCalculator::contactValue() {
+
+	double sum = 0;
+	for (shared_ptr<CollisionPair> cp: state.activeCollisionPairs) {
+		if (cp->dist.value < params.contactDistance) {
+			sum += 0.5 * cp->contactArea() * barrier(cp->dist.value);
+		}
+	}	
+
+	return sum;
+}
+Matrix3Xd EnergyCalculator::contactGradient() {
+
+	Matrix3Xd grad = Matrix3Xd::Zero(3, state.numPoints);
+	for (shared_ptr<CollisionPair> cp: state.activeCollisionPairs) {
+		if (cp->dist.value < params.contactDistance) {
+			
+			Matrix3Xd localGrad = 0.5 * cp->contactArea() * barrierD(cp->dist.value) * cp->dist.grad;
+
+			vector<int> dofIdxs = cp->getDofIdxs();
+			for (int i=0; i<dofIdxs.size(); i++) {
+				grad.col(dofIdxs[i]) += localGrad.col(i);
+			}
+		}
+	}	
+
+	return grad;
+}
+SparseMatrix<double> EnergyCalculator::contactHessian() {
+
+	vector<Triplet<double>> triplets;
+	for (shared_ptr<CollisionPair> cp: state.activeCollisionPairs) {
+		if (cp->dist.value < params.contactDistance) {
+			
+			Distance& d = cp->dist;
+			MatrixXd localHess = 0.5 * cp->contactArea() * (barrierD2(d.value) * d.grad * d.grad.transpose() + barrierD(d.value) * d.hess);
+
+			// Map local hess to global triplets
+			vector<int> dofIdxs = cp->getDofIdxs();
+			for (int row=0; row<dofIdxs.size(); row++) {
+				for (int col=0; col<dofIdxs.size(); col++) {
+
+					Matrix3d submat = localHess.block<3, 3>(row, col);
+					for (int subrow=0; subrow<3; subrow++) {
+						for (int subcol=0; subcol<3; subcol++) {
+							double value = submat(subrow, cubcol);
+
+							triplets.push_back(Triplet<double>(3*dofIdxs[row] + subrow, 3*dofIdxs[col] + subcol, value));
+						}
+					}
+				}
+			}
+		}
+	}	
+
+	SparseMatrix<double> hess = SparseMatrix<double>(3*state.numPoints, 3*state.numPoints);
+	hess.setFromTriplets(triplets.begin(), triplets.end());
+	return hess;
+}
+
+// Normal Barrier energy
+double EnergyCalculator::barrier(double d2) {
+	double s = d2/(params.contactDistance * params.contactDistance);
+	double beta = params.contactStiffness/8 * params.contactDistance;
+
+	return beta*(s-1)*log(s);
+}
+double EnergyCalculator::barrierD(double d2) {
+	double dhat2 = params.contactDistance * params.contactDistance
+	double s = d2/dhat2;
+	double beta = params.contactStiffness/8 * params.contactDistance;
+
+	return beta/dhat2*(log(s)+1-1/s);
+}
+double EnergyCalculator::barrierD2(double d2) {
+	double dhat2 = params.contactDistance * params.contactDistance
+	double s = d2/dhat2;
+	double beta = params.contactStiffness/8 * params.contactDistance;
+
+	return beta/dhat2*(s+1)/(s*s);
 }

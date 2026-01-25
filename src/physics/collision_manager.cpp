@@ -6,7 +6,7 @@
 void PointTriangle::update(bool valueOnly) {
 
 }
-double PointTriangle::toiLowerBound(Eigen::Matrix3Xd& searchDirection) {
+double PointTriangle::CCD(Eigen::Matrix3Xd& searchDirection) {
 	return 0.0;
 }
 
@@ -14,7 +14,7 @@ double PointTriangle::toiLowerBound(Eigen::Matrix3Xd& searchDirection) {
 void EdgeEdge::update(bool valueOnly) {
 
 }
-double EdgeEdge::toiLowerBound(Eigen::Matrix3Xd& searchDirection) {
+double EdgeEdge::CCD(Eigen::Matrix3Xd& searchDirection) {
 	return 0.0;
 }
 

@@ -17,26 +17,31 @@ struct EnergyCalculator {
 	void makePSD(Eigen::MatrixXd& mat);
 
 	// Total energy
-    double IPValue(Eigen::Matrix3Xd& xtilde);
-    Eigen::Matrix3Xd IPGradient(Eigen::Matrix3Xd& xtilde);
-    Eigen::SparseMatrix<double> IPHessian(Eigen::Matrix3Xd& xtilde);
+    double ipValue(Eigen::Matrix3Xd& xtilde);
+    Eigen::Matrix3Xd ipGradient(Eigen::Matrix3Xd& xtilde);
+    Eigen::SparseMatrix<double> ipHessian(Eigen::Matrix3Xd& xtilde);
 
     // Inertia
-    double InertiaValue(Eigen::Matrix3Xd& xtilde);
-    Eigen::Matrix3Xd InertiaGradient(Eigen::Matrix3Xd& xtilde);
-    Eigen::SparseMatrix<double> InertiaHessian(Eigen::Matrix3Xd& xtilde);
+    double inertiaValue(Eigen::Matrix3Xd& xtilde);
+    Eigen::Matrix3Xd inertiaGradient(Eigen::Matrix3Xd& xtilde);
+    Eigen::SparseMatrix<double> inertiaHessian(Eigen::Matrix3Xd& xtilde);
 
     // Spring
-    double MassSpringValue();
-    Eigen::Matrix3Xd MassSpringGradient();
-    Eigen::SparseMatrix<double> MassSpringHessian();
+    double massSpringValue();
+    Eigen::Matrix3Xd massSpringGradient();
+    Eigen::SparseMatrix<double> massSpringHessian();
 
     // Gravity
-    double GravityValue();
-    Eigen::Matrix3Xd GravityGradient();
+    double gravityValue();
+    Eigen::Matrix3Xd gravityGradient();
 
     // Contact
-    double ContactValue();
-    Eigen::Matrix3Xd ContactGradient();
-    Eigen::SparseMatrix<double> ContactHessian();
+    double contactValue();
+    Eigen::Matrix3Xd contactGradient();
+    Eigen::SparseMatrix<double> contactHessian();
+    
+    // d^2 barrier energy
+    double barrier(double d2);
+    double barrierD(double d2);
+    double barrierD2(double d2);
 };	

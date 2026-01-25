@@ -24,6 +24,8 @@ struct SimState {
     std::vector<int> offsets; 
     Eigen::Matrix3Xd positions;
     Eigen::Matrix3Xd velocities;
+
+    std::vector<std::shared_ptr<CollisionPair>> activeCollisionPairs;
     std::vector<bool> isDBC;
 
     std::vector<Edge> edges;
