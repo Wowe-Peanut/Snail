@@ -9,28 +9,29 @@ struct SimState;
 
 struct CollisionPair {
 	Distance dist;
-	virtual void update(bool valueOnly) = 0;
-	virtual double CCD(Eigen::Matrix3Xd& searchDirection) = 0;
-	virtual double contactArea() = 0;
-	virtual std::vector<int> getDofIdxs() = 0;
-}
+	double contactArea;
 
-struct PointTriangle {
-	Distance dist;
-	int p, t1, t2, t3;
-	void update(bool valueOnly) override;
-	double CCD(Eigen::Matrix3Xd& searchDirection) override;
-	double contactArea() override;
-	std::vector<int> getDofIdxs() override;
+	virtual void update(SimState& state, bool valueOnly) = 0;
+	virtual double CCD(SimState& state, Eigen::Matrix3Xd& searchDirection) = 0;
+	virtual std::vector<int> getDofIdxs() = 0;
 };
 
-struct EdgeEdge {
-	Distance dist;
+struct PointTriangle : CollisionPair {
+	int p, t1, t2, t3;
+
+	PointTriangle(int p, int t1, int t2, int t3): p(p), t1(t1), t2(t2), t3(t3) {};
+	void update(SimState& state, bool valueOnly) override;
+	double CCD(SimState& state, Eigen::Matrix3Xd& searchDirection) override;
+	std::vector<int> getDofIdxs() { return {p, t1, t2, t3}; }
+};
+
+struct EdgeEdge : CollisionPair {
 	int e1, e2, e3, e4;
-	void update(bool valueOnly) override;
-	double CCD(Eigen::Matrix3Xd& searchDirection) override;
-	double contactArea() override;
-	std::vector<int> getDofIdxs() override;
+
+	EdgeEdge(int e1, int e2, int e3, int e4): e1(e1), e2(e2), e3(e3), e4(e4) {};
+	void update(SimState& state, bool valueOnly) override;
+	double CCD(SimState& state, Eigen::Matrix3Xd& searchDirection) override;
+	std::vector<int> getDofIdxs() { return {e1, e2, e3, e4}; }
 };
 
 struct CollisionManager {

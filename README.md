@@ -70,7 +70,6 @@ I still need the distance gradient tho and add check for hess or just return zer
 
 Here is a better explanation: https://math.stackexchange.com/questions/1105214/difference-between-newtons-method-and-gauss-newton-method
 
-
 # TODO
 
 - Refactoring:
@@ -99,6 +98,7 @@ Here is a better explanation: https://math.stackexchange.com/questions/1105214/d
 
 - IPC:
   - [X] Fixed boundary condition
+  - [X] Point - InfintePlane collision
   - [ ] Moving boundary condition
   - [ ] Mesh on Mesh contact
   - [ ] Inversion free

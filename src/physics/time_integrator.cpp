@@ -8,8 +8,8 @@ using namespace std;
 using Eigen::Matrix3Xd, Eigen::SparseMatrix, Eigen::VectorXd, Eigen::Vector3d; 
 
 Matrix3Xd TimeIntegrator::getSearchDirection(Matrix3Xd& xtilde) {
-	SparseMatrix<double> hess = energyCalculator.IPHessian(xtilde);
-	Matrix3Xd grad = energyCalculator.IPGradient(xtilde);
+	SparseMatrix<double> hess = energyCalculator.ipHessian(xtilde);
+	Matrix3Xd grad = energyCalculator.ipGradient(xtilde);
 
 	// Gradient sticky DBCs
 	for (int vidx=0; vidx<state.numPoints; vidx++) {
@@ -52,32 +52,45 @@ void TimeIntegrator::step() {
 	double dt = params.dt;
 	double tol = params.tolerance;
 
-	Matrix3Xd originalPositions = positions; // Before any newton iteration
-	Matrix3Xd previousPositions = positions; // From previous newton iteration
+	Matrix3Xd originalPositions = positions; 					// Before any newton iteration
+	Matrix3Xd previousPositions = positions; 					// From previous newton iteration
+	Matrix3Xd predictedPositions = positions + dt*velocities;	// Forward euler estimate
 	
-	// Calculate initial Incremental Potential value and search direction 
-	Matrix3Xd predictedPositions = positions + dt*velocities;
+	// Generate collision pairs
+	collisionManager.broadPhase();
+
+	// Update distance calculations WITH GRAD/HESS, then calculate initial initial IP value and search direction 
+	collisionManager.updateActivePairs(false);
 	Matrix3Xd searchDirection = getSearchDirection(predictedPositions);
 	double IP = energyCalculator.ipValue(predictedPositions);
 
+	
 	// Projected Newton Loop
+	int iter = 0; 
 	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / dt > tol)  {
+		if (iter > 20) break;
+
 
 		// Line search to guarantees a step size that reduces the systems energy
 		double alpha = collisionManager.CCD(searchDirection);
 		positions = previousPositions + alpha*searchDirection;
 
+		collisionManager.updateActivePairs(true);
 		double newIP = energyCalculator.ipValue(predictedPositions);
+
 		while (newIP > IP) {
 			alpha /= 2;
 			positions = previousPositions + alpha*searchDirection;
+
+			collisionManager.updateActivePairs(true);
 			newIP = energyCalculator.ipValue(predictedPositions);
 
-			if (alpha > ALPHA_LOWER_BOUND) break;
+			if (alpha < ALPHA_LOWER_BOUND) break;
 		}
 		
 		// Update IP & calculate next search direction
 		IP = newIP;
+		collisionManager.updateActivePairs(false);
 		searchDirection = getSearchDirection(predictedPositions);
 		previousPositions = positions;
 	}

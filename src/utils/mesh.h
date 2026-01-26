@@ -58,7 +58,6 @@ struct Mesh {
 	int numPoints;			
 	bool isStatic;
 	std::vector<bool> isFixedPoint;
-	std::vector<double> vertexAreas;
 	glm::vec3 initialVelocity;
 
 	template <typename T>
@@ -70,7 +69,7 @@ struct Mesh {
 	void draw(const std::shared_ptr<Program> prog);	
 
 	
-	// Computes vertex normals and contact area of each vertex
+	// Computes vertex normals for shading
 	void computeSurfaceQualities();
 	void transform(Transform transform);
 	void setFixedPoints(std::vector<int>& fixedPoints);

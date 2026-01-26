@@ -4,7 +4,7 @@
         "tolerance": 0.01,
 
         "point_mass": 10,
-        "spring_stiffness": 200000,
+        "spring_stiffness": 50000,
 
         "contact_stiffness": 20000000,
         "contact_distance": 0.05,
@@ -14,20 +14,16 @@
 
     "objects": [
         {
-            "mesh": "models/teapot/lowpoly-teapot.msh",
+            "mesh": "models/sphere/sphere.msh",
             "is_static": false,
             "fixed_points": [],
-            "velocity": [0, -3, 0],
+            "velocity": [-0.5, 0, 0],
 
             "material": {
                 "ka": [0.2, 0.2, 0.2],
                 "kd": [0.8, 0.7, 0.7],
                 "ks": [1.0, 0.9, 0.8],
                 "s": 200
-            },
-            
-            "sdf": {
-                "type": "mesh"
             },
 
             "render_transform": {
@@ -37,7 +33,85 @@
             },
 
             "mesh_transform": {
-                "translation":  [0, 3, 0],
+                "translation":  [0, 2, 0],
+                "rotation":     [0.75, 0, 0],
+                "scale":        [1, 1, 1]
+            }
+        },
+
+        {
+            "mesh": "models/cube/cube.msh",
+            "is_static": false,
+            "fixed_points": [],
+            "velocity": [0, 0, 0],
+
+            "material": {
+                "ka": [0.2, 0.2, 0.2],
+                "kd": [0.8, 0.7, 0.7],
+                "ks": [1.0, 0.9, 0.8],
+                "s": 200
+            },
+
+            "render_transform": {
+                "translation":  [0, 0, 0],
+                "rotation":     [0, 0, 0],
+                "scale":        [1, 1, 1]
+            },
+
+            "mesh_transform": {
+                "translation":  [0, 4, 0.5],
+                "rotation":     [0, 0, 0],
+                "scale":        [1, 1, 1]
+            }
+        },
+
+        {
+            "mesh": "models/cube/cube.msh",
+            "is_static": false,
+            "fixed_points": [],
+            "velocity": [0, 0, 0],
+
+            "material": {
+                "ka": [0.2, 0.2, 0.2],
+                "kd": [0.8, 0.7, 0.7],
+                "ks": [1.0, 0.9, 0.8],
+                "s": 200
+            },
+
+            "render_transform": {
+                "translation":  [0, 0, 0],
+                "rotation":     [0, 0, 0],
+                "scale":        [1, 1, 1]
+            },
+
+            "mesh_transform": {
+                "translation":  [0, 6, -0.5],
+                "rotation":     [0, 0, 0],
+                "scale":        [1, 1, 1]
+            }
+        },
+
+        {
+            "mesh": "models/sphere/sphere.msh",
+            "is_static": false,
+            "fixed_points": [],
+            "velocity": [0, 0, 0],
+
+            "material": {
+                "ka": [0.2, 0.2, 0.2],
+                "kd": [0.8, 0.7, 0.7],
+                "ks": [1.0, 0.9, 0.8],
+                "s": 200
+            },
+
+            "render_transform": {
+                "translation":  [0, 0, 0],
+                "rotation":     [0, 0, 0],
+                "scale":        [1, 1, 1]
+            },
+
+            "mesh_transform": {
+                "translation":  [0.5, 8, -0.5],
                 "rotation":     [0, 0, 0],
                 "scale":        [1, 1, 1]
             }
@@ -55,12 +129,6 @@
                 "ks": [1.0, 0.9, 0.8],
                 "s": 200
             },
-            
-            "sdf": {
-                "type": "plane",
-                "normal": [0, 0.707, 0.707],
-                "point": [0, 0, 0]
-            },
 
             "render_transform": {
                 "translation":  [0, 0, 0],
@@ -70,40 +138,8 @@
 
             "mesh_transform": {
                 "translation":  [0, 0, 0],
-                "rotation":     [0.78, 0, 0],
-                "scale":        [5, 1, 5]
-            }
-        },
-
-        {
-            "mesh": "models/plane/plane.msh",
-            "is_static": true,
-            "fixed_points": [],
-            "velocity": [0, 0, 0],
-
-            "material": {
-                "ka": [0.2, 0.2, 0.2],
-                "kd": [0.8, 0.7, 0.7],
-                "ks": [1.0, 0.9, 0.8],
-                "s": 200
-            },
-            
-            "sdf": {
-                "type": "plane",
-                "normal": [0, 1, 0],
-                "point": [0, -2, 3]
-            },
-
-            "render_transform": {
-                "translation":  [0, 0, 0],
                 "rotation":     [0, 0, 0],
-                "scale":        [1, 1, 1]
-            },
-
-            "mesh_transform": {
-                "translation":  [0, -2, 3],
-                "rotation":     [0, 0, 0],
-                "scale":        [6, 1, 6]
+                "scale":        [10, 1, 10]
             }
         }
 

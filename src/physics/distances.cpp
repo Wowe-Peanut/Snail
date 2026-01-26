@@ -4,10 +4,10 @@
 #include <iostream>
 using std::vector, Eigen::Vector3d, Eigen::Matrix3Xd, Eigen::MatrixXd, Eigen::Matrix3d;
 
-const double ZERO_TOL = 1e-8;
+const double ZERO_TOL = 1e-3;
 
 
-Matrix3d asSkewSymmetric(Vector3d& v) {
+Matrix3d asSkewSymmetric(const Vector3d& v) {
 	Matrix3d ssmat;
 	ssmat << 0, -v[2], v[1], v[2], 0, -v[0], -v[1], v[0], 0;
 
@@ -45,7 +45,7 @@ Distance mapDistance(Distance& dist, int newSize, vector<int> idxmap, bool value
 	return dist;
 }
 
-Distance PointPointDist(Vector3d& x1, Vector3d& x2, bool valueOnly) {
+Distance PointPointDist(const Vector3d& x1, const Vector3d& x2, bool valueOnly) {
 	Distance dist;
 
 	Vector3d diff = x1-x2;
@@ -63,7 +63,7 @@ Distance PointPointDist(Vector3d& x1, Vector3d& x2, bool valueOnly) {
 	return dist;
 }
 
-Distance PointLineDist(Vector3d& x, Vector3d& l1, Vector3d& l2, bool valueOnly) {
+Distance PointLineDist(const Vector3d& x, const Vector3d& l1, const Vector3d& l2, bool valueOnly) {
 	Distance dist;
 
 	Vector3d l = l2-l1;
@@ -102,7 +102,7 @@ Distance PointLineDist(Vector3d& x, Vector3d& l1, Vector3d& l2, bool valueOnly) 
 	return dist;
 }
    
-Distance PointPlaneDist(Vector3d& x, Vector3d& p1, Vector3d& p2, Vector3d& p3, bool valueOnly) {
+Distance PointPlaneDist(const Vector3d& x, const Vector3d& p1, const Vector3d& p2, const Vector3d& p3, bool valueOnly) {
 	Distance dist;
 
 	Vector3d a = x-p1;
@@ -138,7 +138,7 @@ Distance PointPlaneDist(Vector3d& x, Vector3d& p1, Vector3d& p2, Vector3d& p3, b
 	return dist;
 }
 
-Distance LineLineDist(Vector3d& l11, Vector3d& l12, Vector3d& l21, Vector3d& l22, bool valueOnly) {
+Distance LineLineDist(const Vector3d& l11, const Vector3d& l12, const Vector3d& l21, const Vector3d& l22, bool valueOnly) {
 	Distance dist;
 
 	Vector3d a = l12-l11;
@@ -175,7 +175,7 @@ Distance LineLineDist(Vector3d& l11, Vector3d& l12, Vector3d& l21, Vector3d& l22
 	return dist;
 }
 
-Distance PointEdgeDist(Vector3d& x, Vector3d& l1, Vector3d& l2, bool valueOnly) {
+Distance PointEdgeDist(const Vector3d& x, const Vector3d& l1, const Vector3d& l2, bool valueOnly) {
 
 	// Helper values
     Vector3d l = l2 - l1;
@@ -198,7 +198,7 @@ Distance PointEdgeDist(Vector3d& x, Vector3d& l1, Vector3d& l2, bool valueOnly) 
 	}
 }
 
-Distance EdgeEdgeDist(Vector3d& e11, Vector3d& e12, Vector3d& e21, Vector3d& e22, bool valueOnly) {
+Distance EdgeEdgeDist(const Vector3d& e11, const Vector3d& e12, const Vector3d& e21, const Vector3d& e22, bool valueOnly) {
 
 	// Helper values
 	Vector3d a = e12 - e11;
@@ -293,7 +293,7 @@ Distance EdgeEdgeDist(Vector3d& e11, Vector3d& e12, Vector3d& e21, Vector3d& e22
 	}
 }
 
-Distance PointTriangleDist(Vector3d& x, Vector3d& t1, Vector3d& t2, Vector3d& t3, bool valueOnly) {
+Distance PointTriangleDist(const Vector3d& x, const Vector3d& t1, const Vector3d& t2, const Vector3d& t3, bool valueOnly) {
 
 	// Helper values
     Vector3d e0 = t2 - t1;

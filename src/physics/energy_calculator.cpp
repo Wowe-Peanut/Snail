@@ -24,15 +24,15 @@ void EnergyCalculator::makePSD(MatrixXd& mat) {
 // Incremental Potential Energy
 double EnergyCalculator::ipValue(Matrix3Xd& xtilde) {
 	double dt = params.dt;
-	return inertiaValue(xtilde) + dt*dt*(massSpringValue() + gravityValue());
+	return inertiaValue(xtilde) + dt*dt*(massSpringValue() + gravityValue() + contactValue());
 }
 Matrix3Xd EnergyCalculator::ipGradient(Matrix3Xd& xtilde) {
 	double dt = params.dt;
-	return inertiaGradient(xtilde) + dt*dt*(massSpringGradient() + gravityGradient());
+	return inertiaGradient(xtilde) + dt*dt*(massSpringGradient() + gravityGradient() + contactGradient());
 }
 SparseMatrix<double> EnergyCalculator::ipHessian(Matrix3Xd& xtilde) {
 	double dt = params.dt;
-	return inertiaHessian(xtilde) + dt*dt*(massSpringHessian());
+	return inertiaHessian(xtilde) + dt*dt*(massSpringHessian() + contactHessian());
 }
 
 
@@ -162,7 +162,7 @@ double EnergyCalculator::contactValue() {
 	double sum = 0;
 	for (shared_ptr<CollisionPair> cp: state.activeCollisionPairs) {
 		if (cp->dist.value < params.contactDistance) {
-			sum += 0.5 * cp->contactArea() * barrier(cp->dist.value);
+			sum += 0.5 * cp->contactArea * barrier(cp->dist.value);
 		}
 	}	
 
@@ -174,7 +174,7 @@ Matrix3Xd EnergyCalculator::contactGradient() {
 	for (shared_ptr<CollisionPair> cp: state.activeCollisionPairs) {
 		if (cp->dist.value < params.contactDistance) {
 			
-			Matrix3Xd localGrad = 0.5 * cp->contactArea() * barrierD(cp->dist.value) * cp->dist.grad;
+			Matrix3Xd localGrad = 0.5 * cp->contactArea * barrierD(cp->dist.value) * cp->dist.grad;
 
 			vector<int> dofIdxs = cp->getDofIdxs();
 			for (int i=0; i<dofIdxs.size(); i++) {
@@ -192,17 +192,19 @@ SparseMatrix<double> EnergyCalculator::contactHessian() {
 		if (cp->dist.value < params.contactDistance) {
 			
 			Distance& d = cp->dist;
-			MatrixXd localHess = 0.5 * cp->contactArea() * (barrierD2(d.value) * d.grad * d.grad.transpose() + barrierD(d.value) * d.hess);
+			Eigen::Map<VectorXd> flatgrad(d.grad.data(), 12);
+			MatrixXd localHess = 0.5 * cp->contactArea * (barrierD2(d.value) * flatgrad * flatgrad.transpose() + barrierD(d.value) * d.hess);
+			makePSD(localHess);
 
 			// Map local hess to global triplets
 			vector<int> dofIdxs = cp->getDofIdxs();
 			for (int row=0; row<dofIdxs.size(); row++) {
 				for (int col=0; col<dofIdxs.size(); col++) {
 
-					Matrix3d submat = localHess.block<3, 3>(row, col);
+					Matrix3d submat = localHess.block<3, 3>(3*row, 3*col);
 					for (int subrow=0; subrow<3; subrow++) {
 						for (int subcol=0; subcol<3; subcol++) {
-							double value = submat(subrow, cubcol);
+							double value = submat(subrow, subcol);
 
 							triplets.push_back(Triplet<double>(3*dofIdxs[row] + subrow, 3*dofIdxs[col] + subcol, value));
 						}
@@ -217,7 +219,7 @@ SparseMatrix<double> EnergyCalculator::contactHessian() {
 	return hess;
 }
 
-// Normal Barrier energy
+// d^2 Barrier energy
 double EnergyCalculator::barrier(double d2) {
 	double s = d2/(params.contactDistance * params.contactDistance);
 	double beta = params.contactStiffness/8 * params.contactDistance;
@@ -225,16 +227,16 @@ double EnergyCalculator::barrier(double d2) {
 	return beta*(s-1)*log(s);
 }
 double EnergyCalculator::barrierD(double d2) {
-	double dhat2 = params.contactDistance * params.contactDistance
+	double dhat2 = params.contactDistance * params.contactDistance;
 	double s = d2/dhat2;
 	double beta = params.contactStiffness/8 * params.contactDistance;
 
 	return beta/dhat2*(log(s)+1-1/s);
 }
 double EnergyCalculator::barrierD2(double d2) {
-	double dhat2 = params.contactDistance * params.contactDistance
+	double dhat2 = params.contactDistance * params.contactDistance;
 	double s = d2/dhat2;
 	double beta = params.contactStiffness/8 * params.contactDistance;
 
-	return beta/dhat2*(s+1)/(s*s);
+	return beta/dhat2/dhat2*(s+1)/(s*s);
 }

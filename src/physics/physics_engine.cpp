@@ -50,6 +50,10 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters&
 
 	}
 
+	// each pairs of triangles (assuming no overlap) generates 6 point-triangle and 9 edge-edge collision pairs, so reserve enough space at the start to prevent resizing later
+	int numTriangles = state.triangles.size();
+	state.activeCollisionPairs.reserve(15*numTriangles*numTriangles);
+
 	initialPositions = state.positions;
 	initialVelocities = state.velocities;
 }

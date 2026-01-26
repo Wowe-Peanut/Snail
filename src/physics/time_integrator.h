@@ -5,7 +5,7 @@
 #include "object.h"
 #include <Eigen/Dense>
 
-const double ALPHA_LOWER_BOUND = 0.00001;
+const double ALPHA_LOWER_BOUND = 0.0001;
 
 struct SimParameters;
 struct SimState;
