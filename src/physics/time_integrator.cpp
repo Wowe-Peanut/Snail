@@ -64,12 +64,8 @@ void TimeIntegrator::step() {
 	Matrix3Xd searchDirection = getSearchDirection(predictedPositions);
 	double IP = energyCalculator.ipValue(predictedPositions);
 
-	
 	// Projected Newton Loop
-	int iter = 0; 
 	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / dt > tol)  {
-		if (iter++ > 20) break;
-
 
 		// Line search to guarantees a step size that reduces the systems energy
 		double alpha = collisionManager.CCD(searchDirection);
