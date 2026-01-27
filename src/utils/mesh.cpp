@@ -42,14 +42,16 @@ string getExtension(string path) {
 
 // Initialization
 // ------------------------------------------------------------------------------------
-Mesh::Mesh(string filePath, bool isStatic, Transform meshTransform, vector<int>& fixedPoints, vec3 velocity): 
+Mesh::Mesh(string filePath, bool isStatic, vec3 preInitScale, Transform meshTransform, vector<int>& fixedPoints, vec3 velocity): 
 triPosBufID(0), triNorBufID(0), triTexBufID(0), triIndBufID(0), isStatic(isStatic), initialVelocity(velocity) {
 	string extension = getExtension(filePath);
 	if (extension == ".msh") {
 		loadMshFile(filePath);
-		transform(meshTransform);
 		setFixedPoints(fixedPoints);
 
+		transform({{0, 0, 0}, {0, 0, 0}, preInitScale});
+		computeRestingEdgeLengths();
+		transform(meshTransform);
 	} else {
 		cerr << "'" << extension << "' is not a supported mesh file type (.msh only atm)" << endl;
 		exit(1);
@@ -185,8 +187,9 @@ void Mesh::loadMshFile(string mshFilePath) {
 	// Remove duplicate edges (gmsh tends to overdue it... 😿)
 	set<Edge> uniqueEdges(edges.begin(), edges.end());
 	edges = vector<Edge>(uniqueEdges.begin(), uniqueEdges.end());
-	
-	// Calculate resting edge lengths
+}
+
+void Mesh::computeRestingEdgeLengths() {
 	for (Edge& edge: edges) {
 		float dx2 = pow(triPosBuf[3*edge.v1] - triPosBuf[3*edge.v2], 2);
 		float dy2 = pow(triPosBuf[3*edge.v1+1] - triPosBuf[3*edge.v2+1], 2);
@@ -194,13 +197,6 @@ void Mesh::loadMshFile(string mshFilePath) {
 		
 		edge.l2 = dx2 + dy2 + dz2;
 	}
-
-	// Calculate vertex normals
-	computeSurfaceQualities();
-
-	// TODO - texture buffer initialization
-
-	f.close();
 }
 
 void Mesh::computeSurfaceQualities() {

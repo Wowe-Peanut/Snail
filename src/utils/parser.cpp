@@ -52,15 +52,15 @@ vector<shared_ptr<Object>> parseObjects(string resourcePath, string jsonPath) {
 		// Parse and construct the objects members
 		string meshPath = objData["mesh"];
 		Transform meshTransform = toTransform(objData["mesh_transform"]);
-		Transform renderTransform = toTransform(objData["render_transform"]);
+		vec3 preInitScale = toVec3(objData["pre_init_scale"]);
 		shared_ptr<Material> material = toMaterial(objData["material"]);
 		vector<int> isDBC = objData["fixed_points"].get<vector<int>>();
 		vec3 initialVelocity = toVec3(objData["velocity"]);
 		bool isStatic = objData["is_static"];
 		
 		// Construct mesh & object
-		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshPath, isStatic, meshTransform, isDBC, initialVelocity);
-		objects.push_back(make_shared<Object>(mesh, material, renderTransform));
+		shared_ptr<Mesh> mesh = make_shared<Mesh>(resourcePath + meshPath, isStatic, preInitScale, meshTransform, isDBC, initialVelocity);
+		objects.push_back(make_shared<Object>(mesh, material));
 	}
 	
 	return objects;

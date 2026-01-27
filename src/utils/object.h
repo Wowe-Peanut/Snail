@@ -16,9 +16,8 @@ struct Object {
 		
 	std::shared_ptr<Mesh> mesh;
 	std::shared_ptr<Material> material;
-	Transform renderTransform;
 
-	Object(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material>, Transform renderTransform);
+	Object(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material>);
 	void draw(std::shared_ptr<MatrixStack> MV, std::shared_ptr<Program> prog);
 };
 

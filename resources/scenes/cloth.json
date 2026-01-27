@@ -26,11 +26,7 @@
                 "s": 200
             },
 
-            "render_transform": {
-                "translation":  [0, 0, 0],
-                "rotation":     [0, 0, 0],
-                "scale":        [1, 1, 1]
-            },
+            "pre_init_scale": [1, 1, 1],
 
             "mesh_transform": {
                 "translation":  [0, 1, 0],
@@ -52,11 +48,7 @@
                 "s": 200
             },
 
-            "render_transform": {
-                "translation":  [0, 0, 0],
-                "rotation":     [0, 0, 0],
-                "scale":        [1, 1, 1]
-            },
+            "pre_init_scale": [2, 1, 2],
 
             "mesh_transform": {
                 "translation":  [0, 2, 0],
@@ -78,11 +70,7 @@
                 "s": 200
             },
 
-            "render_transform": {
-                "translation":  [0, 0, 0],
-                "rotation":     [0, 0, 0],
-                "scale":        [1, 1, 1]
-            },
+            "pre_init_scale": [1, 1, 1],
 
             "mesh_transform": {
                 "translation":  [0, 0, 0],

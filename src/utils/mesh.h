@@ -62,14 +62,13 @@ struct Mesh {
 
 	template <typename T>
 	void initBuffer(GLenum glBufferType, std::vector<T>& buffer, unsigned& bufferID);
-	Mesh(std::string filePath, bool isStatic, Transform meshTransform, std::vector<int>& fixedPoints, glm::vec3 velocity);
+	Mesh(std::string filePath, bool isStatic, glm::vec3 preInitScale, Transform meshTransform, std::vector<int>& fixedPoints, glm::vec3 velocity);
 	void init();
 
 	void updateBuffer(const std::shared_ptr<Program> prog, GLint attribID, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);
 	void draw(const std::shared_ptr<Program> prog);	
 
-	
-	// Computes vertex normals for shading
+	void computeRestingEdgeLengths();
 	void computeSurfaceQualities();
 	void transform(Transform transform);
 	void setFixedPoints(std::vector<int>& fixedPoints);
