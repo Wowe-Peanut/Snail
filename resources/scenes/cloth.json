@@ -3,8 +3,8 @@
         "dt": 0.01,
         "tolerance": 0.01,
 
-        "point_mass": 10,
-        "spring_stiffness": 35000,
+        "point_mass": 100,
+        "spring_stiffness": 100000,
 
         "contact_stiffness": 15000000,
         "contact_distance": 0.08,
@@ -17,7 +17,7 @@
             "mesh": "models/sphere/sphere.msh",
             "is_static": false,
             "fixed_points": [],
-            "velocity": [0, 0, 0],
+            "velocity": [0, -1, 0],
 
             "material": {
                 "ka": [0.6, 0.4, 0.2],
@@ -36,6 +36,28 @@
         },
 
         {
+            "mesh": "models/sphere/sphere.msh",
+            "is_static": false,
+            "fixed_points": [],
+            "velocity": [0, -1, 0],
+
+            "material": {
+                "ka": [0.6, 0.4, 0.2],
+                "kd": [0.6, 0.4, 0.2],
+                "ks": [1.0, 1.0, 1.0],
+                "s": 200
+            },
+
+            "pre_init_scale": [1, 1, 1],
+
+            "mesh_transform": {
+                "translation":  [0, 3, 0.2],
+                "rotation":     [0, 0, 0],
+                "scale":        [1, 1, 1]
+            }
+        },
+
+        {
             "mesh": "models/plane/plane8.msh",
             "is_static": false,
             "fixed_points": [],
@@ -48,7 +70,7 @@
                 "s": 200
             },
 
-            "pre_init_scale": [2, 1, 2],
+            "pre_init_scale": [1, 1, 1],
 
             "mesh_transform": {
                 "translation":  [0, 2, 0],
