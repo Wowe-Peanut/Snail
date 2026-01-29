@@ -30,7 +30,7 @@ Matrix3Xd TimeIntegrator::getSearchDirection(Matrix3Xd& xtilde) {
     }
  
 	// Sparse solver 
-	Eigen::SparseLU<SparseMatrix<double>> solver;
+	Eigen::ConjugateGradient<SparseMatrix<double>> solver;
 	solver.compute(hess);
 
     if (solver.info() != Eigen::Success) {
