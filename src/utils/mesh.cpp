@@ -94,7 +94,8 @@ void Mesh::loadMshFile(string mshFilePath) {
 
 	// Nodes are vertices in gmsh
 	string line;
-	map<int, int> nodeIdxs;
+	map<int, int> nodeToIndex;
+	int curNodeIndex = 0;
 
 	while (getline(f, line)) {
 		if (line.find("$Nodes") != string::npos) {
@@ -114,15 +115,17 @@ void Mesh::loadMshFile(string mshFilePath) {
 				f >> entityDim >> entityTag >> parametric >> numNodesInBlock;
 
 				// Read node indices
-				vector<int> nodeIdxs(numNodesInBlock);
-				for (int node=0; node<numNodesInBlock; node++) {
-					f >> nodeIdxs[node];
+				vector<int> blockNodes(numNodesInBlock);
+				for (int n=0; n<numNodesInBlock; n++) {
+					f >> blockNodes[n];
+					nodeToIndex[blockNodes[n]] = curNodeIndex;
+					curNodeIndex++;
 				}
 				
 				// Add node positions to position buffer, ordered by ID
-				for (int node=0; node<numNodesInBlock; node++) {
-					int nodeIdx = nodeIdxs[node] - 1;
-					f >> triPosBuf[nodeIdx*3] >> triPosBuf[nodeIdx*3 + 1] >> triPosBuf[nodeIdx*3 + 2];
+				for (int n=0; n<numNodesInBlock; n++) {
+					int index = nodeToIndex[blockNodes[n]];
+					f >> triPosBuf[index*3] >> triPosBuf[index*3 + 1] >> triPosBuf[index*3 + 2];
 				}
 			}
 			break;
@@ -150,9 +153,11 @@ void Mesh::loadMshFile(string mshFilePath) {
 					// Triangles (dim 2) have 3 nodes, Tetrahedra (dim 3) have 4 nodes
 					int nodesInElement = entityDim == 2 ? 3 : 4; 
 					vector<int> nodes(nodesInElement);
-					for (int node=0; node<nodesInElement; node++) { 
-						f >> nodes[node];
-						nodes[node]--;
+
+					int node;
+					for (int n=0; n<nodesInElement; n++) { 
+						f >> node;
+						nodes[n] = nodeToIndex[node];
 					}
 
 					// Contruct edges from pairs of nodes
