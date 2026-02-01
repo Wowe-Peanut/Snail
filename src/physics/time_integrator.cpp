@@ -37,7 +37,7 @@ Matrix3Xd TimeIntegrator::getSearchDirection(Matrix3Xd& xtilde) {
         cerr << "Solver failed to compute decompose Hessian!\n";
         return Matrix3Xd::Zero(3, state.numPoints);
     }
-
+	
 	VectorXd p = solver.solve(-Eigen::Map<VectorXd>(grad.data(), 3*state.numPoints));
 	return Eigen::Map<Matrix3Xd>(p.data(), 3, state.numPoints);
 }
