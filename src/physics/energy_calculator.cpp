@@ -161,7 +161,7 @@ double EnergyCalculator::contactValue() {
 
 	double sum = 0;
 	for (auto& cp: state.activeCollisionPairs) {
-		if (cp->dist.value < params.contactDistance) {
+		if (cp->dist.value < params.cd2) {
 			sum += 0.5 * cp->contactArea * barrier(cp->dist.value);
 		}
 	}	
@@ -174,7 +174,7 @@ Matrix3Xd EnergyCalculator::contactGradient() {
 	Matrix3Xd grad = Matrix3Xd::Zero(3, state.numPoints);
 
 	for (shared_ptr<CollisionPair> cp: state.activeCollisionPairs) {
-		if (cp->dist.value < params.contactDistance) {
+		if (cp->dist.value < params.cd2) {
 			
 			Matrix3Xd localGrad = 0.5 * cp->contactArea * barrierD(cp->dist.value) * cp->dist.grad;
 			vector<int> dofIdxs = cp->getDofIdxs();
@@ -191,7 +191,7 @@ SparseMatrix<double> EnergyCalculator::contactHessian() {
 
 	vector<Triplet<double>> triplets;
 	for (shared_ptr<CollisionPair> cp: state.activeCollisionPairs) {
-		if (cp->dist.value < params.contactDistance) {
+		if (cp->dist.value < params.cd2) {
 			
 			Distance& d = cp->dist;
 			Eigen::Map<VectorXd> flatgrad(d.grad.data(), 12);

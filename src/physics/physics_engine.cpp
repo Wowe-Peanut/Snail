@@ -34,7 +34,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters&
 		
 		// Copy surface primitives
 		for (Triangle& tri: obj->mesh->triangles) {
-			state.triangles.push_back({offset+tri.v1, offset+tri.v2, offset+tri.v3});
+			state.triangles.emplace_back(offset+tri.v1, offset+tri.v2, offset+tri.v3);
 		}
 		
 		// Copy fixed points

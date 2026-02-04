@@ -2,6 +2,7 @@
 #include "collision_manager.h"
 #include "physics_engine.h"
 #include "distances.h"
+#include "iostream"
 
 using namespace std;
 using Eigen::Matrix3Xd, Eigen::Vector3d;
@@ -125,19 +126,61 @@ double CollisionManager::CCD(Matrix3Xd& searchDirection) {
 	return alpha;
 }
 
-void CollisionManager::trianglesToPairs(const Triangle& tri1, const Triangle& tri2) {
-	//! TODO
+void CollisionManager::trianglesToCollisionPairs(const Triangle& tri1, const Triangle& tri2) {
+
+	vector<vector<int>> vertices = {{tri1.v1, tri1.v2, tri1.v3}, {tri2.v1, tri2.v2, tri2.v3}};
+	
+	// Point-Triangle (triangle from primaryTri, point from secondaryTri)
+	for (int primaryTri=0; primaryTri<=1; primaryTri++) {
+		int secondaryTri = primaryTri == 0 ? 1 : 0;
+
+		vector<int>& pvs = vertices[primaryTri];
+		vector<int>& svs = vertices[secondaryTri];
+
+		// Consider all points in secondary triangle that are not a part of the primary triangle
+		for (int point: svs) {
+			if (find(pvs.begin(), pvs.end(), point) == pvs.end()) {
+
+				shared_ptr<PointTriangle> candidate = make_shared<PointTriangle>(point, pvs[0], pvs[1], pvs[2]);				
+				candidate->update(state, true);
+
+				if (candidate->dist.value < params.cd2) {
+					state.activeCollisionPairs.push_back(candidate);
+				}
+			}
+		}
+	}
+
+	// Edge-Edge
+	// vector<pair<int,int>> eidxs = {{0,1}, {1,2}, {2,0}};
+	// for (auto& [e1i, e1j] : eidxs) {
+	// 	for (auto& [e2i, e2j] : eidxs) {
+	// 		int e1v1 = vertices[0][e1i];
+	// 		int e1v2 = vertices[0][e1j];
+	// 		int e2v1 = vertices[1][e2i];
+	// 		int e2v2 = vertices[1][e2j];
+			
+	// 		if (e1v1 == e2v1 || e1v1 == e2v2 || e1v2 == e2v1 || e1v2 == e2v2) {
+	// 			continue;
+	// 		}
+			
+	// 		shared_ptr<EdgeEdge> candidate = make_shared<EdgeEdge>(e1v1, e1v2, e2v1, e2v2);
+	// 		candidate->update(state, true);
+	// 		if (candidate->dist.value <= params.cd2) state.activeCollisionPairs.push_back(candidate);
+	// 	}
+	// }
+
+	// std::cout << "Total Collision Pairs = " << state.activeCollisionPairs.size() << std::endl; 
 }
 
 void CollisionManager::broadPhase() {
 
 	const Matrix3Xd& positions = state.positions;
-	const int cd2 = params.contactDistance * params.contactDistance;
-	const Vector3d padding(cd2);
+	const Vector3d padding(params.contactDistance, params.contactDistance, params.contactDistance);
 
 	// Update triangle bounding boxes
-	for (const Triangle& tri: state.triangles) {
-		tri.boundingBox = AABB(posisions.col(tri.v1), posisions.col(tri.v2), posisions.col(tri.v3));
+	for (Triangle& tri: state.triangles) {
+		tri.boundingBox = AABB(positions.col(tri.v1), positions.col(tri.v2), positions.col(tri.v3));
 
 		// Pad with contact distance squared
 		tri.boundingBox.mins -= padding;
@@ -147,13 +190,21 @@ void CollisionManager::broadPhase() {
 	// Sort by starting point along x-axis
 	sort(state.triangles.begin(), state.triangles.end(), TriangleBBComparatorX());
 
-	// Sweep and prune
-
-	double cd2 = params.contactDistance*params.contactDistance;
+	// Sweep and prune along x-axis
 	state.activeCollisionPairs.clear();
 
+	int numTriangles = (int) state.triangles.size();
+	for (int tidx1=0; tidx1<numTriangles; tidx1++) {
+		Triangle& t1 = state.triangles[tidx1];
 
 
+		for (int tidx2=tidx1+1; tidx2<numTriangles; tidx2++) {
+			Triangle& t2 = state.triangles[tidx2];
+
+			if (t2.boundingBox.mins.x() > t1.boundingBox.maxs.x()) break;
+			if (t1.boundingBox.overlaps(t2.boundingBox)) trianglesToCollisionPairs(t1, t2);
+		}
+	}
 }
 
 void CollisionManager::updateActivePairs(bool valueOnly) {

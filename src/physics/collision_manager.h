@@ -40,7 +40,7 @@ struct CollisionManager {
 
 	CollisionManager(SimParameters& params, SimState& state): params(params), state(state) {};
 	void broadPhase();
-	void trianglesToPairs(const Triangle& tri1, const Triangle& tri2);
+	void trianglesToCollisionPairs(const Triangle& tri1, const Triangle& tri2);
 	double CCD(Eigen::Matrix3Xd& searchDirection);
 	void updateActivePairs(bool valueOnly);
 };

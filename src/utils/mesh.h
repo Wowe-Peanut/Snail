@@ -11,26 +11,13 @@
 #include <Eigen/Dense>
 
 struct AABB {
-	glm::vec3 mins;
-	glm::vec3 maxs;
+	Eigen::Vector3d mins;
+	Eigen::Vector3d maxs;
 
 	// Triangle constructor
-	AABB(const Eigen::Vector3d& v1, const Eigen::Vector3d& v2, const Eigen::Vector3d& v3) {
-		mins = {min(v1.x, min(v2.x, v3.x)), min(v1.y, min(v2.y, v3.y)), min(v1.z, min(v2.z, v3.z))};
-		maxs = {max(v1.x, max(v2.x, v3.x)), max(v1.y, min(v2.y, v3.y)), max(v1.z, max(v2.z, v3.z))};
-	}
-
-	bool overlaps(const AABB& other) {
-		return 	(mins.x <= other.maxs.x && maxs.x >= other.mins.x) &&
-         		(mins.y <= other.maxs.y && maxs.y >= other.mins.y) &&
-         		(mins.z <= other.maxs.z && maxs.z >= other.mins.z);
-	}
-};
-
-struct TriangleBBComparatorX {
-	bool operator()(const Triangle& a, const Triangle& b) const {
-		return a.boundingBox.mins.x < b.boundingBox.mins.x;
-	}
+	AABB(): mins(0.0, 0.0, 0.0), maxs(0.0, 0.0, 0.0) {};
+	AABB(const Eigen::Vector3d& v1, const Eigen::Vector3d& v2, const Eigen::Vector3d& v3);
+	bool overlaps(AABB& other);
 };
 
 struct Transform {
@@ -52,10 +39,18 @@ struct Edge {
 struct Triangle {
 	int v1, v2, v3;
 	AABB boundingBox;
+
+	Triangle(int v1, int v2, int v3): v1(v1), v2(v2), v3(v3) {};
 };
 
 struct Tetrahedron {
 	int v1, v2, v3, v4;
+};
+
+struct TriangleBBComparatorX {
+	bool operator()(const Triangle& a, const Triangle& b) const {
+		return a.boundingBox.mins.x() < b.boundingBox.mins.x();
+	}
 };
 
  

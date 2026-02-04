@@ -14,6 +14,7 @@ struct SimParameters {
     double pointMass;
     double contactStiffness;
     double contactDistance;
+    double cd2; // contactDistance squared
     Eigen::Vector3d gravity;
 };
 

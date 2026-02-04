@@ -124,9 +124,9 @@ void RenderEngine::initScene() {
 	// Manually initialize lights (for now) 
 	lightCount = 2;
 	lightColors[0] 		= vec3(0.5, 0.5, 0.5);
-	lightPositions[0] 	= vec3(-1, 1, -1);
+	lightPositions[0] 	= vec3(-10, 10, -10);
 	lightColors[1] 		= vec3(0.5, 0.5, 0.5);
-	lightPositions[1] 	= vec3(1, 1, 1);
+	lightPositions[1] 	= vec3(10, 10, 10);
 
 	bphongProg->bind(); 
 	GLSL::checkError(GET_FILE_LINE);

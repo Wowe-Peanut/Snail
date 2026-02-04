@@ -76,6 +76,7 @@ SimParameters parseParameters(string jsonPath) {
 		data["point_mass"],
 		data["contact_stiffness"],
 		data["contact_distance"],
+		(((double) data["contact_distance"]) * (double) data["contact_distance"]),
 		toVector3d(data["gravity"])
 	};
 }

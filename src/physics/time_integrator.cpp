@@ -56,7 +56,7 @@ void TimeIntegrator::step() {
 	Matrix3Xd previousPositions = positions; 					// From previous newton iteration
 	Matrix3Xd predictedPositions = positions + dt*velocities;	// Forward euler estimate
 	
-	// Generate collision pairs
+	// Generate possible collision pairs
 	collisionManager.broadPhase();
 
 	// Update distance calculations WITH GRAD/HESS, then calculate initial initial IP value and search direction 
@@ -67,12 +67,12 @@ void TimeIntegrator::step() {
 	// Projected Newton Loop
 	int iter = 0;
 	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / dt > tol)  {
-		if (iter++ > 100) break;
+		if (iter++ > 10) break;
 
 		// Line search to guarantees a step size that reduces the systems energy
 		double alpha = collisionManager.CCD(searchDirection);
 		positions = previousPositions + alpha*searchDirection;
-
+		
 		collisionManager.updateActivePairs(true);
 		double newIP = energyCalculator.ipValue(predictedPositions);
 
