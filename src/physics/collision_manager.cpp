@@ -33,34 +33,31 @@ double PointTriangle::CCD(SimState& state, Matrix3Xd& searchDirection) {
 	Vector3d dt3 = searchDirection.col(t3);
 
 	double maxDisplacementMag = dp.norm() + max(dt1.norm(), max(dt2.norm(), dt3.norm()));
-	if (maxDisplacementMag < 1e-8) return 1; // Pretty much not moving at all, fine w/ any step size
+	if (maxDisplacementMag < 1e-5) return 1; // Pretty much not moving at all, fine w/ any step size
 
 	double curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
 	double minimumGap = curDist * MINIMUM_SEPARATION;
 
 	// Keeps adding lowerbound of non-tunneling alpha values until it reaches MINIMUM_SEPARATION % of original distance (e.g. 0.1 of original)
 	double curAlpha = 0;
+	while(true) {
+		double alphaLowerBound = (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
 
-	return (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
-
-	// while(true) {
-	// 	double alphaLowerBound = (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
-
-	// 	pvec += dp * alphaLowerBound;
-	// 	t1vec += dt1 * alphaLowerBound;
-	// 	t2vec += dt2 * alphaLowerBound;
-	// 	t3vec += dt3 * alphaLowerBound;
+		pvec += dp * alphaLowerBound;
+		t1vec += dt1 * alphaLowerBound;
+		t2vec += dt2 * alphaLowerBound;
+		t3vec += dt3 * alphaLowerBound;
 		
-	// 	curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
-	// 	if (curDist < minimumGap) {
-	// 		return curAlpha;
-	// 	}
+		curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
+		if (curDist < minimumGap) {
+			return curAlpha;
+		}
 
-	// 	curAlpha += alphaLowerBound;
-	// 	if (curAlpha > 1) {
-	// 		return 1;
-	// 	}
-	// }
+		curAlpha += alphaLowerBound;
+		if (curAlpha > 1) {
+			return 1;
+		}
+	}
 }
 
 void EdgeEdge::update(SimState& state, bool valueOnly) {
@@ -97,25 +94,26 @@ double EdgeEdge::CCD(SimState& state, Matrix3Xd& searchDirection) {
 	double curAlpha = 0;
 	
 
-	return (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
-	// while(true) {
-	// 	double alphaLowerBound = (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
+	//return (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
+	
+	while(true) {
+		double alphaLowerBound = (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
 
-	// 	e1vec += de1 * alphaLowerBound;
-	// 	e2vec += de2 * alphaLowerBound;
-	// 	e3vec += de3 * alphaLowerBound;
-	// 	e4vec += de4 * alphaLowerBound;
+		e1vec += de1 * alphaLowerBound;
+		e2vec += de2 * alphaLowerBound;
+		e3vec += de3 * alphaLowerBound;
+		e4vec += de4 * alphaLowerBound;
 		
-	// 	curDist = sqrt(EdgeEdgeDist(e1vec, e2vec, e3vec, e4vec, true).value);
-	// 	if (curDist < minimumGap) {
-	// 		return curAlpha;
-	// 	}
+		curDist = sqrt(EdgeEdgeDist(e1vec, e2vec, e3vec, e4vec, true).value);
+		if (curDist < minimumGap) {
+			return curAlpha;
+		}
 
-	// 	curAlpha += alphaLowerBound;
-	// 	if (curAlpha > 1) {
-	// 		return 1;
-	// 	}
-	// }
+		curAlpha += alphaLowerBound;
+		if (curAlpha > 1) {
+			return 1;
+		}
+	}
 }
 
 double CollisionManager::CCD(Matrix3Xd& searchDirection) {
@@ -127,71 +125,35 @@ double CollisionManager::CCD(Matrix3Xd& searchDirection) {
 	return alpha;
 }
 
+void CollisionManager::trianglesToPairs(const Triangle& tri1, const Triangle& tri2) {
+	//! TODO
+}
+
 void CollisionManager::broadPhase() {
+
+	const Matrix3Xd& positions = state.positions;
+	const int cd2 = params.contactDistance * params.contactDistance;
+	const Vector3d padding(cd2);
+
+	// Update triangle bounding boxes
+	for (const Triangle& tri: state.triangles) {
+		tri.boundingBox = AABB(posisions.col(tri.v1), posisions.col(tri.v2), posisions.col(tri.v3));
+
+		// Pad with contact distance squared
+		tri.boundingBox.mins -= padding;
+		tri.boundingBox.maxs += padding;
+	}
+
+	// Sort by starting point along x-axis
+	sort(state.triangles.begin(), state.triangles.end(), TriangleBBComparatorX());
+
+	// Sweep and prune
 
 	double cd2 = params.contactDistance*params.contactDistance;
 	state.activeCollisionPairs.clear();
 
-	// Currently just brute forces all pairs of primitives
-	for (Triangle& tri1: state.triangles) {
-		for (Triangle& tri2: state.triangles) {
-			if (&tri1 >= &tri2) continue; // No self collisions and avoid duplicates (tri1 & tri2 vs. tri2 and tri1)
-			
-			vector<int> tri1Vertices = {tri1.v1, tri1.v2, tri1.v3};
-			vector<int> tri2Vertices = {tri2.v1, tri2.v2, tri2.v3};
 
 
-			// Point-Triangle pairs (point cannot be a part of the triangle) -----------------------------------------
-
-			// Point is on triangle 1
-			for (int idx: tri1Vertices) {
-
-				// If point is not in triangle 2, test for distance
-				if (idx != tri2.v1 && idx != tri2.v2 && idx != tri2.v3) {
-					shared_ptr<PointTriangle> candidate = make_shared<PointTriangle>(idx, tri2.v1, tri2.v2, tri2.v3);
-					candidate->update(state, true);
-					if (candidate->dist.value <= cd2) state.activeCollisionPairs.push_back(candidate);
-				}
-			}
-
-			// Point is on triangle 2
-			for (int idx: tri2Vertices) {
-
-				// If point is not in triangle 1, test for distance
-				if (idx != tri1.v1 && idx != tri1.v2 && idx != tri1.v3) {
-					shared_ptr<PointTriangle> candidate = make_shared<PointTriangle>(idx, tri1.v1, tri1.v2, tri1.v3);
-					candidate->update(state, true);
-					if (candidate->dist.value <= cd2) state.activeCollisionPairs.push_back(candidate);
-				}
-			}
-
-
-
-			// Edge-Edge pairs (edges cannot share any points) --------------------------------------------------------
-
-			//Edge-Edge pairs (edges cannot share any points)
-			// vector<pair<int,int>> edges1 = {{0,1}, {1,2}, {2,0}};
-			// vector<pair<int,int>> edges2 = {{0,1}, {1,2}, {2,0}};
-
-			// for (auto& [e1i, e1j] : edges1) {
-			// 	for (auto& [e2i, e2j] : edges2) {
-			// 		int e1v1 = tri1Vertices[e1i];
-			// 		int e1v2 = tri1Vertices[e1j];
-			// 		int e2v1 = tri2Vertices[e2i];
-			// 		int e2v2 = tri2Vertices[e2j];
-					
-			// 		// Skip if edges share any vertex
-			// 		if (e1v1 == e2v1 || e1v1 == e2v2 || e1v2 == e2v1 || e1v2 == e2v2) {
-			// 			continue;
-			// 		}
-					
-			// 		shared_ptr<EdgeEdge> candidate = make_shared<EdgeEdge>(e1v1, e1v2, e2v1, e2v2);
-			// 		candidate->update(state, true);
-			// 		if (candidate->dist.value <= cd2) state.activeCollisionPairs.push_back(candidate);
-			// 	}
-			// }
-		}
-	}
 }
 
 void CollisionManager::updateActivePairs(bool valueOnly) {
