@@ -1,0 +1,84 @@
+{
+    "parameters": {
+        "dt": 0.01,
+        "tolerance": 0.01,
+
+        "point_mass": 50,
+        "spring_stiffness": 200000,
+
+        "contact_stiffness": 15000000,
+        "contact_distance": 0.05,
+
+        "gravity": [0, -9.81, 0]
+    },
+
+    "objects": [
+        {
+            "mesh": "models/sphere/sphere.msh",
+            "is_static": false,
+            "fixed_points": [],
+            "velocity": [0, 0, 0],
+
+            "material": {
+                "ka": [0.6, 0.4, 0.2],
+                "kd": [0.6, 0.4, 0.2],
+                "ks": [1.0, 1.0, 1.0],
+                "s": 200
+            },
+
+            "pre_init_scale": [1, 1, 1],
+
+            "mesh_transform": {
+                "translation":  [0, 7, 0],
+                "rotation":     [0, 0, 0],
+                "scale":        [1, 1, 1]
+            }
+        },
+
+        {
+            "mesh": "models/cube/cube4.msh",
+            "is_static": false,
+            "fixed_points": [],
+            "velocity": [0, 0, 0],
+
+            "material": {
+                "ka": [0.1, 0.4, 0.6],
+                "kd": [0.2, 0.4, 0.6],
+                "ks": [1.0, 1.0, 1.0],
+                "s": 200
+            },
+
+            "pre_init_scale": [4, 4, 4],
+
+            "mesh_transform": {
+                "translation":  [0, 2.2, 0],
+                "rotation":     [0, 0, 0],
+                "scale":        [1, 1, 1]
+            }
+        },
+
+        {
+            "mesh": "models/plane/plane.msh",
+            "is_static": true,
+            "fixed_points": [],
+            "velocity": [0, 0, 0],
+
+            "material": {
+                "ka": [0.5, 0.5, 0.5],
+                "kd": [0.5, 0.5, 0.5],
+                "ks": [1.0, 1.0, 1.0],
+                "s": 200
+            },
+
+            "pre_init_scale": [1, 1, 1],
+
+            "mesh_transform": {
+                "translation":  [0, 0, 0],
+                "rotation":     [0, 0, 0],
+                "scale":        [10, 1, 10]
+            }
+        }
+
+
+    ]
+}
