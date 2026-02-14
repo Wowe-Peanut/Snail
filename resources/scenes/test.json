@@ -29,29 +29,7 @@
             "pre_init_scale": [1, 1, 1],
 
             "mesh_transform": {
-                "translation":  [0, 7, 0],
-                "rotation":     [0, 0, 0],
-                "scale":        [1, 1, 1]
-            }
-        },
-
-        {
-            "mesh": "models/cube/cube4.msh",
-            "is_static": false,
-            "fixed_points": [],
-            "velocity": [0, 0, 0],
-
-            "material": {
-                "ka": [0.1, 0.4, 0.6],
-                "kd": [0.2, 0.4, 0.6],
-                "ks": [1.0, 1.0, 1.0],
-                "s": 200
-            },
-
-            "pre_init_scale": [4, 4, 4],
-
-            "mesh_transform": {
-                "translation":  [0, 2.2, 0],
+                "translation":  [0, 1, 0],
                 "rotation":     [0, 0, 0],
                 "scale":        [1, 1, 1]
             }
