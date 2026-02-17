@@ -1,37 +1,39 @@
 
+TODO:
+    - Plan structure in header files
+    - Make line-search its own function (given some initial step size)
+    - Change distance calculations to take enum: D_VALUE, D_GRAD, D_HESS that gives full control over which quatities are calculated
 
-PhysicsEngine
+
+PhysicsEngine:
     - State
     - Params
     - Integrator
 
-
-Integrator
+Integrator:
     - StateParams
     - CollisionManager
+    virtual step()
 
+    // Explicit methods (e.g. ForwardsEuler, RK4) can each just extend directly from Integrator
 
-    ForwardsEuler
-    ExplicitRungeKatta4
-
-    // Implicit Methods need an Optimizer to solve their differening object functions (to standardize finding the roots)
-    // therefore they each need to implement: objective value/grad/hess so that 
-    BackwardsEuler
+    // Implicit methods (e.g. BackwardsEuler, Trapazoidal, IKR4) need their own subclass so that they can implement their variational objective functions and send to optimizer
+    ImplicitIntegrator
+        - EnergyCalculator
         - Optimizer
-    Trapazoidal
-        - Optimizer
-
+        virtual value()
+        virtual grad()
+        virtual hess()
     
+Optimizer:
+    virtual solve(ImplicitIntegrator* integrator)
 
-B/c the optimizers need to work with different integrator methods I need to be able to pass
-them different objective functions and possibly their derivaties (e.g. BFGS only needs value/grad but Newton needs value/grad/hess)
+    // Solver specific parameters
+    LFBGS(int m)
+    Newton()
 
-std::function? I'm told it has a lot of overhead
-function pointers? Maybe, don't really understand how they work tho, seems unsafe
-function back to 
 
-That will also require allowing for more freedom of choice in the distance functions as well
 
-Optimizer
+
 
     
