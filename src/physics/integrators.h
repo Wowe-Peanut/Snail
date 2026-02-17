@@ -21,15 +21,19 @@ struct ImplicitIntegrator : Integrator {
     EnergyCalculator energyCalculator;
     std::unique_ptr<Optimizer> optimizer;
 
-    ImplicitIntegrator(SimParameters& params, SimState& state); // Needs to construct the appropriate optimizer based on the information in params
+    ImplicitIntegrator(SimParameters& params, SimState& state); // Should construct the optimizer based on params and pass itself (this)
     virtual double value() = 0;
     virtual Eigen::Matrix3Xd gradient() = 0;
     virtual Eigen::SparseMatrix<double> hessian() = 0;
 };
 
 struct BackwardsEulerIntegrator : ImplicitIntegrator {
+    Eigen::Matrix3Xd predictedPosition;
+
     double value() override;
     Eigen::Matrix3Xd gradient() override;
     Eigen::SparseMatrix<double> hessian() override;
+
+    void step() override; // Should assign xtilde, call optimizer, then update velocity
 };
 
