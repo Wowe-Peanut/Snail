@@ -1,0 +1,37 @@
+
+
+PhysicsEngine
+    - State
+    - Params
+    - Integrator
+
+
+Integrator
+    - StateParams
+    - CollisionManager
+
+
+    ForwardsEuler
+    ExplicitRungeKatta4
+
+    // Implicit Methods need an Optimizer to solve their differening object functions (to standardize finding the roots)
+    // therefore they each need to implement: objective value/grad/hess so that 
+    BackwardsEuler
+        - Optimizer
+    Trapazoidal
+        - Optimizer
+
+    
+
+B/c the optimizers need to work with different integrator methods I need to be able to pass
+them different objective functions and possibly their derivaties (e.g. BFGS only needs value/grad but Newton needs value/grad/hess)
+
+std::function? I'm told it has a lot of overhead
+function pointers? Maybe, don't really understand how they work tho, seems unsafe
+function back to 
+
+That will also require allowing for more freedom of choice in the distance functions as well
+
+Optimizer
+
+    
