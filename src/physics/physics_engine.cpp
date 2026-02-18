@@ -5,7 +5,11 @@
 #include <Eigen/Sparse>
 using namespace std;
 
-PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters& params): params(params), integrator(params, state) {
+//! TEMPORARY - REMOVE ME
+#include "optimizers.h"
+#include "integrators.h"
+
+PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters& params): params(params) {
 
     state.numPoints = 0;
     for (auto obj: objects) {	
@@ -56,10 +60,18 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters&
 
 	initialPositions = state.positions;
 	initialVelocities = state.velocities;
+
+
+	//! TEMPORARY - REMOVE ME
+	integrator = make_shared<BackwardsEulerIntegrator>(params, state);
+	shared_ptr<Optimizer> optimizer = make_shared<NewtonOptimizer>(params, state, integrator.get());
+	integrator->optimizer = optimizer;
 }
 
 void PhysicsEngine::step() {
-	integrator.step();
+	if (state.objects.empty()) return;
+
+	integrator->step();
 	updateObjects();
 }
 

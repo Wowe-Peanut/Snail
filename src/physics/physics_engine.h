@@ -1,11 +1,13 @@
 #pragma once
 
-#include "time_integrator.h"
+#include "integrators.h"
 #include "object.h"
 #include "mesh.h"
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+
+struct ImplicitIntegrator;
 
 struct SimParameters {
     double dt;
@@ -36,7 +38,7 @@ struct SimState {
 struct PhysicsEngine {
     SimState state;
     SimParameters params;
-    TimeIntegrator integrator;
+    std::shared_ptr<ImplicitIntegrator> integrator; //! TEMPORARY - Set back to normal Integrator
 
     Eigen::Matrix3Xd initialPositions;
     Eigen::Matrix3Xd initialVelocities;

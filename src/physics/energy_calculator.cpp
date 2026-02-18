@@ -21,20 +21,17 @@ void EnergyCalculator::makePSD(MatrixXd& mat) {
 	mat = evecs * evals.asDiagonal() * evecs.transpose();
 }
 
-// Incremental Potential Energy
-double EnergyCalculator::ipValue(Matrix3Xd& xtilde) {
-	double dt = params.dt;
-	return inertiaValue(xtilde) + dt*dt*(massSpringValue() + gravityValue() + contactValue());
-}
-Matrix3Xd EnergyCalculator::ipGradient(Matrix3Xd& xtilde) {
-	double dt = params.dt;
-	return inertiaGradient(xtilde) + dt*dt*(massSpringGradient() + gravityGradient() + contactGradient());
-}
-SparseMatrix<double> EnergyCalculator::ipHessian(Matrix3Xd& xtilde) {
-	double dt = params.dt;
-	return inertiaHessian(xtilde) + dt*dt*(massSpringHessian() + contactHessian());
-}
 
+// Potential energy
+double EnergyCalculator::potentialValue() {
+	return massSpringValue() + gravityValue() + contactValue();
+}
+Eigen::Matrix3Xd EnergyCalculator::potentialGradient() {
+	return massSpringGradient() + gravityGradient() + contactGradient();
+}
+Eigen::SparseMatrix<double> EnergyCalculator::potentialHessian() {
+	return massSpringHessian() + contactHessian();
+}
 
 
 // Inertia Energy 
@@ -67,7 +64,6 @@ SparseMatrix<double> EnergyCalculator::inertiaHessian(Matrix3Xd& xtilde) {
 
 	return hess;
 }
-
 
 
 // Mass Spring Energy 
