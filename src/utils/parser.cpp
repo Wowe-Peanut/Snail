@@ -105,7 +105,7 @@ shared_ptr<Integrator> parseIntegrator(SimParameters& params, SimState& state, s
 	if (data["integrator"] == "trapezoidal")		integrator = make_shared<TrapezoidalIntegrator>(params, state);
 
 	if (data["optimizer"] == "newton") 	optimizer = make_shared<NewtonOptimizer>(params, state);
-	if (data["optimizer"] == "lfbgs") 	optimizer = make_shared<LBFGSOptimizer>(params, state, data["lfbgsHistorySize"]);
+	if (data["optimizer"] == "lbfgs") 	optimizer = make_shared<LBFGSOptimizer>(params, state, data["lfbgs_history_size"]);
 
 	integrator->optimizer = optimizer;
 	optimizer->integrator = integrator.get();

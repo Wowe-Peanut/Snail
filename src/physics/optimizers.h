@@ -37,10 +37,14 @@ struct LBFGSOptimizer : Optimizer {
 
     std::vector<Eigen::VectorXd> positionChangeHistory;
     std::vector<Eigen::VectorXd> gradientChangeHistory;
-    
+
+    // Used to reduce number of integrator->gradient() calls
+    Eigen::Matrix3Xd lastGradientCalculated;
+
     LBFGSOptimizer(SimParameters& params, SimState& state, int maxHistorySize): 
         Optimizer(params, state), maxHistorySize(maxHistorySize) {};
 
+    void updateHistory(Eigen::Matrix3Xd& positionChange, Eigen::Matrix3Xd& gradientChange);
     void optimize() override;
     Eigen::Matrix3Xd getSearchDirection() override;
 };

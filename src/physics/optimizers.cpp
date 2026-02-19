@@ -93,8 +93,9 @@ void NewtonOptimizer::optimize() {
 // https://apxml.com/courses/optimization-techniques-ml/chapter-2-second-order-optimization-methods/l-bfgs-algorithm
 Matrix3Xd LBFGSOptimizer::getSearchDirection() {
 	
-	int curHistorySize = (int) positionChangeHistory.size();/
+	int curHistorySize = (int) positionChangeHistory.size();
 	Matrix3Xd grad = integrator->gradient();
+	lastGradientCalculated = grad;
 
 	// Use A = I initial approximation
 	if (curHistorySize == 0) {
@@ -103,7 +104,7 @@ Matrix3Xd LBFGSOptimizer::getSearchDirection() {
 	// Use A = gamma*I where gamma uses the most recent s and y (s.y/y.y)
 	} else {
 
-		VectorXd q = Eigen::Map<VectorXd>(grad.data(), 3*state.numPoints));
+		VectorXd q = Eigen::Map<VectorXd>(grad.data(), 3*state.numPoints);
 		vector<double> rhos(curHistorySize);
 		vector<double> alphas(curHistorySize);
 
@@ -144,10 +145,32 @@ void LBFGSOptimizer::optimize() {
 
 	int iter = 0;
 	while (iter++ < params.maxIter && searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
-		lineSearch(searchDirection);
 
+		Matrix3Xd initalPositions = state.positions;
+		Matrix3Xd initialGradient = lastGradientCalculated;
+
+		lineSearch(searchDirection);
 		integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD);
 		searchDirection = getSearchDirection();
+
+		Matrix3Xd positionChange = state.positions - initalPositions;
+		Matrix3Xd gradientChange = lastGradientCalculated - initialGradient;
+		updateHistory(positionChange, gradientChange);
+	}
+}
+
+void LBFGSOptimizer::updateHistory(Matrix3Xd& positionChange, Matrix3Xd& gradientChange) {
+	auto s = Eigen::Map<Vector3d>(positionChange.data(), 3*state.numPoints);
+	auto y = Eigen::Map<Vector3d>(gradientChange.data(), 3*state.numPoints);
+
+	if (s.dot(y) > 0.0) {
+		positionChangeHistory.push_back(s);
+		gradientChangeHistory.push_back(y);
+
+		if ((int) positionChangeHistory.size() > maxHistorySize) {
+			positionChangeHistory.erase(positionChangeHistory.begin());
+			gradientChangeHistory.erase(gradientChangeHistory.begin());
+		}
 	}
 }
 
