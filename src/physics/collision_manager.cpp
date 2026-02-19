@@ -7,10 +7,10 @@
 using namespace std;
 using Eigen::Matrix3Xd, Eigen::Vector3d;
 
-void PointTriangle::update(SimState& state, bool valueOnly) {
+void PointTriangle::update(SimState& state, int flags) {
 	Matrix3Xd& pos = state.positions;
 	
-	dist = PointTriangleDist(pos.col(p), pos.col(t1), pos.col(t2), pos.col(t3), valueOnly);
+	dist = PointTriangleDist(pos.col(p), pos.col(t1), pos.col(t2), pos.col(t3), flags);
 
 	// Currently contact area only considers area of triangle, it doesn't take into account mesh density around point
 	Vector3d u = pos.col(t2) - pos.col(t1);
@@ -59,10 +59,10 @@ double PointTriangle::CCD(SimParameters& params, SimState& state, Matrix3Xd& sea
 	}
 }
 
-void EdgeEdge::update(SimState& state, bool valueOnly) {
+void EdgeEdge::update(SimState& state, int flags) {
 	Eigen::Matrix3Xd& pos = state.positions;
 	
-	dist = EdgeEdgeDist(pos.col(e1), pos.col(e2), pos.col(e3), pos.col(e4), valueOnly);
+	dist = EdgeEdgeDist(pos.col(e1), pos.col(e2), pos.col(e3), pos.col(e4), flags);
 
 	// Contact area is average lengths of the two incident edges
 	Eigen::Vector3d u = pos.col(e2) - pos.col(e1);
@@ -205,8 +205,8 @@ void CollisionManager::broadPhase() {
 	}
 }
 
-void CollisionManager::updateActivePairs(bool valueOnly) {
+void CollisionManager::updateActivePairs(int flags) {
 	for (auto& cp: state.activeCollisionPairs) {
-		cp->update(state, valueOnly);
+		cp->update(state, flags);
 	}
 }

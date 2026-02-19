@@ -38,34 +38,34 @@ MatrixXd mapHess(MatrixXd& hess, int newSize, vector<int> idxmap) {
 	return newHess;
 }
 
-Distance mapDistance(Distance& dist, int newSize, vector<int> idxmap, bool valueOnly) {
-	if (!valueOnly) {
-		dist.grad = mapGrad(dist.grad, newSize, idxmap);
-		dist.hess = mapHess(dist.hess, newSize, idxmap);
-	}
+Distance mapDistance(Distance& dist, int newSize, vector<int> idxmap, int flags) {
+	if (flags & D_GRAD) dist.grad = mapGrad(dist.grad, newSize, idxmap);
+	if (flags & D_HESS)	dist.hess = mapHess(dist.hess, newSize, idxmap);
 
 	return dist;
 }
 
-Distance PointPointDist(const Vector3d& x1, const Vector3d& x2, bool valueOnly) {
+Distance PointPointDist(const Vector3d& x1, const Vector3d& x2, int flags) {
 	Distance dist;
 
 	Vector3d diff = x1-x2;
 	Matrix3d I2 = 2*Matrix3d::Identity(3, 3);
-
 	dist.value = diff.dot(diff);
 
-	if (!valueOnly) {
+	if (flags & D_GRAD) {
 		dist.grad = Matrix3Xd(3, 2);
 		dist.grad << 2*diff, -2*diff;
-		dist.hess = MatrixXd(6, 6);
-		dist.hess << I2, -I2, -I2, I2;
+
+		if (flags & D_HESS) {
+			dist.hess = MatrixXd(6, 6);
+			dist.hess << I2, -I2, -I2, I2;
+		} 
 	}
 
 	return dist;
 }
 
-Distance PointLineDist(const Vector3d& x, const Vector3d& l1, const Vector3d& l2, bool valueOnly) {
+Distance PointLineDist(const Vector3d& x, const Vector3d& l1, const Vector3d& l2, int flags) {
 	Distance dist;
 
 	Vector3d l = l2-l1;
@@ -73,38 +73,40 @@ Distance PointLineDist(const Vector3d& x, const Vector3d& l1, const Vector3d& l2
 	
 	double ll = l.dot(l);
 	double t = a.dot(l)/ll;
-
 	Vector3d p = a-t*l;
-
 	dist.value = p.dot(p);
-	if (!valueOnly) {
+
+
+	if (flags & D_GRAD) {
 		dist.grad = Matrix3Xd(3, 3);
 		dist.grad << 2*p, 2*(t-1)*p, -2*t*p;
 
-		Matrix3d O = Matrix3d::Identity(3, 3) - (l*l.transpose())/ll;
-		Vector3d dtdl2 = (a - 2*t*l)/ll;
-
-		//! Holy fucking shit!
-		Matrix3d H_xx = 2*O;
-		Matrix3d H_xl2 = -2*t*O - 2*(p*l.transpose())/ll;
-		Matrix3d H_xl1 = -(H_xx + H_xl2);
-		Matrix3d H_l1l2 = 2*dtdl2*p.transpose() + (t-1)*H_xl2;
-		Matrix3d H_l1x = H_xl1.transpose();
-		Matrix3d H_l2x = H_xl2.transpose();
-		Matrix3d H_l1l1 = -(H_l1x + H_l1l2);
-		Matrix3d H_l2l1 = H_l1l2.transpose();
-		Matrix3d H_l2l2 = -(H_l2x + H_l2l1);
-
-		dist.hess = MatrixXd(9, 9);
-		dist.hess << H_xx,  H_l1x,  H_l2x,
-				 	 H_xl1, H_l1l1, H_l2l1,
-					 H_xl2, H_l1l2, H_l2l2;
+		if (flags & D_HESS) {
+			Matrix3d O = Matrix3d::Identity(3, 3) - (l*l.transpose())/ll;
+			Vector3d dtdl2 = (a - 2*t*l)/ll;
+	
+			//! Holy fucking shit!
+			Matrix3d H_xx = 2*O;
+			Matrix3d H_xl2 = -2*t*O - 2*(p*l.transpose())/ll;
+			Matrix3d H_xl1 = -(H_xx + H_xl2);
+			Matrix3d H_l1l2 = 2*dtdl2*p.transpose() + (t-1)*H_xl2;
+			Matrix3d H_l1x = H_xl1.transpose();
+			Matrix3d H_l2x = H_xl2.transpose();
+			Matrix3d H_l1l1 = -(H_l1x + H_l1l2);
+			Matrix3d H_l2l1 = H_l1l2.transpose();
+			Matrix3d H_l2l2 = -(H_l2x + H_l2l1);
+	
+			dist.hess = MatrixXd(9, 9);
+			dist.hess << H_xx,  H_l1x,  H_l2x,
+						  H_xl1, H_l1l1, H_l2l1,
+						 H_xl2, H_l1l2, H_l2l2;
+		}
 	}
 
 	return dist;
 }
    
-Distance PointPlaneDist(const Vector3d& x, const Vector3d& p1, const Vector3d& p2, const Vector3d& p3, bool valueOnly) {
+Distance PointPlaneDist(const Vector3d& x, const Vector3d& p1, const Vector3d& p2, const Vector3d& p3, int flags) {
 	Distance dist;
 
 	Vector3d a = x-p1;
@@ -118,7 +120,7 @@ Distance PointPlaneDist(const Vector3d& x, const Vector3d& p1, const Vector3d& p
     Vector3d p = s*n;
 
 	dist.value = p.dot(p);
-	if (!valueOnly) {
+	if (flags & D_GRAD) {
 		Matrix3d dndp2 = asSkewSymmetric(e2);
 		Matrix3d dndp3 = -asSkewSymmetric(e1);
 		
@@ -134,13 +136,15 @@ Distance PointPlaneDist(const Vector3d& x, const Vector3d& p1, const Vector3d& p
 		dist.grad = Matrix3Xd(3, 4);
 		dist.grad << grad_x, grad_p1, grad_p2, grad_p3;
 
-		dist.hess = MatrixXd::Zero(12, 12);
+		if (flags & D_HESS) {
+			dist.hess = MatrixXd::Zero(12, 12);
+		}
 	}
 
 	return dist;
 }
 
-Distance LineLineDist(const Vector3d& l11, const Vector3d& l12, const Vector3d& l21, const Vector3d& l22, bool valueOnly) {
+Distance LineLineDist(const Vector3d& l11, const Vector3d& l12, const Vector3d& l21, const Vector3d& l22, int flags) {
 	Distance dist;
 
 	Vector3d a = l12-l11;
@@ -154,7 +158,7 @@ Distance LineLineDist(const Vector3d& l11, const Vector3d& l12, const Vector3d& 
 	Vector3d p = s*n;
 
 	dist.value = p.dot(p);
-	if (!valueOnly) {
+	if (flags & D_GRAD) {
 		Matrix3d askew = -asSkewSymmetric(a);
 		Matrix3d bskew = -asSkewSymmetric(b);
 
@@ -171,13 +175,15 @@ Distance LineLineDist(const Vector3d& l11, const Vector3d& l12, const Vector3d& 
 		dist.grad = Matrix3Xd(3, 4);
 		dist.grad << grad_a1, grad_a2, grad_b1, grad_b2;
 
-		dist.hess = MatrixXd::Zero(12, 12);
+		if (flags & D_HESS) {
+			dist.hess = MatrixXd::Zero(12, 12);
+		}
 	}
 	
 	return dist;
 }
 
-Distance PointEdgeDist(const Vector3d& x, const Vector3d& l1, const Vector3d& l2, bool valueOnly) {
+Distance PointEdgeDist(const Vector3d& x, const Vector3d& l1, const Vector3d& l2, int flags) {
 
 	// Helper values
     Vector3d l = l2 - l1;
@@ -189,18 +195,18 @@ Distance PointEdgeDist(const Vector3d& x, const Vector3d& l1, const Vector3d& l2
 
 	// PointLine
     if (t > 0 && t < 1) {
-        return PointLineDist(x, l1, l2, valueOnly);
+        return PointLineDist(x, l1, l2, flags);
     } 
 
 	// PointPoint (a and l1)
 	else {
 		Vector3d linePoint = (t <= 0) ? l1 : l2;
-		Distance dist = PointPointDist(x, linePoint, valueOnly);
-		return mapDistance(dist, 3, {0, (t <= 0) ? 1 : 2}, valueOnly);
+		Distance dist = PointPointDist(x, linePoint, flags);
+		return mapDistance(dist, 3, {0, (t <= 0) ? 1 : 2}, flags);
 	}
 }
 
-Distance EdgeEdgeDist(const Vector3d& e11, const Vector3d& e12, const Vector3d& e21, const Vector3d& e22, bool valueOnly) {
+Distance EdgeEdgeDist(const Vector3d& e11, const Vector3d& e12, const Vector3d& e21, const Vector3d& e22, int flags) {
 
 	// Helper values
 	Vector3d a = e12 - e11;
@@ -221,23 +227,23 @@ Distance EdgeEdgeDist(const Vector3d& e11, const Vector3d& e12, const Vector3d& 
 		// Degrades to PointEdge
 		// Uses whichever between e11 and e12 is closer (only calculates grad/hess after determining which)
 
-		Distance d1 = PointEdgeDist(e11, e21, e22, true);
-		Distance d2 = PointEdgeDist(e12, e21, e22, true);
+		Distance d1 = PointEdgeDist(e11, e21, e22, 0);
+		Distance d2 = PointEdgeDist(e12, e21, e22, 0);
 
 		if (d1.value <= d2.value) {
-			if (valueOnly) {
+			if (flags == 0) {
 				return d1;
 			} else {
-				d1 = PointEdgeDist(e11, e21, e22, valueOnly);
-				return mapDistance(d1, 4, {0, 2, 3}, valueOnly);
+				d1 = PointEdgeDist(e11, e21, e22, flags);
+				return mapDistance(d1, 4, {0, 2, 3}, flags);
 			}
 
 		} else {
-			if (valueOnly) {
+			if (flags == 0) {
 				return d2;
 			} else {
-				d2 = PointEdgeDist(e12, e21, e22, valueOnly);
-				return mapDistance(d2, 4, {1, 2, 3}, valueOnly);
+				d2 = PointEdgeDist(e12, e21, e22, flags);
+				return mapDistance(d2, 4, {1, 2, 3}, flags);
 			}
 		}
 	} 
@@ -255,7 +261,7 @@ Distance EdgeEdgeDist(const Vector3d& e11, const Vector3d& e12, const Vector3d& 
 
 		// LineLine
 		if (aonline && bonline) {
-			return LineLineDist(e11, e12, e21, e22, valueOnly);
+			return LineLineDist(e11, e12, e21, e22, flags);
 		} 
 		
 		// PointLine
@@ -279,8 +285,8 @@ Distance EdgeEdgeDist(const Vector3d& e11, const Vector3d& e12, const Vector3d& 
 				idxmap = {p_idx, 2, 3};
 			}
 
-			Distance dist = PointLineDist(point, l1, l2, valueOnly);
-			return mapDistance(dist, 4, idxmap, valueOnly);
+			Distance dist = PointLineDist(point, l1, l2, flags);
+			return mapDistance(dist, 4, idxmap, flags);
 		} 
 
 		// PointPoint
@@ -289,13 +295,13 @@ Distance EdgeEdgeDist(const Vector3d& e11, const Vector3d& e12, const Vector3d& 
 			int p2_idx = (beta < 0) ? 2 : 3;
 			vector<int> idxmap = {p1_idx, p2_idx};
 			
-			Distance dist = PointPointDist((alpha < 0 ? e11 : e12), (beta < 0 ? e21 : e22), valueOnly);
-			return mapDistance(dist, 4, idxmap, valueOnly);
+			Distance dist = PointPointDist((alpha < 0 ? e11 : e12), (beta < 0 ? e21 : e22), flags);
+			return mapDistance(dist, 4, idxmap, flags);
 		}
 	}
 }
 
-Distance PointTriangleDist(const Vector3d& x, const Vector3d& t1, const Vector3d& t2, const Vector3d& t3, bool valueOnly) {
+Distance PointTriangleDist(const Vector3d& x, const Vector3d& t1, const Vector3d& t2, const Vector3d& t3, int flags) {
 
 	// Helper values
     Vector3d e0 = t2 - t1;
@@ -311,8 +317,8 @@ Distance PointTriangleDist(const Vector3d& x, const Vector3d& t1, const Vector3d
     
     // Degenerate triangle (collinear points) -> Triangle is a line 
     if (abs(denom) < ZERO_TOL) {
-        Distance dist = PointEdgeDist(x, t1, t2, valueOnly); 
-		return mapDistance(dist, 4, {0, 1, 2}, valueOnly);
+        Distance dist = PointEdgeDist(x, t1, t2, flags); 
+		return mapDistance(dist, 4, {0, 1, 2}, flags);
     }
 
 	// Barycentric coordinates in triangle plane (b1, b2, b3 correspond to t1, t2, t3 respectively)
@@ -322,24 +328,24 @@ Distance PointTriangleDist(const Vector3d& x, const Vector3d& t1, const Vector3d
 
 	// Projection falls inside triangle
 	if (b1 >= 0 && b2 >= 0 && b3 >= 0) {
-        return PointPlaneDist(x, t1, t2, t3, valueOnly);
+        return PointPlaneDist(x, t1, t2, t3, flags);
     }
 
 	// Outside edge t2,t3
 	else if (b1 < 0) {
-		Distance dist = PointEdgeDist(x, t2, t3, valueOnly);
-		return mapDistance(dist, 4, {0, 2, 3}, valueOnly);
+		Distance dist = PointEdgeDist(x, t2, t3, flags);
+		return mapDistance(dist, 4, {0, 2, 3}, flags);
 	}
 
 	// Outside edge t1,t3
 	else if (b2 < 0) {
-		Distance dist = PointEdgeDist(x, t1, t3, valueOnly);
-		return mapDistance(dist, 4, {0, 1, 3}, valueOnly);
+		Distance dist = PointEdgeDist(x, t1, t3, flags);
+		return mapDistance(dist, 4, {0, 1, 3}, flags);
 	}
 
 	// Outside edge t1,t2
 	else {
-		Distance dist = PointEdgeDist(x, t1, t2, valueOnly);
-		return mapDistance(dist, 4, {0, 1, 2}, valueOnly);
+		Distance dist = PointEdgeDist(x, t1, t2, flags);
+		return mapDistance(dist, 4, {0, 1, 2}, flags);
 	}
 }

@@ -10,12 +10,12 @@
         
         "ls_max_iterations": 100,
         "ls_contraction": 0.5,
-        "ls_lower_bound": 0.000001,
+        "ls_lower_bound": 0.0001,
 
         "accd_min_separation": 0.1,
 
         "point_mass": 50,
-        "spring_stiffness": 200000,
+        "spring_stiffness": 500000,
         "contact_stiffness": 1500000,
         "contact_distance": 0.05,
         "gravity": [0, -9.81, 0]
