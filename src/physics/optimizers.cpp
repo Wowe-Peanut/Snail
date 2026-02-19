@@ -28,7 +28,29 @@ void applyDBC(SparseMatrix<double>& hessian, const vector<bool>& isDBC) {
     }
 }
 
+void Optimizer::lineSearch(Matrix3Xd& searchDirection) {
 
+	// Record initial positions and total energy
+	Matrix3Xd initialPositions = state.positions;
+	double initialEnergy = integrator->value();
+
+	// State initial step and record energy
+	double alpha = integrator->collisionManager.CCD(searchDirection);
+	state.positions = initialPositions + alpha * searchDirection;
+	integrator->collisionManager.updateActivePairs(D_VALUE);
+	double finalEnergy = integrator->value();
+
+	// Contract step size until final energy < initial energy
+	int iter = 0;	
+	while (iter++ > params.lsMaxIter && finalEnergy > initialEnergy && alpha > params.lsLowerBound) {
+
+		alpha *= params.lsContraction;
+		state.positions = initialPositions + alpha*searchDirection;
+
+		integrator->collisionManager.updateActivePairs(D_VALUE);
+		finalEnergy = integrator->value();		
+	}
+}
 
 
 
@@ -52,90 +74,70 @@ Matrix3Xd NewtonOptimizer::getSearchDirection() {
 }
 void NewtonOptimizer::optimize() {
 	
-	// Run broadphase and calculate full distance value/grad/hess of all valid collision pairs
 	integrator->collisionManager.broadPhase();
 	integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD | D_HESS);
-
-	Matrix3Xd previousPositions = state.positions;
 	Matrix3Xd searchDirection = getSearchDirection();
-	double IP = integrator->value();
 
 	int iter = 0;
-	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
-		if (iter++ > params.maxIter) break;
+	while (iter++ < params.maxIter && searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
+		lineSearch(searchDirection);
 
-		// Line search to guarantees a step size that reduces the systems energy
-		double alpha = integrator->collisionManager.CCD(searchDirection);
-		state.positions = previousPositions + alpha*searchDirection;
-		
-		integrator->collisionManager.updateActivePairs(D_VALUE);
-		double newIP = integrator->value();
-
-		int lsIter = 0;
-		while (newIP > IP) {
-			if (lsIter++ > params.lsMaxIter) break;
-
-			alpha *= params.lsContraction;
-
-			state.positions = previousPositions + alpha*searchDirection;
-			integrator->collisionManager.updateActivePairs(D_VALUE);
-			newIP = integrator->value();
-
-			if (alpha < params.lsLowerBound) break;
-		}
-		
-		// Update IP & calculate next search direction
-		IP = newIP;
 		integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD | D_HESS);
 		searchDirection = getSearchDirection();
-		previousPositions = state.positions;
 	}
 }
 
 
 
 
+// https://apxml.com/courses/optimization-techniques-ml/chapter-2-second-order-optimization-methods/l-bfgs-algorithm
 Matrix3Xd LBFGSOptimizer::getSearchDirection() {
-	//! TODO
-}
-void LBFGSOptimizer::optimize() {
+	
+	int curHistorySize = (int) positionChangeHistory.size();/
+	Matrix3Xd grad = integrator->gradient();
 
+	// Use A = I initial approximation
+	if (curHistorySize == 0) {
+		return -grad;
+
+	// Use A = gamma*I where gamma uses the most recent s and y (s.y/y.y)
+	} else {
+
+		// Backward pass
+		VectorXd q = Eigen::Map<VectorXd>(grad.data(), 3*state.numPoints));
+		for (int k=curHistorySize-1; k>=0; k--) {
+			const Vector3d& s = positionChangeHistory[k];
+			const Vector3d& y = gradientChangeHistory[k];
+			double alpha = s.dot(q) / s.dot(y);
+			scalars[k] = alpha;
+
+			q = q - alpha * y;
+		}
+
+		// Scaling
+		q *= positionChangeHistory.back().dot(gradientChangeHistory.back()) / gradientChangeHistory.back().dot(gradientChangeHistory.back());
+		
+		// Forward pass
+		for (int k=0; k<curHistorySize; k++) {
+			const Vector3d& s = positionChangeHistory[k];
+			const Vector3d& y = gradientChangeHistory[k];
+			
+			
+		}
+	}
+}
+
+void LBFGSOptimizer::optimize() {
 	integrator->collisionManager.broadPhase();
 	integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD);
-
-	Matrix3Xd previousPositions = state.positions;
 	Matrix3Xd searchDirection = getSearchDirection();
-	double IP = integrator->value();
 
 	int iter = 0;
-	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
-		if (iter++ > params.maxIter) break;
+	while (iter++ < params.maxIter && searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
+		lineSearch(searchDirection);
 
-		// Line search to guarantees a step size that reduces the systems energy
-		double alpha = integrator->collisionManager.CCD(searchDirection);
-		state.positions = previousPositions + alpha*searchDirection;
-		
-		integrator->collisionManager.updateActivePairs(D_VALUE);
-		double newIP = integrator->value();
-
-		int lsIter = 0;
-		while (newIP > IP) {
-			if (lsIter++ > params.lsMaxIter) break;
-
-			alpha *= params.lsContraction;
-
-			state.positions = previousPositions + alpha*searchDirection;
-			integrator->collisionManager.updateActivePairs(D_VALUE);
-			newIP = integrator->value();
-
-			if (alpha < params.lsLowerBound) break;
-		}
-		
-		// Update IP & calculate next search direction
-		IP = newIP;
 		integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD);
 		searchDirection = getSearchDirection();
-		previousPositions = state.positions;
 	}
 }
 

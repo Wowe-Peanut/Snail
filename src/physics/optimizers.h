@@ -2,7 +2,7 @@
 
 #include "integrators.h"
 #include "physics_engine.h"
-#include <list>
+#include <vector>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
@@ -10,7 +10,7 @@
 // Helper functions
 void applyDBC(Eigen::Matrix3Xd& gradient, const std::vector<bool>& isDBC);
 void applyDBC(Eigen::SparseMatrix<double>& hessian, const std::vector<bool>& isDBC);
-// void lineSearch();
+
 
 struct ImplicitIntegrator;
 
@@ -20,6 +20,8 @@ struct Optimizer {
     ImplicitIntegrator* integrator; // weak to avoid circular reference between an integrator and its optimizer
 
     Optimizer(SimParameters& params, SimState& state): params(params), state(state) {};
+    void lineSearch(Eigen::Matrix3Xd& searchDirection);
+
     virtual Eigen::Matrix3Xd getSearchDirection() = 0;
     virtual void optimize() = 0;
 };
@@ -31,11 +33,18 @@ struct NewtonOptimizer : Optimizer {
 };
 
 struct LBFGSOptimizer : Optimizer {
-    int historySize;
-    std::list<Eigen::Matrix3Xd> positionChangeHistory;
-    std::list<Eigen::Matrix3Xd> gradientChangeHistory;
+    int maxHistorySize;
+
+    std::vector<Eigen::VectorXd> positionChangeHistory;
+    std::vector<Eigen::VectorXd> gradientChangeHistory;
+
+    // Vectors for scalars used in lfbgs that I want to avoid reinitialization over and over again
+    std::vector<double> rho;
+    std::vector<doulbe> alpha;
     
-    LBFGSOptimizer(SimParameters& params, SimState& state, int historySize): Optimizer(params, state), historySize(historySize) {};
+    LBFGSOptimizer(SimParameters& params, SimState& state, int maxHistorySize): 
+        Optimizer(params, state), maxHistorySize(maxHistorySize), scalars(maxHistorySize, 0) {};
+
     void optimize() override;
     Eigen::Matrix3Xd getSearchDirection() override;
 };

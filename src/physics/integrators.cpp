@@ -25,23 +25,22 @@ SparseMatrix<double> BackwardsEulerIntegrator::hessian() {
 	return energyCalculator.inertiaHessian(predictedPosition) + params.dt*params.dt*energyCalculator.potentialHessian();
 }
 
+
+
+
 // https://en.wikipedia.org/wiki/Trapezoidal_rule_(differential_equations)
 // !NOT WORKING AT THE MOMENT!
 void TrapezoidalIntegrator::step() {
-	Matrix3Xd originalPositions = state.positions;
 
-	predictedPosition = state.positions + (params.dt*state.velocities) + (params.dt*params.dt* -energyCalculator.potentialGradient()) / 4 / params.pointMass;
-	optimizer->optimize();
-	state.velocities = 2*(state.positions - originalPositions) / params.dt - state.velocities;
 }
 double TrapezoidalIntegrator::value() {
-	return energyCalculator.inertiaValue(predictedPosition) + params.dt*params.dt*energyCalculator.potentialValue()/4;
+
 }
 Matrix3Xd TrapezoidalIntegrator::gradient() {
-	return energyCalculator.inertiaGradient(predictedPosition) + params.dt*params.dt*energyCalculator.potentialGradient()/4;
+
 }
 SparseMatrix<double> TrapezoidalIntegrator::hessian() {
-	return energyCalculator.inertiaHessian(predictedPosition) + params.dt*params.dt*energyCalculator.potentialHessian()/4;
+
 }
 
 
