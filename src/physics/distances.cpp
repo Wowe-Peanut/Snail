@@ -15,9 +15,10 @@ Matrix3d asSkewSymmetric(const Vector3d& v) {
 }
 
 Matrix3Xd mapGrad(Matrix3Xd& grad, int newSize, vector<int> idxmap) {
+	int curSize = (int) idxmap.size();
 
 	Matrix3Xd newGrad = Matrix3Xd::Zero(3, newSize);
-	for (int idx=0; idx<idxmap.size(); idx++) {
+	for (int idx=0; idx<curSize; idx++) {
 		newGrad.col(idxmap[idx]) = grad.col(idx);
 	}
 
@@ -25,10 +26,11 @@ Matrix3Xd mapGrad(Matrix3Xd& grad, int newSize, vector<int> idxmap) {
 }
 
 MatrixXd mapHess(MatrixXd& hess, int newSize, vector<int> idxmap) {
+	int curSize = (int) idxmap.size();
 
 	MatrixXd newHess = MatrixXd::Zero(3*newSize, 3*newSize);
-	for (int ridx=0; ridx<idxmap.size(); ridx++) {
-		for (int cidx=0; cidx<idxmap.size(); cidx++) {
+	for (int ridx=0; ridx<curSize; ridx++) {
+		for (int cidx=0; cidx<curSize; cidx++) {
 			newHess.block<3, 3>(3*idxmap[ridx], 3*idxmap[cidx]) = hess.block<3, 3>(3*ridx, 3*cidx);
 		}
 	}

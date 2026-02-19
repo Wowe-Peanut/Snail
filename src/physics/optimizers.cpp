@@ -50,7 +50,6 @@ Matrix3Xd NewtonOptimizer::getSearchDirection() {
 	VectorXd searchDirection = solver.solve(-Eigen::Map<VectorXd>(grad.data(), 3*state.numPoints));
 	return Eigen::Map<Matrix3Xd>(searchDirection.data(), 3, state.numPoints);
 }
-
 void NewtonOptimizer::optimize() {
 	
 	// Run broadphase and calculate full distance value/grad/hess of all valid collision pairs
@@ -63,7 +62,7 @@ void NewtonOptimizer::optimize() {
 
 	int iter = 0;
 	while (searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
-		if (iter++ > 10) break;
+		if (iter++ > params.maxIter) break;
 
 		// Line search to guarantees a step size that reduces the systems energy
 		double alpha = integrator->collisionManager.CCD(searchDirection);
@@ -72,14 +71,17 @@ void NewtonOptimizer::optimize() {
 		integrator->collisionManager.updateActivePairs(true);
 		double newIP = integrator->value();
 
+		int lsIter = 0;
 		while (newIP > IP) {
-			alpha /= 2;
-			state.positions = previousPositions + alpha*searchDirection;
+			if (lsIter++ > params.lsMaxIter) break;
 
+			alpha *= params.lsContraction;
+
+			state.positions = previousPositions + alpha*searchDirection;
 			integrator->collisionManager.updateActivePairs(true);
 			newIP = integrator->value();
 
-			if (alpha < 0.0001) break;
+			if (alpha < params.lsLowerBound) break;
 		}
 		
 		// Update IP & calculate next search direction

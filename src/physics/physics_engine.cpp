@@ -1,15 +1,15 @@
 
 #include "physics_engine.h"
+#include "integrators.h"
+#include "parser.h"
 #include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 using namespace std;
 
-//! TEMPORARY - REMOVE ME
-#include "optimizers.h"
-#include "integrators.h"
 
-PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters& params): params(params) {
+
+PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, string jsonPath) {
 
     state.numPoints = 0;
     for (auto obj: objects) {	
@@ -62,10 +62,9 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters&
 	initialVelocities = state.velocities;
 
 
-	//! TEMPORARY - REMOVE ME
-	integrator = make_shared<BackwardsEulerIntegrator>(params, state);
-	shared_ptr<Optimizer> optimizer = make_shared<NewtonOptimizer>(params, state, integrator.get());
-	integrator->optimizer = optimizer;
+	// Initialize the integrator only after 'params' and 'state' are initialized
+	params = parseParameters(jsonPath);
+	integrator = parseIntegrator(params, state, jsonPath);
 }
 
 void PhysicsEngine::step() {

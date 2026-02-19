@@ -18,14 +18,14 @@ struct Optimizer {
     SimParameters& params;
 	SimState& state;
     ImplicitIntegrator* integrator; // weak to avoid circular reference between an integrator and its optimizer
-    
-    Optimizer(SimParameters& params, SimState& state, ImplicitIntegrator* integrator): params(params), state(state), integrator(integrator) {};
+
+    Optimizer(SimParameters& params, SimState& state): params(params), state(state) {};
     virtual Eigen::Matrix3Xd getSearchDirection() = 0;
     virtual void optimize() = 0;
 };
 
 struct NewtonOptimizer : Optimizer {
-    NewtonOptimizer(SimParameters& params, SimState& state, ImplicitIntegrator* integrator): Optimizer(params, state, integrator) {};
+    NewtonOptimizer(SimParameters& params, SimState& state): Optimizer(params, state) {};
     void optimize() override;
     Eigen::Matrix3Xd getSearchDirection() override;
 };
@@ -35,7 +35,7 @@ struct LBFGSOptimizer : Optimizer {
     std::list<Eigen::Matrix3Xd> positionChangeHistory;
     std::list<Eigen::Matrix3Xd> gradientChangeHistory;
     
-    LBFGSOptimizer(SimParameters& params, SimState& state, ImplicitIntegrator* integrator, int historySize): Optimizer(params, state, integrator), historySize(historySize) {};
+    LBFGSOptimizer(SimParameters& params, SimState& state, int historySize): Optimizer(params, state), historySize(historySize) {};
     void optimize() override;
     Eigen::Matrix3Xd getSearchDirection() override;
 };

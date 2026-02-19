@@ -14,16 +14,13 @@ struct Integrator {
 	SimState& state;
     CollisionManager collisionManager;
 
-    //! TEMPORARY - MOVE BACK TO ImplicitIntegrator
-    std::shared_ptr<Optimizer> optimizer;
-
     Integrator(SimParameters& params, SimState& state): params(params), state(state), collisionManager(params, state) {};
     virtual void step() = 0;
 };  
 
 struct ImplicitIntegrator : Integrator {
     EnergyCalculator energyCalculator;
-    
+    std::shared_ptr<Optimizer> optimizer;
 
     ImplicitIntegrator(SimParameters& params, SimState& state): Integrator(params, state), energyCalculator(params, state) {};
     virtual double value() = 0;

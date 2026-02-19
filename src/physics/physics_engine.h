@@ -7,11 +7,24 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
-struct ImplicitIntegrator;
+struct Integrator;
 
 struct SimParameters {
+
+    // Optimizer parameters
     double dt;
     double tolerance;
+    int maxIter;
+
+    // Line search parameters
+    int lsMaxIter;
+    double lsContraction;
+    double lsLowerBound;
+
+    // ACCD parameters
+    double accdMinimumSeparation;
+
+    // Physical constants
     double springStiffness;
     double pointMass;
     double contactStiffness;
@@ -38,12 +51,12 @@ struct SimState {
 struct PhysicsEngine {
     SimState state;
     SimParameters params;
-    std::shared_ptr<ImplicitIntegrator> integrator; //! TEMPORARY - Set back to normal Integrator
+    std::shared_ptr<Integrator> integrator;
 
     Eigen::Matrix3Xd initialPositions;
     Eigen::Matrix3Xd initialVelocities;
 
-    PhysicsEngine(std::vector<std::shared_ptr<Object>>& objects, SimParameters& params);
+    PhysicsEngine(std::vector<std::shared_ptr<Object>>& objects, std::string jsonPath);
     void step(); 
     void reset();
     void updateObjects();

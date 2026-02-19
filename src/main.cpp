@@ -1,6 +1,7 @@
 
 #include "render_engine.h"
 #include "physics_engine.h"
+#include "integrators.h"
 #include "parser.h"
 #include <unistd.h>
 using namespace std;
@@ -13,15 +14,16 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	// Read path to mesh files and path to scene data from command line arguments
 	string resourcePath = argv[1] + string("/");
 	string jsonPath = argv[2];
 
-	vector<shared_ptr<Object>> objects = parseObjects(resourcePath, jsonPath);
-	SimParameters params = parseParameters(resourcePath + jsonPath);
-
+	// Initialize objects shared between the physics and rendering sides
+	vector<shared_ptr<Object>> 	objects = parseObjects(resourcePath, jsonPath);
 	RenderEngine renderer(objects, resourcePath);
-	PhysicsEngine engine(objects, params);
+	PhysicsEngine engine(objects, jsonPath);
 	
+	// Main loop
 	while (!glfwWindowShouldClose(renderer.window)) {
 		if (renderer.PAUSED) {
 			if (renderer.STEP) {
@@ -44,6 +46,7 @@ int main(int argc, char **argv) {
 		usleep(engine.params.dt * MICROSECONDS);
 	}
 
+	// Terminate!
 	renderer.bphongProg->unbind();
 	glfwDestroyWindow(renderer.window);
 	glfwTerminate();
