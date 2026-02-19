@@ -37,13 +37,9 @@ struct LBFGSOptimizer : Optimizer {
 
     std::vector<Eigen::VectorXd> positionChangeHistory;
     std::vector<Eigen::VectorXd> gradientChangeHistory;
-
-    // Vectors for scalars used in lfbgs that I want to avoid reinitialization over and over again
-    std::vector<double> rho;
-    std::vector<doulbe> alpha;
     
     LBFGSOptimizer(SimParameters& params, SimState& state, int maxHistorySize): 
-        Optimizer(params, state), maxHistorySize(maxHistorySize), scalars(maxHistorySize, 0) {};
+        Optimizer(params, state), maxHistorySize(maxHistorySize) {};
 
     void optimize() override;
     Eigen::Matrix3Xd getSearchDirection() override;

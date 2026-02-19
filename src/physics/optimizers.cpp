@@ -103,13 +103,20 @@ Matrix3Xd LBFGSOptimizer::getSearchDirection() {
 	// Use A = gamma*I where gamma uses the most recent s and y (s.y/y.y)
 	} else {
 
-		// Backward pass
 		VectorXd q = Eigen::Map<VectorXd>(grad.data(), 3*state.numPoints));
+		vector<double> rhos(curHistorySize);
+		vector<double> alphas(curHistorySize);
+
+		// Backward pass
 		for (int k=curHistorySize-1; k>=0; k--) {
 			const Vector3d& s = positionChangeHistory[k];
 			const Vector3d& y = gradientChangeHistory[k];
-			double alpha = s.dot(q) / s.dot(y);
-			scalars[k] = alpha;
+
+			double rho = 1/s.dot(y);
+			double alpha = rho*s.dot(q);
+
+			rhos[k] = rho;
+			alphas[k] = alpha;
 
 			q = q - alpha * y;
 		}
@@ -122,8 +129,11 @@ Matrix3Xd LBFGSOptimizer::getSearchDirection() {
 			const Vector3d& s = positionChangeHistory[k];
 			const Vector3d& y = gradientChangeHistory[k];
 			
-			
+			q += (alphas[k] - rhos[k]*y.dot(q)) * s;
 		}
+
+		q *= -1;
+		return Eigen::Map<Matrix3Xd>(q.data(), 3, state.numPoints);
 	}
 }
 
