@@ -16,6 +16,7 @@ struct Integrator {
 
     Integrator(SimParameters& params, SimState& state): params(params), state(state), collisionManager(params, state) {};
     virtual void step() = 0;
+    virtual void reset() = 0;
 };  
 
 struct ImplicitIntegrator : Integrator {
@@ -26,6 +27,7 @@ struct ImplicitIntegrator : Integrator {
     virtual double value() = 0;
     virtual Eigen::Matrix3Xd gradient() = 0;
     virtual Eigen::SparseMatrix<double> hessian() = 0;
+    void reset() override;
 };
 
 struct BackwardsEulerIntegrator : ImplicitIntegrator {

@@ -101,11 +101,19 @@ shared_ptr<Integrator> parseIntegrator(SimParameters& params, SimState& state, s
 	shared_ptr<ImplicitIntegrator> integrator;
 	shared_ptr<Optimizer> optimizer;
 
-	if (data["integrator"] == "backwards_euler")	integrator = make_shared<BackwardsEulerIntegrator>(params, state);
-	if (data["integrator"] == "trapezoidal")		integrator = make_shared<TrapezoidalIntegrator>(params, state);
+	if (data["integrator"] == "backwards_euler")		integrator = make_shared<BackwardsEulerIntegrator>(params, state);
+	else if (data["integrator"] == "trapezoidal")		integrator = make_shared<TrapezoidalIntegrator>(params, state);
+	else {
+		cout << "Unrecognized Integrator: " << data["integrator"] << endl;
+		exit(1);
+	}
 
-	if (data["optimizer"] == "newton") 	optimizer = make_shared<NewtonOptimizer>(params, state);
-	if (data["optimizer"] == "lbfgs") 	optimizer = make_shared<LBFGSOptimizer>(params, state, data["lfbgs_history_size"]);
+	if (data["optimizer"] == "newton") 		optimizer = make_shared<NewtonOptimizer>(params, state);
+	else if (data["optimizer"] == "lbfgs") 	optimizer = make_shared<LBFGSOptimizer>(params, state, data["lbfgs_history_size"]);
+	else {
+		cout << "Unrecognized Optimizer: " << data["optimizer"] << endl;
+		exit(1);
+	}
 
 	integrator->optimizer = optimizer;
 	optimizer->integrator = integrator.get();

@@ -7,6 +7,11 @@
 using namespace std;
 using Eigen::Matrix3Xd, Eigen::SparseMatrix;
 
+void ImplicitIntegrator::reset() {
+	optimizer->reset(); 
+}
+
+
 // https://phys-sim-book.github.io/lec1.5-implicit_time_integration.html
 void BackwardsEulerIntegrator::step() {
 	Matrix3Xd originalPositions = state.positions;

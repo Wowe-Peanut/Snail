@@ -1,10 +1,10 @@
 {
     "parameters": {
-
         "integrator": "backwards_euler",
         "dt": 0.01,
 
-        "optimizer": "newton",
+        "optimizer": "lbfgs",
+        "lbfgs_history_size": 20,
         "tolerance": 0.01,
         "max_iterations": 100,
         
@@ -16,7 +16,7 @@
 
         "point_mass": 50,
         "spring_stiffness": 500000,
-        "contact_stiffness": 1500000,
+        "contact_stiffness": 2000000,
         "contact_distance": 0.05,
         "gravity": [0, -9.81, 0]
     },
@@ -35,11 +35,11 @@
                 "s": 200
             },
 
-            "pre_init_scale": [1, 2, 1],
+            "pre_init_scale": [2, 2, 2],
 
             "mesh_transform": {
-                "translation":  [0, 2, 0],
-                "rotation":     [0.78, 0, 0],
+                "translation":  [0, 3, 0],
+                "rotation":     [0, 0, 0],
                 "scale":        [1, 1, 1]
             }
         },

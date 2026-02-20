@@ -42,7 +42,7 @@ void Optimizer::lineSearch(Matrix3Xd& searchDirection) {
 
 	// Contract step size until final energy < initial energy
 	int iter = 0;	
-	while (iter++ > params.lsMaxIter && finalEnergy > initialEnergy && alpha > params.lsLowerBound) {
+	while (iter++ < params.lsMaxIter && finalEnergy > initialEnergy && alpha > params.lsLowerBound) {
 
 		alpha *= params.lsContraction;
 		state.positions = initialPositions + alpha*searchDirection;
@@ -95,6 +95,7 @@ Matrix3Xd LBFGSOptimizer::getSearchDirection() {
 	
 	int curHistorySize = (int) positionChangeHistory.size();
 	Matrix3Xd grad = integrator->gradient();
+	applyDBC(grad, state.isDBC);
 	lastGradientCalculated = grad;
 
 	// Use A = I initial approximation
@@ -110,8 +111,8 @@ Matrix3Xd LBFGSOptimizer::getSearchDirection() {
 
 		// Backward pass
 		for (int k=curHistorySize-1; k>=0; k--) {
-			const Vector3d& s = positionChangeHistory[k];
-			const Vector3d& y = gradientChangeHistory[k];
+			const VectorXd& s = positionChangeHistory[k];
+			const VectorXd& y = gradientChangeHistory[k];
 
 			double rho = 1/s.dot(y);
 			double alpha = rho*s.dot(q);
@@ -127,8 +128,8 @@ Matrix3Xd LBFGSOptimizer::getSearchDirection() {
 		
 		// Forward pass
 		for (int k=0; k<curHistorySize; k++) {
-			const Vector3d& s = positionChangeHistory[k];
-			const Vector3d& y = gradientChangeHistory[k];
+			const VectorXd& s = positionChangeHistory[k];
+			const VectorXd& y = gradientChangeHistory[k];
 			
 			q += (alphas[k] - rhos[k]*y.dot(q)) * s;
 		}
@@ -160,8 +161,8 @@ void LBFGSOptimizer::optimize() {
 }
 
 void LBFGSOptimizer::updateHistory(Matrix3Xd& positionChange, Matrix3Xd& gradientChange) {
-	auto s = Eigen::Map<Vector3d>(positionChange.data(), 3*state.numPoints);
-	auto y = Eigen::Map<Vector3d>(gradientChange.data(), 3*state.numPoints);
+	auto s = Eigen::Map<VectorXd>(positionChange.data(), 3*state.numPoints);
+	auto y = Eigen::Map<VectorXd>(gradientChange.data(), 3*state.numPoints);
 
 	if (s.dot(y) > 0.0) {
 		positionChangeHistory.push_back(s);
@@ -172,5 +173,10 @@ void LBFGSOptimizer::updateHistory(Matrix3Xd& positionChange, Matrix3Xd& gradien
 			gradientChangeHistory.erase(gradientChangeHistory.begin());
 		}
 	}
+}
+
+void LBFGSOptimizer::reset() {
+	positionChangeHistory.clear(); 
+	gradientChangeHistory.clear(); 
 }
 

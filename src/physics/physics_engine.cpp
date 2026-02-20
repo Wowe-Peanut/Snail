@@ -77,6 +77,7 @@ void PhysicsEngine::step() {
 void PhysicsEngine::reset() {
 	state.positions = initialPositions;
 	state.velocities = initialVelocities;
+	integrator->reset();
 	updateObjects();
 }
 

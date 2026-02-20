@@ -24,12 +24,14 @@ struct Optimizer {
 
     virtual Eigen::Matrix3Xd getSearchDirection() = 0;
     virtual void optimize() = 0;
+    virtual void reset() = 0;
 };
 
 struct NewtonOptimizer : Optimizer {
     NewtonOptimizer(SimParameters& params, SimState& state): Optimizer(params, state) {};
     void optimize() override;
     Eigen::Matrix3Xd getSearchDirection() override;
+    void reset() {};
 };
 
 struct LBFGSOptimizer : Optimizer {
@@ -47,5 +49,6 @@ struct LBFGSOptimizer : Optimizer {
     void updateHistory(Eigen::Matrix3Xd& positionChange, Eigen::Matrix3Xd& gradientChange);
     void optimize() override;
     Eigen::Matrix3Xd getSearchDirection() override;
+    void reset() override;
 };
 
