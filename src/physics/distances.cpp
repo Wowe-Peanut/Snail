@@ -224,28 +224,10 @@ Distance EdgeEdgeDist(const Vector3d& e11, const Vector3d& e12, const Vector3d& 
 	// CASE 1 | Parallel -----------------------------------------------------------
 	if (abs(denom) < ZERO_TOL) {
 
-		// Degrades to PointEdge
-		// Uses whichever between e11 and e12 is closer (only calculates grad/hess after determining which)
+		// Degrades to PointEdge (just chooses one)
+		Distance dist = PointEdgeDist(e11, e21, e22, flags);
+		return mapDistance(dist, 4, {0, 2, 3}, flags);
 
-		Distance d1 = PointEdgeDist(e11, e21, e22, 0);
-		Distance d2 = PointEdgeDist(e12, e21, e22, 0);
-
-		if (d1.value <= d2.value) {
-			if (flags == 0) {
-				return d1;
-			} else {
-				d1 = PointEdgeDist(e11, e21, e22, flags);
-				return mapDistance(d1, 4, {0, 2, 3}, flags);
-			}
-
-		} else {
-			if (flags == 0) {
-				return d2;
-			} else {
-				d2 = PointEdgeDist(e12, e21, e22, flags);
-				return mapDistance(d2, 4, {1, 2, 3}, flags);
-			}
-		}
 	} 
 
 

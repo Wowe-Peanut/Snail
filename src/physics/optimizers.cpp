@@ -28,7 +28,7 @@ void applyDBC(SparseMatrix<double>& hessian, const vector<bool>& isDBC) {
     }
 }
 
-void Optimizer::lineSearch(Matrix3Xd& searchDirection) {
+void Optimizer::lineSearch(Matrix3Xd& searchDirection, Matrix3Xd& gradient) {
 
 	// Record initial positions and total energy
 	Matrix3Xd initialPositions = state.positions;
@@ -40,9 +40,12 @@ void Optimizer::lineSearch(Matrix3Xd& searchDirection) {
 	integrator->collisionManager.updateActivePairs(D_VALUE);
 	double finalEnergy = integrator->value();
 
+	// Sufficient decrease in energy threshold
+	double armijoThreshold = initialEnergy + 0.00001 * alpha * gradient.cwiseProduct(searchDirection).sum();
+
 	// Contract step size until final energy < initial energy
 	int iter = 0;	
-	while (iter++ < params.lsMaxIter && finalEnergy > initialEnergy && alpha > params.lsLowerBound) {
+	while (iter++ < params.lsMaxIter && finalEnergy > initialEnergy && alpha > params.lsLowerBound && finalEnergy > armijoThreshold) {
 
 		alpha *= params.lsContraction;
 		state.positions = initialPositions + alpha*searchDirection;
@@ -80,7 +83,8 @@ void NewtonOptimizer::optimize() {
 
 	int iter = 0;
 	while (iter++ < params.maxIter && searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
-		lineSearch(searchDirection);
+		Matrix3Xd grad = integrator->gradient();
+		lineSearch(searchDirection, grad);
 
 		integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD | D_HESS);
 		searchDirection = getSearchDirection();
@@ -91,21 +95,18 @@ void NewtonOptimizer::optimize() {
 
 
 // https://apxml.com/courses/optimization-techniques-ml/chapter-2-second-order-optimization-methods/l-bfgs-algorithm
-Matrix3Xd LBFGSOptimizer::getSearchDirection() {
+Matrix3Xd LBFGSOptimizer::getSearchDirection(Eigen::Matrix3Xd& gradient) {
 	
 	int curHistorySize = (int) positionChangeHistory.size();
-	Matrix3Xd grad = integrator->gradient();
-	applyDBC(grad, state.isDBC);
-	lastGradientCalculated = grad;
-
+	
 	// Use A = I initial approximation
 	if (curHistorySize == 0) {
-		return -grad;
+		return -gradient;
 
 	// Use A = gamma*I where gamma uses the most recent s and y (s.y/y.y)
 	} else {
 
-		VectorXd q = Eigen::Map<VectorXd>(grad.data(), 3*state.numPoints);
+		VectorXd q = Eigen::Map<VectorXd>(gradient.data(), 3*state.numPoints);
 		vector<double> rhos(curHistorySize);
 		vector<double> alphas(curHistorySize);
 
@@ -140,31 +141,43 @@ Matrix3Xd LBFGSOptimizer::getSearchDirection() {
 }
 
 void LBFGSOptimizer::optimize() {
+
+	reset();
 	integrator->collisionManager.broadPhase();
 	integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD);
-	Matrix3Xd searchDirection = getSearchDirection();
 
-	int iter = 0;
-	while (iter++ < params.maxIter && searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
+	Matrix3Xd position = state.positions;
+	Matrix3Xd gradient = integrator->gradient();
+	applyDBC(gradient, state.isDBC);
 
-		Matrix3Xd initalPositions = state.positions;
-		Matrix3Xd initialGradient = lastGradientCalculated;
-
-		lineSearch(searchDirection);
+	for (int iter=0; iter < params.maxIter; iter++) {
+		Matrix3Xd searchDirection = getSearchDirection(gradient);
+		
+		lineSearch(searchDirection, gradient); // Updates state.position so we need to recalculate distances right after
 		integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD);
-		searchDirection = getSearchDirection();
 
-		Matrix3Xd positionChange = state.positions - initalPositions;
-		Matrix3Xd gradientChange = lastGradientCalculated - initialGradient;
-		updateHistory(positionChange, gradientChange);
+		Matrix3Xd newPosition = state.positions;
+		Matrix3Xd newGradient = integrator->gradient();
+		applyDBC(newGradient, state.isDBC);
+
+		updateHistory(position, newPosition, gradient, newGradient);
+
+		position = newPosition;
+		gradient = newGradient;
+
+		if (gradient.cwiseAbs().maxCoeff() < params.tolerance) break;
 	}
 }
 
-void LBFGSOptimizer::updateHistory(Matrix3Xd& positionChange, Matrix3Xd& gradientChange) {
+void LBFGSOptimizer::updateHistory(Matrix3Xd& initialPosition, Matrix3Xd& finalPosition, Matrix3Xd& initialGradient, Matrix3Xd& finalGradient) {
+
+	Matrix3Xd positionChange = finalPosition - initialPosition;
+	Matrix3Xd gradientChange = finalGradient - initialGradient;
+
 	auto s = Eigen::Map<VectorXd>(positionChange.data(), 3*state.numPoints);
 	auto y = Eigen::Map<VectorXd>(gradientChange.data(), 3*state.numPoints);
 
-	if (s.dot(y) > 0.0) {
+	if (y.dot(s) > 1e-10 * s.norm() * y.norm()) {
 		positionChangeHistory.push_back(s);
 		gradientChangeHistory.push_back(y);
 

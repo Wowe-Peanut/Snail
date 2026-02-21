@@ -20,9 +20,8 @@ struct Optimizer {
     ImplicitIntegrator* integrator; // weak to avoid circular reference between an integrator and its optimizer
 
     Optimizer(SimParameters& params, SimState& state): params(params), state(state) {};
-    void lineSearch(Eigen::Matrix3Xd& searchDirection);
+    void lineSearch(Eigen::Matrix3Xd& searchDirection, Eigen::Matrix3Xd& gradient);
 
-    virtual Eigen::Matrix3Xd getSearchDirection() = 0;
     virtual void optimize() = 0;
     virtual void reset() = 0;
 };
@@ -30,8 +29,8 @@ struct Optimizer {
 struct NewtonOptimizer : Optimizer {
     NewtonOptimizer(SimParameters& params, SimState& state): Optimizer(params, state) {};
     void optimize() override;
-    Eigen::Matrix3Xd getSearchDirection() override;
     void reset() {};
+    Eigen::Matrix3Xd getSearchDirection();
 };
 
 struct LBFGSOptimizer : Optimizer {
@@ -46,9 +45,9 @@ struct LBFGSOptimizer : Optimizer {
     LBFGSOptimizer(SimParameters& params, SimState& state, int maxHistorySize): 
         Optimizer(params, state), maxHistorySize(maxHistorySize) {};
 
-    void updateHistory(Eigen::Matrix3Xd& positionChange, Eigen::Matrix3Xd& gradientChange);
+    void updateHistory(Eigen::Matrix3Xd& initialPosition, Eigen::Matrix3Xd& finalPosition, Eigen::Matrix3Xd& initialGradient, Eigen::Matrix3Xd& finalGradient);
     void optimize() override;
-    Eigen::Matrix3Xd getSearchDirection() override;
     void reset() override;
+    Eigen::Matrix3Xd getSearchDirection(Eigen::Matrix3Xd& gradient);
 };
 

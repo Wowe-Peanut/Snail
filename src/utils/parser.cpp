@@ -102,7 +102,6 @@ shared_ptr<Integrator> parseIntegrator(SimParameters& params, SimState& state, s
 	shared_ptr<Optimizer> optimizer;
 
 	if (data["integrator"] == "backwards_euler")		integrator = make_shared<BackwardsEulerIntegrator>(params, state);
-	else if (data["integrator"] == "trapezoidal")		integrator = make_shared<TrapezoidalIntegrator>(params, state);
 	else {
 		cout << "Unrecognized Integrator: " << data["integrator"] << endl;
 		exit(1);

@@ -37,26 +37,28 @@ double PointTriangle::CCD(SimParameters& params, SimState& state, Matrix3Xd& sea
 	double curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
 	double minimumGap = curDist * params.accdMinimumSeparation;
 
-	// Keeps adding lowerbound of non-tunneling alpha values until it reaches params.accdMinimumSeparation % of original distance (e.g. 0.1 of original)
-	double curAlpha = 0;
-	while(true) {
-		double alphaLowerBound = (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
+	return (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
 
-		pvec += dp * alphaLowerBound;
-		t1vec += dt1 * alphaLowerBound;
-		t2vec += dt2 * alphaLowerBound;
-		t3vec += dt3 * alphaLowerBound;
+	// // Keeps adding lowerbound of non-tunneling alpha values until it reaches params.accdMinimumSeparation % of original distance (e.g. 0.1 of original)
+	// double curAlpha = 0;
+	// while(true) {
+	// 	double alphaLowerBound = (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
+
+	// 	pvec += dp * alphaLowerBound;
+	// 	t1vec += dt1 * alphaLowerBound;
+	// 	t2vec += dt2 * alphaLowerBound;
+	// 	t3vec += dt3 * alphaLowerBound;
 		
-		curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
-		if (curDist < minimumGap) {
-			return curAlpha;
-		}
+	// 	curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
+	// 	if (curDist < minimumGap) {
+	// 		return curAlpha;
+	// 	}
 
-		curAlpha += alphaLowerBound;
-		if (curAlpha > 1) {
-			return 1;
-		}
-	}
+	// 	curAlpha += alphaLowerBound;
+	// 	if (curAlpha > 1) {
+	// 		return 1;
+	// 	}
+	// }
 }
 
 void EdgeEdge::update(SimState& state, int flags) {
@@ -90,29 +92,29 @@ double EdgeEdge::CCD(SimParameters& params, SimState& state, Matrix3Xd& searchDi
 	double minimumGap = curDist * params.accdMinimumSeparation;
 
 	// Keeps adding lowerbound of non-tunneling alpha values until it reaches params.accdMinimumSeparation % of original distance (e.g. 0.1 of original)
-	double curAlpha = 0;
+	// double curAlpha = 0;
 	
 
-	//return (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
+	return (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
 	
-	while(true) {
-		double alphaLowerBound = (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
+	// while(true) {
+	// 	double alphaLowerBound = (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
 
-		e1vec += de1 * alphaLowerBound;
-		e2vec += de2 * alphaLowerBound;
-		e3vec += de3 * alphaLowerBound;
-		e4vec += de4 * alphaLowerBound;
+	// 	e1vec += de1 * alphaLowerBound;
+	// 	e2vec += de2 * alphaLowerBound;
+	// 	e3vec += de3 * alphaLowerBound;
+	// 	e4vec += de4 * alphaLowerBound;
 		
-		curDist = sqrt(EdgeEdgeDist(e1vec, e2vec, e3vec, e4vec, true).value);
-		if (curDist < minimumGap) {
-			return curAlpha;
-		}
+	// 	curDist = sqrt(EdgeEdgeDist(e1vec, e2vec, e3vec, e4vec, true).value);
+	// 	if (curDist < minimumGap) {
+	// 		return curAlpha;
+	// 	}
 
-		curAlpha += alphaLowerBound;
-		if (curAlpha > 1) {
-			return 1;
-		}
-	}
+	// 	curAlpha += alphaLowerBound;
+	// 	if (curAlpha > 1) {
+	// 		return 1;
+	// 	}
+	// }
 }
 
 double CollisionManager::CCD(Matrix3Xd& searchDirection) {

@@ -40,13 +40,3 @@ struct BackwardsEulerIntegrator : ImplicitIntegrator {
     void step() override;
 };
 
-struct TrapezoidalIntegrator : ImplicitIntegrator {
-    Eigen::Matrix3Xd predictedPosition; 
-
-    TrapezoidalIntegrator(SimParameters& params, SimState& state): ImplicitIntegrator(params, state) {};
-    double value() override;
-    Eigen::Matrix3Xd gradient() override;
-    Eigen::SparseMatrix<double> hessian() override;
-    void step() override;
-};
-

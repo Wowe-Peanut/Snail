@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 set(CMAKE_BUILD_TYPE Release)
 
 # Name of the project
-PROJECT(sim)
+PROJECT(snail)
 
 
 # Use glob to get the list of all source files.
@@ -79,6 +79,6 @@ SET_TARGET_PROPERTIES(${CMAKE_PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 
 # Set flags (-I includes )
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wnrvo")
 
 TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} "GL")

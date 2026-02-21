@@ -4,7 +4,7 @@
         "dt": 0.005,
 
         "optimizer": "lbfgs",
-        "lbfgs_history_size": 100,
+        "lbfgs_history_size": 20,
         "tolerance": 0.001,
         "max_iterations": 100,
         
@@ -12,11 +12,11 @@
         "ls_contraction": 0.5,
         "ls_lower_bound": 0.0001,
 
-        "accd_min_separation": 0.1,
+        "accd_min_separation": 0.5,
 
         "point_mass": 10,
         "spring_stiffness": 200000,
-        "contact_stiffness": 20000000,
+        "contact_stiffness": 2000000,
         "contact_distance": 0.05,
         "gravity": [0, -9.81, 0]
     },
@@ -26,7 +26,7 @@
             "mesh": "models/teapot/lowpoly-teapot.msh",
             "is_static": false,
             "fixed_points": [],
-            "velocity": [0, -3, 0],
+            "velocity": [0, 0, 0],
 
             "material": {
                 "ka": [0.1, 0.6, 0.3],
@@ -57,7 +57,7 @@
                 "s": 200
             },
 
-            "pre_init_scale": [1, 1, 1],
+            "pre_init_scale": [0.5, 1, 0.5],
 
             "mesh_transform": {
                 "translation":  [0, 0, 0],

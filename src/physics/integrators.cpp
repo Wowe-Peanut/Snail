@@ -31,24 +31,3 @@ SparseMatrix<double> BackwardsEulerIntegrator::hessian() {
 }
 
 
-
-
-// https://en.wikipedia.org/wiki/Trapezoidal_rule_(differential_equations)
-// !NOT WORKING AT THE MOMENT!
-void TrapezoidalIntegrator::step() {
-
-}
-double TrapezoidalIntegrator::value() {
-
-}
-Matrix3Xd TrapezoidalIntegrator::gradient() {
-
-}
-SparseMatrix<double> TrapezoidalIntegrator::hessian() {
-
-}
-
-
-
-
-
