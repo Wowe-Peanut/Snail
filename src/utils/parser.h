@@ -3,6 +3,7 @@
 
 #include "object.h"
 #include "physics_engine.h"
+#include "integrators.h"
 #include "json.hpp"
 #include <glm/glm.hpp>
 
@@ -14,3 +15,5 @@ std::shared_ptr<Material> toMaterial(nlohmann::json data);
 
 std::vector<std::shared_ptr<Object>> parseObjects(std::string resourcePath, std::string jsonPath);
 SimParameters parseParameters(std::string jsonPath);
+std::shared_ptr<Integrator> parseIntegrator(SimParameters& params, SimState& state, std::string jsonPath);
+

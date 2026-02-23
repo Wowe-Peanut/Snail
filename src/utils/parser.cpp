@@ -1,5 +1,8 @@
 
 #include "parser.h"
+#include "integrators.h"
+#include "optimizers.h"
+#include "object.h"
 #include <fstream>
 #include <iostream>
 
@@ -43,11 +46,10 @@ shared_ptr<Material> toMaterial(json data) {
 }
 
 vector<shared_ptr<Object>> parseObjects(string resourcePath, string jsonPath) {
-
-	json data = openjson(resourcePath + jsonPath);
+	json data = openjson(jsonPath)["objects"];
 	
 	vector<shared_ptr<Object>> objects;
-	for (auto objData: data["objects"]) {
+	for (auto objData: data) {
 
 		// Parse and construct the objects members
 		string meshPath = objData["mesh"];
@@ -69,17 +71,52 @@ vector<shared_ptr<Object>> parseObjects(string resourcePath, string jsonPath) {
 SimParameters parseParameters(string jsonPath) {
 	json data = openjson(jsonPath)["parameters"];
 
-	return {
+	SimParameters params = {
 		data["dt"],
 		data["tolerance"],
+		data["max_iterations"],
+
+		data["ls_max_iterations"],
+		data["ls_contraction"],
+		data["ls_lower_bound"],
+
+		data["accd_min_separation"],
+
 		data["spring_stiffness"],
 		data["point_mass"],
 		data["contact_stiffness"],
 		data["contact_distance"],
-		(((double) data["contact_distance"]) * (double) data["contact_distance"]),
+		0,
 		toVector3d(data["gravity"])
 	};
+
+	params.cd2 = params.contactDistance * params.contactDistance;
+
+	return params;
 }
 
+shared_ptr<Integrator> parseIntegrator(SimParameters& params, SimState& state, string jsonPath) {
+	json data = openjson(jsonPath)["parameters"];
+
+	shared_ptr<ImplicitIntegrator> integrator;
+	shared_ptr<Optimizer> optimizer;
+
+	if (data["integrator"] == "backwards_euler")		integrator = make_shared<BackwardsEulerIntegrator>(params, state);
+	else {
+		cout << "Unrecognized Integrator: " << data["integrator"] << endl;
+		exit(1);
+	}
+
+	if (data["optimizer"] == "newton") 		optimizer = make_shared<NewtonOptimizer>(params, state);
+	else if (data["optimizer"] == "lbfgs") 	optimizer = make_shared<LBFGSOptimizer>(params, state, data["lbfgs_history_size"]);
+	else {
+		cout << "Unrecognized Optimizer: " << data["optimizer"] << endl;
+		exit(1);
+	}
+
+	integrator->optimizer = optimizer;
+	optimizer->integrator = integrator.get();
+	return integrator;
+}
 
 

@@ -7,12 +7,10 @@
 using namespace std;
 using Eigen::Matrix3Xd, Eigen::Vector3d;
 
-const double MINIMUM_SEPARATION = 0.1;
-
-void PointTriangle::update(SimState& state, bool valueOnly) {
+void PointTriangle::update(SimState& state, int flags) {
 	Matrix3Xd& pos = state.positions;
 	
-	dist = PointTriangleDist(pos.col(p), pos.col(t1), pos.col(t2), pos.col(t3), valueOnly);
+	dist = PointTriangleDist(pos.col(p), pos.col(t1), pos.col(t2), pos.col(t3), flags);
 
 	// Currently contact area only considers area of triangle, it doesn't take into account mesh density around point
 	Vector3d u = pos.col(t2) - pos.col(t1);
@@ -20,7 +18,7 @@ void PointTriangle::update(SimState& state, bool valueOnly) {
 	contactArea = 0.5 * u.cross(v).norm();
 }
 
-double PointTriangle::CCD(SimState& state, Matrix3Xd& searchDirection) {
+double PointTriangle::CCD(SimParameters& params, SimState& state, Matrix3Xd& searchDirection) {
 	Matrix3Xd& pos = state.positions;
 
 	Vector3d pvec = pos.col(p);
@@ -37,34 +35,36 @@ double PointTriangle::CCD(SimState& state, Matrix3Xd& searchDirection) {
 	if (maxDisplacementMag < 1e-5) return 1; // Pretty much not moving at all, fine w/ any step size
 
 	double curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
-	double minimumGap = curDist * MINIMUM_SEPARATION;
+	double minimumGap = curDist * params.accdMinimumSeparation;
 
-	// Keeps adding lowerbound of non-tunneling alpha values until it reaches MINIMUM_SEPARATION % of original distance (e.g. 0.1 of original)
-	double curAlpha = 0;
-	while(true) {
-		double alphaLowerBound = (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
+	return (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
 
-		pvec += dp * alphaLowerBound;
-		t1vec += dt1 * alphaLowerBound;
-		t2vec += dt2 * alphaLowerBound;
-		t3vec += dt3 * alphaLowerBound;
+	// // Keeps adding lowerbound of non-tunneling alpha values until it reaches params.accdMinimumSeparation % of original distance (e.g. 0.1 of original)
+	// double curAlpha = 0;
+	// while(true) {
+	// 	double alphaLowerBound = (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
+
+	// 	pvec += dp * alphaLowerBound;
+	// 	t1vec += dt1 * alphaLowerBound;
+	// 	t2vec += dt2 * alphaLowerBound;
+	// 	t3vec += dt3 * alphaLowerBound;
 		
-		curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
-		if (curDist < minimumGap) {
-			return curAlpha;
-		}
+	// 	curDist = sqrt(PointTriangleDist(pvec, t1vec, t2vec, t3vec, true).value);
+	// 	if (curDist < minimumGap) {
+	// 		return curAlpha;
+	// 	}
 
-		curAlpha += alphaLowerBound;
-		if (curAlpha > 1) {
-			return 1;
-		}
-	}
+	// 	curAlpha += alphaLowerBound;
+	// 	if (curAlpha > 1) {
+	// 		return 1;
+	// 	}
+	// }
 }
 
-void EdgeEdge::update(SimState& state, bool valueOnly) {
+void EdgeEdge::update(SimState& state, int flags) {
 	Eigen::Matrix3Xd& pos = state.positions;
 	
-	dist = EdgeEdgeDist(pos.col(e1), pos.col(e2), pos.col(e3), pos.col(e4), valueOnly);
+	dist = EdgeEdgeDist(pos.col(e1), pos.col(e2), pos.col(e3), pos.col(e4), flags);
 
 	// Contact area is average lengths of the two incident edges
 	Eigen::Vector3d u = pos.col(e2) - pos.col(e1);
@@ -72,7 +72,7 @@ void EdgeEdge::update(SimState& state, bool valueOnly) {
 	contactArea = 0.5 * (u.norm() + v.norm());
 }
 
-double EdgeEdge::CCD(SimState& state, Matrix3Xd& searchDirection) {
+double EdgeEdge::CCD(SimParameters& params, SimState& state, Matrix3Xd& searchDirection) {
 	Matrix3Xd& pos = state.positions;
 
 	Vector3d e1vec = pos.col(e1);
@@ -89,38 +89,38 @@ double EdgeEdge::CCD(SimState& state, Matrix3Xd& searchDirection) {
 	if (maxDisplacementMag < 1e-8) return 1; // Pretty much not moving at all, fine w/ any step size
 
 	double curDist = sqrt(EdgeEdgeDist(e1vec, e2vec, e3vec, e4vec, true).value);
-	double minimumGap = curDist * MINIMUM_SEPARATION;
+	double minimumGap = curDist * params.accdMinimumSeparation;
 
-	// Keeps adding lowerbound of non-tunneling alpha values until it reaches MINIMUM_SEPARATION % of original distance (e.g. 0.1 of original)
-	double curAlpha = 0;
+	// Keeps adding lowerbound of non-tunneling alpha values until it reaches params.accdMinimumSeparation % of original distance (e.g. 0.1 of original)
+	// double curAlpha = 0;
 	
 
-	//return (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
+	return (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
 	
-	while(true) {
-		double alphaLowerBound = (1 - MINIMUM_SEPARATION) * curDist / maxDisplacementMag;
+	// while(true) {
+	// 	double alphaLowerBound = (1 - params.accdMinimumSeparation) * curDist / maxDisplacementMag;
 
-		e1vec += de1 * alphaLowerBound;
-		e2vec += de2 * alphaLowerBound;
-		e3vec += de3 * alphaLowerBound;
-		e4vec += de4 * alphaLowerBound;
+	// 	e1vec += de1 * alphaLowerBound;
+	// 	e2vec += de2 * alphaLowerBound;
+	// 	e3vec += de3 * alphaLowerBound;
+	// 	e4vec += de4 * alphaLowerBound;
 		
-		curDist = sqrt(EdgeEdgeDist(e1vec, e2vec, e3vec, e4vec, true).value);
-		if (curDist < minimumGap) {
-			return curAlpha;
-		}
+	// 	curDist = sqrt(EdgeEdgeDist(e1vec, e2vec, e3vec, e4vec, true).value);
+	// 	if (curDist < minimumGap) {
+	// 		return curAlpha;
+	// 	}
 
-		curAlpha += alphaLowerBound;
-		if (curAlpha > 1) {
-			return 1;
-		}
-	}
+	// 	curAlpha += alphaLowerBound;
+	// 	if (curAlpha > 1) {
+	// 		return 1;
+	// 	}
+	// }
 }
 
 double CollisionManager::CCD(Matrix3Xd& searchDirection) {
 	double alpha = 1;
 	for (auto& cp: state.activeCollisionPairs) {
-		alpha = min(alpha, cp->CCD(state, searchDirection));
+		alpha = min(alpha, cp->CCD(params, state, searchDirection));
 	}
 
 	return alpha;
@@ -207,8 +207,8 @@ void CollisionManager::broadPhase() {
 	}
 }
 
-void CollisionManager::updateActivePairs(bool valueOnly) {
+void CollisionManager::updateActivePairs(int flags) {
 	for (auto& cp: state.activeCollisionPairs) {
-		cp->update(state, valueOnly);
+		cp->update(state, flags);
 	}
 }

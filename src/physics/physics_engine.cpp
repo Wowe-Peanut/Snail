@@ -1,11 +1,15 @@
 
 #include "physics_engine.h"
+#include "integrators.h"
+#include "parser.h"
 #include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 using namespace std;
 
-PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters& params): params(params), integrator(params, state) {
+
+
+PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, string jsonPath) {
 
     state.numPoints = 0;
     for (auto obj: objects) {	
@@ -56,16 +60,24 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, SimParameters&
 
 	initialPositions = state.positions;
 	initialVelocities = state.velocities;
+
+
+	// Initialize the integrator only after 'params' and 'state' are initialized
+	params = parseParameters(jsonPath);
+	integrator = parseIntegrator(params, state, jsonPath);
 }
 
 void PhysicsEngine::step() {
-	integrator.step();
+	if (state.objects.empty()) return;
+
+	integrator->step();
 	updateObjects();
 }
 
 void PhysicsEngine::reset() {
 	state.positions = initialPositions;
 	state.velocities = initialVelocities;
+	integrator->reset();
 	updateObjects();
 }
 

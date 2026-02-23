@@ -16,10 +16,10 @@ struct EnergyCalculator {
 	// Helper 
 	void makePSD(Eigen::MatrixXd& mat);
 
-	// Total energy
-    double ipValue(Eigen::Matrix3Xd& xtilde);
-    Eigen::Matrix3Xd ipGradient(Eigen::Matrix3Xd& xtilde);
-    Eigen::SparseMatrix<double> ipHessian(Eigen::Matrix3Xd& xtilde);
+    // Total potential energy
+    double potentialValue();
+    Eigen::Matrix3Xd potentialGradient();
+    Eigen::SparseMatrix<double> potentialHessian();
 
     // Inertia
     double inertiaValue(Eigen::Matrix3Xd& xtilde);

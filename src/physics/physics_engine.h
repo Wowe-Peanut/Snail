@@ -1,20 +1,35 @@
 #pragma once
 
-#include "time_integrator.h"
+#include "integrators.h"
 #include "object.h"
 #include "mesh.h"
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
+struct Integrator;
+
 struct SimParameters {
+
+    // Optimizer parameters
     double dt;
     double tolerance;
+    int maxIter;
+
+    // Line search parameters
+    int lsMaxIter;
+    double lsContraction;
+    double lsLowerBound;
+
+    // ACCD parameters
+    double accdMinimumSeparation;
+
+    // Physical constants
     double springStiffness;
     double pointMass;
     double contactStiffness;
     double contactDistance;
-    double cd2; // contactDistance squared
+    double cd2; 
     Eigen::Vector3d gravity;
 };
 
@@ -36,12 +51,12 @@ struct SimState {
 struct PhysicsEngine {
     SimState state;
     SimParameters params;
-    TimeIntegrator integrator;
+    std::shared_ptr<Integrator> integrator;
 
     Eigen::Matrix3Xd initialPositions;
     Eigen::Matrix3Xd initialVelocities;
 
-    PhysicsEngine(std::vector<std::shared_ptr<Object>>& objects, SimParameters& params);
+    PhysicsEngine(std::vector<std::shared_ptr<Object>>& objects, std::string jsonPath);
     void step(); 
     void reset();
     void updateObjects();
