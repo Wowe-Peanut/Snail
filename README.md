@@ -12,7 +12,7 @@ A softbody physics simulator guided and inspired by this [amazing book](https://
 - Solvers & Optimizers
 	- Backwards Euler
 	- Newton's Method
-	- L-BFGS*
+	- L-BFGS
 - Optimizations
 	- Sweep and prune broadphase
 	- Sparse hessian solvers
