@@ -28,7 +28,7 @@ void applyDBC(SparseMatrix<double>& hessian, const vector<bool>& isDBC) {
     }
 }
 
-void Optimizer::lineSearch(Matrix3Xd& searchDirection, Matrix3Xd& gradient) {
+void Optimizer::lineSearch(Matrix3Xd& searchDirection) {
 
 	// Record initial positions and total energy
 	Matrix3Xd initialPositions = state.positions;
@@ -40,12 +40,9 @@ void Optimizer::lineSearch(Matrix3Xd& searchDirection, Matrix3Xd& gradient) {
 	integrator->collisionManager.updateActivePairs(D_VALUE);
 	double finalEnergy = integrator->value();
 
-	// Sufficient decrease in energy threshold
-	double armijoThreshold = initialEnergy + 0.00001 * alpha * gradient.cwiseProduct(searchDirection).sum();
-
 	// Contract step size until final energy < initial energy
 	int iter = 0;	
-	while (iter++ < params.lsMaxIter && finalEnergy > initialEnergy && alpha > params.lsLowerBound && finalEnergy > armijoThreshold) {
+	while (iter++ < params.lsMaxIter && finalEnergy > initialEnergy && alpha > params.lsLowerBound) {
 
 		alpha *= params.lsContraction;
 		state.positions = initialPositions + alpha*searchDirection;
@@ -83,8 +80,7 @@ void NewtonOptimizer::optimize() {
 
 	int iter = 0;
 	while (iter++ < params.maxIter && searchDirection.colwise().lpNorm<1>().maxCoeff() / params.dt > params.tolerance)  {
-		Matrix3Xd grad = integrator->gradient();
-		lineSearch(searchDirection, grad);
+		lineSearch(searchDirection);
 
 		integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD | D_HESS);
 		searchDirection = getSearchDirection();
@@ -142,30 +138,38 @@ Matrix3Xd LBFGSOptimizer::getSearchDirection(Eigen::Matrix3Xd& gradient) {
 
 void LBFGSOptimizer::optimize() {
 
+	// Clear history and run broadphase
 	reset();
 	integrator->collisionManager.broadPhase();
 	integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD);
 
-	Matrix3Xd position = state.positions;
-	Matrix3Xd gradient = integrator->gradient();
-	applyDBC(gradient, state.isDBC);
+	// Calculate initial position and gradient
+	Matrix3Xd currentPosition = state.positions;
+	Matrix3Xd currentGradient = integrator->gradient();
+	applyDBC(currentGradient, state.isDBC);
+
 
 	for (int iter=0; iter < params.maxIter; iter++) {
-		Matrix3Xd searchDirection = getSearchDirection(gradient);
+	
+		// Calculate search direction and apply line search
+		Matrix3Xd searchDirection = getSearchDirection(currentGradient);
+		lineSearch(searchDirection); 
 		
-		lineSearch(searchDirection, gradient); // Updates state.position so we need to recalculate distances right after
+		// Recalculate position and gradient
 		integrator->collisionManager.updateActivePairs(D_VALUE | D_GRAD);
-
 		Matrix3Xd newPosition = state.positions;
 		Matrix3Xd newGradient = integrator->gradient();
 		applyDBC(newGradient, state.isDBC);
 
-		updateHistory(position, newPosition, gradient, newGradient);
+		// Record change in position and change in gradient
+		updateHistory(currentPosition, newPosition, currentGradient, newGradient);
 
-		position = newPosition;
-		gradient = newGradient;
+		// Update current values
+		currentPosition = newPosition;
+		currentGradient = newGradient;
 
-		if (gradient.cwiseAbs().maxCoeff() < params.tolerance) break;
+		// Check for convergence
+		if (currentGradient.cwiseAbs().maxCoeff() < params.tolerance) break;
 	}
 }
 

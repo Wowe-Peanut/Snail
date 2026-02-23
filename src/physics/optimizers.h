@@ -20,7 +20,7 @@ struct Optimizer {
     ImplicitIntegrator* integrator; // weak to avoid circular reference between an integrator and its optimizer
 
     Optimizer(SimParameters& params, SimState& state): params(params), state(state) {};
-    void lineSearch(Eigen::Matrix3Xd& searchDirection, Eigen::Matrix3Xd& gradient);
+    void lineSearch(Eigen::Matrix3Xd& searchDirection);
 
     virtual void optimize() = 0;
     virtual void reset() = 0;
