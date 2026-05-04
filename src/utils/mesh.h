@@ -45,6 +45,7 @@ struct Triangle {
 
 struct Tetrahedron {
 	int v1, v2, v3, v4;
+	Eigen::Matrix3d B; // Inverse init transform, precomputed for faster deformation gradient calculations
 };
 
 struct TriangleBBComparatorX {
@@ -87,8 +88,10 @@ struct Mesh {
 	void updateBuffer(const std::shared_ptr<Program> prog, GLint attribID, std::vector<float>& buffer, unsigned bufferID, int valuesPerVertex);
 	void draw(const std::shared_ptr<Program> prog);	
 
-	void computeRestingEdgeLengths();
+	void computeRestingEdges();
 	void computeSurfaceQualities();
+	void computeRestingTets();
+
 	void transform(Transform transform);
 	void setFixedPoints(std::vector<int>& fixedPoints);
 	void loadMshFile(std::string mshFilePath);

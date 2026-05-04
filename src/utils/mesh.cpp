@@ -42,6 +42,10 @@ vec3 bufToVec(vector<float>& buffer, int idx) {
 	return vec3(buffer[idx*3], buffer[idx*3 + 1], buffer[idx*3 + 2]);
 }
 
+Eigen::Vector3d bufToEigenVec(vector<float>& buffer, int idx) {
+	return {buffer[idx*3], buffer[idx*3 + 1], buffer[idx*3 + 2]};
+}
+
 void vecToBuf(vector<float>& buffer, vec3& vec, int idx) {
 	buffer[idx*3] = vec[0];
 	buffer[idx*3 + 1] = vec[1];
@@ -65,7 +69,8 @@ triPosBufID(0), triNorBufID(0), triTexBufID(0), triIndBufID(0), isStatic(isStati
 		setFixedPoints(fixedPoints);
 
 		transform({{0, 0, 0}, {0, 0, 0}, preInitScale});
-		computeRestingEdgeLengths();
+		computeRestingEdges();
+		computeRestingTets();
 		transform(meshTransform);
 	} else {
 		cerr << "'" << extension << "' is not a supported mesh file type (.msh only atm)" << endl;
@@ -209,13 +214,28 @@ void Mesh::loadMshFile(string mshFilePath) {
 	edges = vector<Edge>(uniqueEdges.begin(), uniqueEdges.end());
 }
 
-void Mesh::computeRestingEdgeLengths() {
+void Mesh::computeRestingEdges() {
 	for (Edge& edge: edges) {
 		float dx2 = pow(triPosBuf[3*edge.v1] - triPosBuf[3*edge.v2], 2);
 		float dy2 = pow(triPosBuf[3*edge.v1+1] - triPosBuf[3*edge.v2+1], 2);
 		float dz2 = pow(triPosBuf[3*edge.v1+2] - triPosBuf[3*edge.v2+2], 2);
 		
 		edge.l2 = dx2 + dy2 + dz2;
+	}
+}
+
+void Mesh::computeRestingTets() {
+
+	for (Tetrahedron& tet: tetrahedron) {
+		vector<Eigen::Vector3d> p = {bufToEigenVec(triPosBuf, tet.v1),
+									bufToEigenVec(triPosBuf, tet.v2),
+									bufToEigenVec(triPosBuf, tet.v3),
+									bufToEigenVec(triPosBuf, tet.v4)};
+
+		tet.B.col(0) = p[1] - p[0];
+		tet.B.col(1) = p[2] - p[0];
+		tet.B.col(2) = p[3] - p[0];
+		tet.B = tet.B.inverse();
 	}
 }
 

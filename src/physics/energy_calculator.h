@@ -39,9 +39,16 @@ struct EnergyCalculator {
     double contactValue();
     Eigen::Matrix3Xd contactGradient();
     Eigen::SparseMatrix<double> contactHessian();
-    
+
     // d^2 barrier energy
     double barrier(double d2);
     double barrierD(double d2);
     double barrierD2(double d2);
+
+    // Neo-Hookean Elasticity
+    double NHValue();
+    Eigen::Matrix3Xd NHGradient();
+
+
+    
 };	

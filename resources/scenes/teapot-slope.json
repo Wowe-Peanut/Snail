@@ -3,7 +3,7 @@
         "integrator": "backwards_euler",
         "dt": 0.005,
 
-        "optimizer": "lbfgs",
+        "optimizer": "newton",
         "lbfgs_history_size": 20,
         "tolerance": 0.001,
         "max_iterations": 100,
@@ -15,7 +15,7 @@
         "accd_min_separation": 0.5,
 
         "point_mass": 10,
-        "spring_stiffness": 200000,
+        "spring_stiffness": 250000,
         "contact_stiffness": 2000000,
         "contact_distance": 0.05,
         "gravity": [0, -9.81, 0]
