@@ -43,9 +43,11 @@ struct Triangle {
 	Triangle(int v1, int v2, int v3): v1(v1), v2(v2), v3(v3) {};
 };
 
-struct Tetrahedron {
+struct Tet {
 	int v1, v2, v3, v4;
 	Eigen::Matrix3d B; // Inverse init transform, precomputed for faster deformation gradient calculations
+
+	void init(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p3, Eigen::Vector3d p4);
 };
 
 struct TriangleBBComparatorX {
@@ -72,7 +74,7 @@ struct Mesh {
 	// Geometric primitives
 	std::vector<Edge> edges;
 	std::vector<Triangle> triangles;
-	std::vector<Tetrahedron> tetrahedron;
+	std::vector<Tet> tets;
 
 	// Properties
 	int numPoints;			

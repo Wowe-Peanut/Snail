@@ -46,6 +46,7 @@ struct SimState {
 
     std::vector<Edge> edges;
     std::vector<Triangle> triangles;
+    std::vector<Tet> tets;
 };
 
 struct PhysicsEngine {

@@ -197,7 +197,7 @@ void Mesh::loadMshFile(string mshFilePath) {
 					
 					// Volumetric Primitives
 					} else if (entityDim == 3) { 
-						tetrahedron.push_back({nodes[0], nodes[1], nodes[2], nodes[3]});
+						tets.push_back({nodes[0], nodes[1], nodes[2], nodes[3]});
 					} 
 					
 					
@@ -225,18 +225,19 @@ void Mesh::computeRestingEdges() {
 }
 
 void Mesh::computeRestingTets() {
-
-	for (Tetrahedron& tet: tetrahedron) {
-		vector<Eigen::Vector3d> p = {bufToEigenVec(triPosBuf, tet.v1),
-									bufToEigenVec(triPosBuf, tet.v2),
-									bufToEigenVec(triPosBuf, tet.v3),
-									bufToEigenVec(triPosBuf, tet.v4)};
-
-		tet.B.col(0) = p[1] - p[0];
-		tet.B.col(1) = p[2] - p[0];
-		tet.B.col(2) = p[3] - p[0];
-		tet.B = tet.B.inverse();
+	for (Tet& tet: tets) {
+		tet.init(bufToEigenVec(triPosBuf, tet.v1),
+				bufToEigenVec(triPosBuf, tet.v2),
+				bufToEigenVec(triPosBuf, tet.v3),
+				bufToEigenVec(triPosBuf, tet.v4));
 	}
+}
+
+void Tet::init(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p3, Eigen::Vector3d p4) {
+	B.col(0) = p2 - p1;
+	B.col(1) = p3 - p1;
+	B.col(2) = p4 - p1;
+	B = B.inverse();
 }
 
 void Mesh::computeSurfaceQualities() {

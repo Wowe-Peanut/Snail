@@ -1,84 +1,81 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+# Taken from TAMU Dr. Shinjiro Sueda's assignments and altered by Gemini
+
+cmake_minimum_required(VERSION 3.10)
 set(CMAKE_BUILD_TYPE Release)
 
-# Name of the project
-PROJECT(snail)
+project(snail)
+
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE HEADERS "src/*.h")
+file(GLOB_RECURSE GLSL "resources/*.glsl")
 
 
-# Use glob to get the list of all source files.
-# We don't really need to include header and resource files to build, but it's
-# nice to have them also show up in IDEs.
-FILE(GLOB_RECURSE SOURCES "src/*.cpp")
-FILE(GLOB_RECURSE HEADERS "src/*.h")
-FILE(GLOB_RECURSE GLSL "resources/*.glsl")
+list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 
 
-# Set the executable.
-ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
+add_library(snail_lib STATIC ${SOURCES} ${HEADERS} ${GLSL})
 
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
+
+# GLM
+set(GLM_INCLUDE_DIR "$ENV{GLM_INCLUDE_DIR}")
+
+# GLFW
+set(GLFW_DIR "$ENV{GLFW_DIR}")
+option(GLFW_BUILD_EXAMPLES "OFF" OFF)
+option(GLFW_BUILD_TESTS "OFF" OFF)
+option(GLFW_BUILD_DOCS "OFF" OFF)
+
+if(CMAKE_BUILD_TYPE MATCHES Release)
+    add_subdirectory(${GLFW_DIR} ${GLFW_DIR}/release)
+else()
+    add_subdirectory(${GLFW_DIR} ${GLFW_DIR}/debug)
+endif()
+
+# GLEW
+set(GLEW_DIR "$ENV{GLEW_DIR}")
+
+# Eigen
+set(EIGEN3_INCLUDE_DIR "$ENV{EIGEN3_INCLUDE_DIR}")
+
+# Public library to inherit all dependencies
+target_include_directories(snail_lib PUBLIC 
     src/utils
     src/rendering
     src/physics
-	src/extern
+    src/extern
+    ${GLM_INCLUDE_DIR}
+    ${EIGEN3_INCLUDE_DIR}
+    ${GLEW_DIR}/include
+    ${GLFW_DIR}/include
 )
 
-# GLM
-SET(GLM_INCLUDE_DIR "$ENV{GLM_INCLUDE_DIR}")
-INCLUDE_DIRECTORIES(${GLM_INCLUDE_DIR})
+target_link_libraries(snail_lib PUBLIC 
+    glfw 
+    ${GLEW_DIR}/lib/libGLEW.a 
+    GL
+)
 
+# main executable
+add_executable(${CMAKE_PROJECT_NAME} src/main.cpp)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE snail_lib)
 
-# GLFW
-SET(GLFW_DIR "$ENV{GLFW_DIR}")
-OPTION(GLFW_BUILD_EXAMPLES "GLFW_BUILD_EXAMPLES" OFF)
-OPTION(GLFW_BUILD_TESTS "GLFW_BUILD_TESTS" OFF)
-OPTION(GLFW_BUILD_DOCS "GLFW_BUILD_DOCS" OFF)
-IF(CMAKE_BUILD_TYPE MATCHES Release)
-	ADD_SUBDIRECTORY(${GLFW_DIR} ${GLFW_DIR}/release)
-ELSE()
-	ADD_SUBDIRECTORY(${GLFW_DIR} ${GLFW_DIR}/debug)
-ENDIF()
-INCLUDE_DIRECTORIES(${GLFW_DIR}/include)
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} glfw ${GLFW_LIBRARIES})
+# use c++ 17
+set_target_properties(snail_lib PROPERTIES CXX_STANDARD 17)
+set_target_properties(snail_lib PROPERTIES LINKER_LANGUAGE CXX)
 
-# GLEW
-SET(GLEW_DIR "$ENV{GLEW_DIR}")
-INCLUDE_DIRECTORIES(${GLEW_DIR}/include)
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${GLEW_DIR}/lib/libGLEW.a)
-
-
-# Eigen
-SET(EIGEN3_INCLUDE_DIR "$ENV{EIGEN3_INCLUDE_DIR}")
-INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
-
-# Ignore maybe-uninitialized warnings from Eigen
+# compiler flags
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_options(-Wno-maybe-uninitialized)
+    add_compile_options(-Wno-maybe-uninitialized -Wall -pedantic)
 endif()
 
-# Enable CTest
+# Enable Testing 
 enable_testing()
-
-# Fetch Catch2
 include(FetchContent)
 FetchContent_Declare(
   catch2
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG v3.4.0  # pick a stable v3 tag
+  GIT_TAG v3.4.0
 )
 FetchContent_MakeAvailable(catch2)
 
-# Add tests subdirectory
 add_subdirectory(tests)
-
-
-
-# Use c++17
-SET_TARGET_PROPERTIES(${CMAKE_PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
-SET_TARGET_PROPERTIES(${CMAKE_PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
-
-
-# Set flags (-I includes )
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
-
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} "GL")
