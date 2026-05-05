@@ -16,6 +16,7 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, string jsonPat
 		state.objects.push_back(obj);
 		state.offsets.push_back(state.numPoints);
 		state.numPoints += obj->mesh->numPoints;
+		state.owners.insert(state.owners.end(), obj->mesh->numPoints, state.objects.size());
     }
 
 	

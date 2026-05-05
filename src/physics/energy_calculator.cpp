@@ -259,8 +259,6 @@ double EnergyCalculator::barrierD2(double d2) {
 double contraction(Matrix3d& A, Matrix3d& B) {
 	return A.reshaped().dot(B.reshaped());
 }
-
-
 double EnergyCalculator::SNHValue() {
 	double sum = 0;
 	double mu = params.mu;

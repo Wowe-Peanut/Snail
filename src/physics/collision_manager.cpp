@@ -193,6 +193,7 @@ void CollisionManager::broadPhase() {
 	// Sweep and prune along x-axis
 	state.activeCollisionPairs.clear();
 
+
 	int numTriangles = (int) state.triangles.size();
 	for (int tidx1=0; tidx1<numTriangles; tidx1++) {
 		Triangle& t1 = state.triangles[tidx1];
@@ -201,7 +202,12 @@ void CollisionManager::broadPhase() {
 		for (int tidx2=tidx1+1; tidx2<numTriangles; tidx2++) {
 			Triangle& t2 = state.triangles[tidx2];
 
+			// Sweep and prune early quit
 			if (t2.boundingBox.mins.x() > t1.boundingBox.maxs.x()) break;
+
+			// // Disable self collision
+			// if (state.owners[t1.v1] == state.owners[t2.v1]) break;
+
 			if (t1.boundingBox.overlaps(t2.boundingBox)) trianglesToCollisionPairs(t1, t2);
 		}
 	}

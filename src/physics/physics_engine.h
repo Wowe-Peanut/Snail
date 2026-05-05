@@ -42,6 +42,7 @@ struct SimState {
 
     int numPoints;
     std::vector<int> offsets; 
+    std::vector<int> owners;
     Eigen::Matrix3Xd positions;
     Eigen::Matrix3Xd velocities;
 

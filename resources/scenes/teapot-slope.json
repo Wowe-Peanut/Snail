@@ -20,7 +20,7 @@
         "contact_distance": 0.05,
         "gravity": [0, -9.81, 0],
 
-        "E": 10000,
+        "E": 1000,
         "v": 0.45,
 
         "elasticity": "SNH"
@@ -62,7 +62,7 @@
                 "s": 200
             },
 
-            "pre_init_scale": [1, 1, 1],
+            "pre_init_scale": [0.5, 1, 1],
 
             "mesh_transform": {
                 "translation":  [0, 0, 0],

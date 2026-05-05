@@ -1,7 +1,7 @@
 {
     "parameters": {
         "integrator": "backwards_euler",
-        "dt": 0.005,
+        "dt": 0.002,
 
         "optimizer": "lbfgs",
         "lbfgs_history_size": 20,
@@ -14,21 +14,21 @@
 
         "accd_min_separation": 0.5,
 
-        "point_mass": 100,
-        "spring_stiffness": 10000,
+        "point_mass": 200,
+        "spring_stiffness": 100000,
         "contact_stiffness": 2000000,
         "contact_distance": 0.05,
         "gravity": [0, -9.81, 0],
 
-        "E": 100000,
-        "v": 0.4,
+        "E": 50000,
+        "v": 0.45,
 
-        "elasticity": "SNH"
+        "elasticity": "springs"
     },
 
     "objects": [
         {
-            "mesh": "models/cube/cube2.msh",
+            "mesh": "models/cube/cube4.msh",
             "is_static": false,
             "fixed_points": [],
             "velocity": [0, -5, 0],
@@ -43,7 +43,7 @@
             "pre_init_scale": [4, 4, 4],
 
             "mesh_transform": {
-                "translation":  [0, 4, 0],
+                "translation":  [0, 8, 0],
                 "rotation":     [0, 0, 0],
                 "scale":        [1, 1, 1]
             }
