@@ -46,8 +46,8 @@ struct EnergyCalculator {
     double barrierD2(double d2);
 
     // Neo-Hookean Elasticity
-    double NHValue();
-    Eigen::Matrix3Xd NHGradient();
+    double SNHValue();
+    Eigen::Matrix3Xd SNHGradient();
 
 
     

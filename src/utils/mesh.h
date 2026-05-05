@@ -45,9 +45,20 @@ struct Triangle {
 
 struct Tet {
 	int v1, v2, v3, v4;
-	Eigen::Matrix3d B; // Inverse init transform, precomputed for faster deformation gradient calculations
+	
+	// Inverse init transform, precomputed for faster deformation gradient calculations
+	Eigen::Matrix3d B; 
+	
+	// Precomputed b/c they only depend on B 
+	// Uses 3d tensor format from chapter 3 of: https://www.tkim.graphics/DYNAMIC_DEFORMABLES/DynamicDeformables.pdf
+	std::vector<Eigen::Matrix3d> dfdv1 = {Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero()};
+	std::vector<Eigen::Matrix3d> dfdv2 = {Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero()};
+	std::vector<Eigen::Matrix3d> dfdv3 = {Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero()};
+	std::vector<Eigen::Matrix3d> dfdv4 = {Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero()};
 
+	
 	void init(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p3, Eigen::Vector3d p4);
+	Eigen::Matrix3d F(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p3, Eigen::Vector3d p4);
 };
 
 struct TriangleBBComparatorX {

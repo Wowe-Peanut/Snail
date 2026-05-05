@@ -240,3 +240,13 @@ double EnergyCalculator::barrierD2(double d2) {
 
 	return beta/params.cd2/params.cd2*(s+1)/(s*s);
 }
+
+
+// Stable Neo-Hookean Elasticity
+// https://www.tkim.graphics/DYNAMIC_DEFORMABLES/DynamicDeformables.pdf
+double SNHValue() {
+	
+}
+Matrix3Xd SNHGradient() {
+
+}

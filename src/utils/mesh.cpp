@@ -233,12 +233,44 @@ void Mesh::computeRestingTets() {
 	}
 }
 
+// Guided by https://www.tkim.graphics/DYNAMIC_DEFORMABLES/DynamicDeformables.pdf
 void Tet::init(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p3, Eigen::Vector3d p4) {
 	B.col(0) = p2 - p1;
 	B.col(1) = p3 - p1;
 	B.col(2) = p4 - p1;
 	B = B.inverse();
+
+	
+	for (int i=0; i<3; i++) {
+		dfdv1[i].row(i) = Eigen::Vector3d(-1, -1, -1);
+	}
+	
+	
+	std::vector<std::vector<Eigen::Matrix3d>* > dfdv = {&dfdv2, &dfdv3, &dfdv4};
+	for (int i=0; i<3; i++) {
+		for (int j=0; j<3; j++) {
+			dfdv[i]->at(j).col(i)[j] = 1;
+		}
+	}
+
+	dfdv = {&dfdv1, &dfdv2, &dfdv3, &dfdv4};
+	for (int i=0; i<4; i++) {
+		for (int j=0; j<3; j++) {
+			dfdv[i]->at(j) *= B;
+		}
+	}
 }
+
+Eigen::Matrix3d Tet::F(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p3, Eigen::Vector3d p4) {
+	Eigen::Matrix3d A;
+	A.col(0) = p2-p1;
+	A.col(1) = p3-p1;
+	A.col(2) = p4-p1;
+
+	return A*B;
+}
+
+
 
 void Mesh::computeSurfaceQualities() {
 
