@@ -71,6 +71,10 @@ vector<shared_ptr<Object>> parseObjects(string resourcePath, string jsonPath) {
 SimParameters parseParameters(string jsonPath) {
 	json data = openjson(jsonPath)["parameters"];
 
+	double E = data["E"];
+	double v = data["v"];
+	string elasticityType = data["elasticity"];
+
 	SimParameters params = {
 		data["dt"],
 		data["tolerance"],
@@ -81,13 +85,15 @@ SimParameters parseParameters(string jsonPath) {
 		data["ls_lower_bound"],
 
 		data["accd_min_separation"],
-
+		(E/(2*(1+v))),
+		(E*v/((1+v)*(1-2*v))),
 		data["spring_stiffness"],
 		data["point_mass"],
 		data["contact_stiffness"],
 		data["contact_distance"],
 		0,
-		toVector3d(data["gravity"])
+		toVector3d(data["gravity"]),
+		(elasticityType == "springs")
 	};
 
 	params.cd2 = params.contactDistance * params.contactDistance;

@@ -40,6 +40,12 @@ PhysicsEngine::PhysicsEngine(vector<shared_ptr<Object>>& objects, string jsonPat
 		for (Triangle& tri: obj->mesh->triangles) {
 			state.triangles.emplace_back(offset+tri.v1, offset+tri.v2, offset+tri.v3);
 		}
+
+		// Copy tets over and offset indices
+		for (Tet& tet: obj->mesh->tets) {
+			state.tets.push_back(tet);
+			state.tets.back().offsetIndices(offset);
+		}
 		
 		// Copy fixed points
 		state.isDBC.insert(state.isDBC.end(), obj->mesh->isFixedPoint.begin(), obj->mesh->isFixedPoint.end());

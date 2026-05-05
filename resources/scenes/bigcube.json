@@ -1,7 +1,7 @@
 {
     "parameters": {
         "integrator": "backwards_euler",
-        "dt": 0.01,
+        "dt": 0.005,
 
         "optimizer": "lbfgs",
         "lbfgs_history_size": 20,
@@ -12,43 +12,26 @@
         "ls_contraction": 0.5,
         "ls_lower_bound": 0.0001,
 
-        "accd_min_separation": 0.1,
+        "accd_min_separation": 0.5,
 
-        "point_mass": 50,
-        "spring_stiffness": 500000,
+        "point_mass": 100,
+        "spring_stiffness": 10000,
         "contact_stiffness": 2000000,
         "contact_distance": 0.05,
-        "gravity": [0, -9.81, 0]
+        "gravity": [0, -9.81, 0],
+
+        "E": 100000,
+        "v": 0.4,
+
+        "elasticity": "SNH"
     },
 
     "objects": [
         {
-            "mesh": "models/sphere/sphere.msh",
+            "mesh": "models/cube/cube2.msh",
             "is_static": false,
             "fixed_points": [],
-            "velocity": [0, 0, 0],
-
-            "material": {
-                "ka": [0.6, 0.4, 0.2],
-                "kd": [0.6, 0.4, 0.2],
-                "ks": [1.0, 1.0, 1.0],
-                "s": 200
-            },
-
-            "pre_init_scale": [1, 1, 1],
-
-            "mesh_transform": {
-                "translation":  [0, 7, 0],
-                "rotation":     [0, 0, 0],
-                "scale":        [1, 1, 1]
-            }
-        },
-
-        {
-            "mesh": "models/cube/cube4.msh",
-            "is_static": false,
-            "fixed_points": [],
-            "velocity": [0, 0, 0],
+            "velocity": [0, -5, 0],
 
             "material": {
                 "ka": [0.1, 0.4, 0.6],
@@ -60,7 +43,7 @@
             "pre_init_scale": [4, 4, 4],
 
             "mesh_transform": {
-                "translation":  [0, 2.2, 0],
+                "translation":  [0, 4, 0],
                 "rotation":     [0, 0, 0],
                 "scale":        [1, 1, 1]
             }
@@ -79,10 +62,10 @@
                 "s": 200
             },
 
-            "pre_init_scale": [1, 1, 1],
+            "pre_init_scale": [4, 1, 4],
 
             "mesh_transform": {
-                "translation":  [0, 0, 0],
+                "translation":  [8, 0, 0],
                 "rotation":     [0, 0, 0],
                 "scale":        [10, 1, 10]
             }

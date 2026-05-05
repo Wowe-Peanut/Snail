@@ -17,8 +17,13 @@
         "point_mass": 10,
         "spring_stiffness": 300000,
         "contact_stiffness": 20000000,
-        "contact_distance": 0.05,
-        "gravity": [0, -9.81, 0]
+        "contact_distance": 0.06,
+        "gravity": [0, -9.81, 0],
+
+        "E": 1000,
+        "v": 0.45,
+
+        "elasticity": "SNH"
     },
 
     "objects": [

@@ -270,6 +270,20 @@ Eigen::Matrix3d Tet::F(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p
 	return A*B;
 }
 
+Eigen::Matrix3d Tet::F(Eigen::Matrix3Xd& positions) {
+	return F(positions.col(v1),
+			positions.col(v2),
+			positions.col(v3),
+			positions.col(v4));
+}
+
+void Tet::offsetIndices(int offset) {
+	v1 += offset;
+	v2 += offset;
+	v3 += offset;
+	v4 += offset;
+}
+
 
 
 void Mesh::computeSurfaceQualities() {

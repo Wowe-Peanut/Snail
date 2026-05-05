@@ -24,13 +24,25 @@ void EnergyCalculator::makePSD(MatrixXd& mat) {
 
 // Potential energy
 double EnergyCalculator::potentialValue() {
-	return massSpringValue() + gravityValue() + contactValue();
+	if (params.useSprings) {
+		return gravityValue() + contactValue() + massSpringValue();
+	} else {
+		return gravityValue() + contactValue() + SNHValue();
+	}
 }
 Eigen::Matrix3Xd EnergyCalculator::potentialGradient() {
-	return massSpringGradient() + gravityGradient() + contactGradient();
+	if (params.useSprings) {
+		return gravityGradient() + contactGradient() + massSpringGradient();
+	} else {
+		return gravityGradient() + contactGradient() + SNHGradient(); 
+	}
 }
 Eigen::SparseMatrix<double> EnergyCalculator::potentialHessian() {
-	return massSpringHessian() + contactHessian();
+	if (params.useSprings) {
+		return contactHessian() + massSpringHessian();
+	} else {
+		return contactHessian(); 
+	}
 }
 
 
@@ -244,9 +256,43 @@ double EnergyCalculator::barrierD2(double d2) {
 
 // Stable Neo-Hookean Elasticity
 // https://www.tkim.graphics/DYNAMIC_DEFORMABLES/DynamicDeformables.pdf
-double SNHValue() {
-	
+double contraction(Matrix3d& A, Matrix3d& B) {
+	return A.reshaped().dot(B.reshaped());
 }
-Matrix3Xd SNHGradient() {
 
+
+double EnergyCalculator::SNHValue() {
+	double sum = 0;
+	double mu = params.mu;
+	double lambda = params.lambda;
+
+
+	for (Tet& tet: state.tets) {
+		Matrix3d F = tet.F(state.positions);
+		double J = F.determinant();
+
+		sum += mu/2 * ((F.transpose() * F).trace() - 3) - mu*(J-1) + lambda/2*(J-1)*(J-1);
+	}
+
+	return sum;
+}
+Matrix3Xd EnergyCalculator::SNHGradient() {
+	Matrix3Xd grad = Matrix3Xd::Zero(3, state.numPoints);
+	double mu = params.mu;
+	double lambda = params.lambda;
+
+	for (Tet& tet: state.tets) {
+		Matrix3d F = tet.F(state.positions);
+		double J = F.determinant();
+
+		Matrix3d dphidF = mu*F + (lambda*(J-1)*J - mu*J)*F.transpose().inverse();
+
+		// 3d tensor products
+		grad.col(tet.v1) += Vector3d(contraction(tet.dfdv1[0], dphidF), contraction(tet.dfdv1[1], dphidF), contraction(tet.dfdv1[2], dphidF));
+		grad.col(tet.v2) += Vector3d(contraction(tet.dfdv2[0], dphidF), contraction(tet.dfdv2[1], dphidF), contraction(tet.dfdv2[2], dphidF));
+		grad.col(tet.v3) += Vector3d(contraction(tet.dfdv3[0], dphidF), contraction(tet.dfdv3[1], dphidF), contraction(tet.dfdv3[2], dphidF));
+		grad.col(tet.v4) += Vector3d(contraction(tet.dfdv4[0], dphidF), contraction(tet.dfdv4[1], dphidF), contraction(tet.dfdv4[2], dphidF));
+	}
+
+	return grad;
 }

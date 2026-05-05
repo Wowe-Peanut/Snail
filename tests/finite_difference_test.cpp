@@ -251,3 +251,28 @@ TEST_CASE("Barrier") {
     // cout << "Hessian" << endl;
     // isSmall((ec->barrierD(center+epsilon) - ec->barrierD(center))/epsilon - ec->barrierD2(center));
 }
+
+TEST_CASE("SNH") {
+    SimState& s = setup.s;
+  
+    // Setup
+    Matrix3Xd dp = perturb(epsilon);
+    Matrix3Xd originalPositions = s.positions;
+  
+    // Original
+    s.positions = originalPositions;
+    Matrix3Xd gradient = setup.energyCalculator->SNHGradient();
+  
+    // Forward
+    s.positions = originalPositions + dp;
+    double forwardValue = setup.energyCalculator->SNHValue();
+  
+    // Backward
+    s.positions = originalPositions - dp;
+    double backwardValue = setup.energyCalculator->SNHValue();
+  
+    cout << "GRADIENT" << endl;
+    isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+
+    s.positions = originalPositions;
+}

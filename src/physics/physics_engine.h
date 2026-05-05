@@ -25,12 +25,16 @@ struct SimParameters {
     double accdMinimumSeparation;
 
     // Physical constants
+    double mu;      // lame parameter
+    double lambda;  // lame parameter
     double springStiffness;
     double pointMass;
     double contactStiffness;
     double contactDistance;
     double cd2; 
     Eigen::Vector3d gravity;
+
+    bool useSprings;
 };
 
 struct SimState {

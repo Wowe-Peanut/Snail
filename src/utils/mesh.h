@@ -59,6 +59,8 @@ struct Tet {
 	
 	void init(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p3, Eigen::Vector3d p4);
 	Eigen::Matrix3d F(Eigen::Vector3d p1, Eigen::Vector3d p2, Eigen::Vector3d p3, Eigen::Vector3d p4);
+	Eigen::Matrix3d F(Eigen::Matrix3Xd& positions);
+	void offsetIndices(int offset);
 };
 
 struct TriangleBBComparatorX {

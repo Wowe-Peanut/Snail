@@ -18,7 +18,12 @@
         "spring_stiffness": 250000,
         "contact_stiffness": 2000000,
         "contact_distance": 0.05,
-        "gravity": [0, -9.81, 0]
+        "gravity": [0, -9.81, 0],
+
+        "E": 10000,
+        "v": 0.45,
+
+        "elasticity": "SNH"
     },
 
     "objects": [
@@ -35,7 +40,7 @@
                 "s": 200
             },
 
-            "pre_init_scale": [1, 1, 1],
+            "pre_init_scale": [2, 2, 2],
 
             "mesh_transform": {
                 "translation":  [0, 3, 0],
@@ -57,7 +62,7 @@
                 "s": 200
             },
 
-            "pre_init_scale": [0.5, 1, 0.5],
+            "pre_init_scale": [1, 1, 1],
 
             "mesh_transform": {
                 "translation":  [0, 0, 0],
