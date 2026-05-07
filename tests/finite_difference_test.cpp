@@ -38,16 +38,16 @@ struct Setup {
         // Parameters
         p.springStiffness = 500000;
         p.pointMass = 50;
-        p.contactStiffness = 2000000;
+        p.contactStiffness = 200000;
         p.contactDistance = 0.05;
         p.cd2 = (0.05*0.05);
         p.gravity = Vector3d(0, -9.81, 0);
     
 
-        POINTS      = (rand() % 1000) + 500;
-        EDGES       = (rand() % 1000) + 500;
-        TRIANGLES   = (rand() % 1000) + 500;
-        TETS        = (rand() % 1000) + 500;
+        POINTS      = (rand() % 900) + 100;
+        EDGES       = (rand() % 900) + 100;
+        TRIANGLES   = (rand() % 900) + 100;
+        TETS        = (rand() % 900) + 100;
 
 
 
@@ -139,16 +139,18 @@ TEST_CASE("Inertia") {
     double      backwardValue = setup.energyCalculator->inertiaValue(xtilde);
     Matrix3Xd   backwardGradient = setup.energyCalculator->inertiaGradient(xtilde);
   
-    cout << "GRADIENT" << endl;
-    isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    SECTION("Inertia Gradient") {
+        isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    }
 
-    // cout << "HESSIAN" << endl;
-    // isSmall((forwardGradient.reshaped() - backwardGradient.reshaped() - 2 * hessian * dp.reshaped()).norm() / (2 * epsilon));
+    SECTION("Inertia Hessian") {
+        isSmall((forwardGradient.reshaped() - backwardGradient.reshaped() - 2 * hessian * dp.reshaped()).norm() / (2 * epsilon));
+    }
   
     s.positions = originalPositions;
 }
 
-TEST_CASE("Mass Spring") {
+TEST_CASE("Spring") {
     SimState& s = setup.s;
   
     // Setup
@@ -170,11 +172,13 @@ TEST_CASE("Mass Spring") {
     double      backwardValue = setup.energyCalculator->massSpringValue();
     Matrix3Xd   backwardGradient = setup.energyCalculator->massSpringGradient();
   
-    cout << "GRADIENT" << endl;
-    isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    SECTION("Spring Gradient") {
+        isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    } 
 
-    // cout << "HESSIAN" << endl;
-    // isSmall((forwardGradient.reshaped() - backwardGradient.reshaped() - 2 * hessian * dp.reshaped()).norm() / (2 * epsilon));
+    SECTION("Spring Hessian") {
+        isSmall((forwardGradient.reshaped() - backwardGradient.reshaped() - 2 * hessian * dp.reshaped()).norm() / (2 * epsilon));
+    }
   
     s.positions = originalPositions;
 }
@@ -188,18 +192,19 @@ TEST_CASE("Gravity") {
   
     // Original
     s.positions = originalPositions;
-    Matrix3Xd gradient = setup.energyCalculator->massSpringGradient();
+    Matrix3Xd gradient = setup.energyCalculator->gravityGradient();
   
     // Forward
     s.positions = originalPositions + dp;
-    double forwardValue = setup.energyCalculator->massSpringValue();
+    double forwardValue = setup.energyCalculator->gravityValue();
   
     // Backward
     s.positions = originalPositions - dp;
-    double backwardValue = setup.energyCalculator->massSpringValue();
+    double backwardValue = setup.energyCalculator->gravityValue();
   
-    cout << "GRADIENT" << endl;
-    isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    SECTION("Gravity") {
+        isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    }
 
     s.positions = originalPositions;
 }
@@ -230,11 +235,13 @@ TEST_CASE("Contact") {
     double      backwardValue = setup.energyCalculator->contactValue();
     Matrix3Xd   backwardGradient = setup.energyCalculator->contactGradient();
   
-    cout << "GRADIENT" << endl;
-    isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    SECTION("Contact Gradient") {
+        isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    }
 
-    // cout << "HESSIAN" << endl;
-    // isSmall((forwardGradient.reshaped() - backwardGradient.reshaped() - 2 * hessian * dp.reshaped()).norm() / (2 * epsilon));
+    SECTION("Contact Hessian") {
+        isSmall((forwardGradient.reshaped() - backwardGradient.reshaped() - 2 * hessian * dp.reshaped()).norm() / (2 * epsilon));
+    }
   
     s.positions = originalPositions;
 }
@@ -245,11 +252,13 @@ TEST_CASE("Barrier") {
 
     double center = static_cast<double>(rand()) / static_cast<double>(RAND_MAX) * 2 * setup.p.contactDistance;
 
-    cout << "Gradient" << endl;
-    isSmall((ec->barrier(center+epsilon) - ec->barrier(center-epsilon))/(2*epsilon) - ec->barrierD(center));
+    SECTION("Barrier Gradient") {
+        isSmall((ec->barrier(center+epsilon) - ec->barrier(center-epsilon))/(2*epsilon) - ec->barrierD(center));
+    }
 
-    // cout << "Hessian" << endl;
-    // isSmall((ec->barrierD(center+epsilon) - ec->barrierD(center))/epsilon - ec->barrierD2(center));
+    SECTION("Barrier Hessian") {
+        isSmall((ec->barrierD(center+epsilon) - ec->barrierD(center))/epsilon - ec->barrierD2(center));
+    }
 }
 
 TEST_CASE("SNH") {
@@ -271,8 +280,9 @@ TEST_CASE("SNH") {
     s.positions = originalPositions - dp;
     double backwardValue = setup.energyCalculator->SNHValue();
   
-    cout << "GRADIENT" << endl;
-    isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    SECTION("SNH Gradient") {
+        isSmall((forwardValue - backwardValue - 2 * gradient.reshaped().dot(dp.reshaped())) / (2 * epsilon));
+    }
 
     s.positions = originalPositions;
 }

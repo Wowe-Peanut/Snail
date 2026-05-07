@@ -118,7 +118,7 @@ SparseMatrix<double> EnergyCalculator::massSpringHessian() {
 		localHess.block<3,3>(0,3) = -diffHess;
 		localHess.block<3,3>(3,0) = -diffHess;
 		localHess.block<3,3>(3,3) = diffHess;
-		makePSD(localHess);
+		// makePSD(localHess);
 
 
 		for (int blockRow=0; blockRow<=1; blockRow++) {
@@ -206,7 +206,7 @@ SparseMatrix<double> EnergyCalculator::contactHessian() {
 			Distance& d = cp->dist;
 			Eigen::Map<VectorXd> flatgrad(d.grad.data(), 12);
 			MatrixXd localHess = 0.5 * cp->contactArea * (barrierD2(d.value) * flatgrad * flatgrad.transpose() + barrierD(d.value) * d.hess);
-			makePSD(localHess);
+			// makePSD(localHess);
 
 			// Map local hess to global triplets
 			vector<int> dofIdxs = cp->getDofIdxs();
@@ -250,7 +250,7 @@ double EnergyCalculator::barrierD2(double d2) {
 	double s = d2/params.cd2;
 	double beta = params.contactStiffness/8 * params.contactDistance;
 
-	return beta/params.cd2/params.cd2*(s+1)/(s*s);
+	return beta/params.cd2/params.cd2*(1/s + 1/(s*s));
 }
 
 

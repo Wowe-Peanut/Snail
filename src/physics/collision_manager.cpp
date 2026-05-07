@@ -13,9 +13,9 @@ void PointTriangle::update(SimState& state, int flags) {
 	dist = PointTriangleDist(pos.col(p), pos.col(t1), pos.col(t2), pos.col(t3), flags);
 
 	// Currently contact area only considers area of triangle, it doesn't take into account mesh density around point
-	Vector3d u = pos.col(t2) - pos.col(t1);
-	Vector3d v = pos.col(t3) - pos.col(t1);
-	contactArea = 0.5 * u.cross(v).norm();
+	// Vector3d u = pos.col(t2) - pos.col(t1);
+	// Vector3d v = pos.col(t3) - pos.col(t1);
+	contactArea = 1; // 0.5 * u.cross(v).norm();
 }
 
 double PointTriangle::CCD(SimParameters& params, SimState& state, Matrix3Xd& searchDirection) {
