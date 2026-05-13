@@ -8,6 +8,7 @@ A softbody physics simulator guided and inspired by this [amazing book](https://
 	- Gravity
 	- Spring Elasticity
 	- Arbitrary Mesh Contact*
+  	- Stable Neo-Hookean Elasticity*
 	- Stationary Points
 - Solvers & Optimizers
 	- Backwards Euler
