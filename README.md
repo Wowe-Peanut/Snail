@@ -1,30 +1,30 @@
 # Snail - A Softbody Physics Simulator
 
-A softbody physics simulator guided and inspired by this [amazing book](https://phys-sim-book.github.io/preface.html) by Minchen Li et al.
+A softbody physics simulator inspired by this [amazing article](https://phys-sim-book.github.io/preface.html) by Minchen Li et al.
 
+<img width="250" height="250" alt="image13" src="https://github.com/user-attachments/assets/35f15538-40a7-4fad-9e99-5325a9cd7093" />
+<img width="250" height="250" alt="image14" src="https://github.com/user-attachments/assets/21eab332-329b-42b0-a9cc-ff2a69311e55" />
+<img width="250" height="250" alt="clipped14square" src="https://github.com/user-attachments/assets/5c581698-6e87-4877-a23e-50a4e8ce6821" />
 
 ### Features
 - Physics
 	- Gravity
-	- Spring Elasticity
-	- Arbitrary Mesh Contact*
-  	- Stable Neo-Hookean Elasticity*
+	- 1D Spring Elasticity
+ 	- 3D Stable Neo-Hookean Elasticity
+	- Mesh on Mesh Contact
 	- Stationary Points
-- Solvers & Optimizers
-	- Backwards Euler
-	- Newton's Method
-	- L-BFGS
+- Solvers
+	- Implicit Euler Integration
+	- Full Newton (except for neo-hookean energy)
+ 	- L-BFGS
 - Optimizations
 	- Sweep and prune broadphase
-	- Sparse hessian solvers
+	- Sparse solvers
 - GUI
 	- Blinn-Phong shading
-	- Controllable camera, pausing, reseting, stepping
+	- Controllable camera, pausing, resetting, stepping
 - JSON to Scene Parser
-	- See ```resources/scenes``` for examples
-
-*\*still in development\**
-
+	- See ```resources/scenes``` for examples of scene parameters
 
 ### Dependencies
 - [GLM](https://github.com/g-truc/glm) under ```GLM_INCLUDE_DIR```
@@ -44,25 +44,22 @@ make -j4
 ./snail PATH_TO_RESOURCES PATH_TO_SCENE_JSON
 ```
 
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-<img src="images/cloth1.png" width="400">
-<img src="images/cloth2.png" width="400">
-<img src="images/cloth3.png" width="400">
-<img src="images/cloth4.png" width="400">
-<img src="images/cloth5.png" width="400">
-<img src="images/cloth6.png" width="400">
-</div>
-
-<br>
-
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-<img src="images/teapot1.png" width="400">
-<img src="images/teapot2.png" width="400">
-<img src="images/teapot3.png" width="400">
-<img src="images/teapot4.png" width="400">
-<img src="images/teapot5.png" width="400">
-<img src="images/teapot6.png" width="400">
-</div>
-
-
+### Citations & Inspirations
+<ul class="reference-list">
+<li class="reference-item">
+	Li, M., Ferguson, Z., Schneider, T., Langlois, T. R., Zorin, D., Panozzo, D., ... &amp; Jiang, C. (2020). 
+	<strong>Incremental potential contact: intersection-and inversion-free, large-deformation dynamics</strong>. 
+	<em>ACM Trans. Graph.</em>, 39(4), 49-1. 
+	[<a href="https://ipc-sim.github.io/file/IPC-paper-fullRes.pdf" target="_blank">PDF</a>]
+</li>
+<li class="reference-item">
+	Kim, T., &amp; Eberle, D. (2022). 
+	<strong>Dynamic Deformables: Implementation and Production Practicalities</strong>. 
+	<em>ACM SIGGRAPH 2022 Courses</em>. 
+	[<a href="https://www.tkim.graphics/DYNAMIC_DEFORMABLES/DynamicDeformables.pdf" target="_blank">PDF</a>]
+</li>
+<li class="reference-item">
+	Libraries Used: Eigen, GLEW, GLFW, GLM, nlohmann/json
+</li>
+</ul>
 
